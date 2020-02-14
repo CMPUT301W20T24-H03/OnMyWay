@@ -9,4 +9,4 @@
 
 
 ## License
-This project is released under the Apache 2.0 license. See the [license file](LICENSE) for details
+This project is released under the Apache 2.0 license. See the [license file](LICENSE.md) for details
