@@ -1,4 +1,4 @@
-package com.example.onmyway;
+package com.CMPUT301W20T24.OnMyWay;
 
 import android.content.Context;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.example.onmyway", appContext.getPackageName());
+        assertEquals("com.CMPUT301W20T24.OnMyWay", appContext.getPackageName());
     }
 }
