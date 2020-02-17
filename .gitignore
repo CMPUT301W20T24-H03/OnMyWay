@@ -83,3 +83,5 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+
+# SOURCE: https://github.com/github/gitignore/blob/master/Android.gitignore
