@@ -1,4 +1,4 @@
-package com.example.onmyway;
+package com.CMPUT301W20T24.OnMyWay;
 
 import org.junit.Test;
 
