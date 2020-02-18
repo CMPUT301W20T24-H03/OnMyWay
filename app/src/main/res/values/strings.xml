@@ -2,4 +2,9 @@
     <string name="app_name">OnMyWay</string>
     <string name="content_description_logo">OnMyWay logo</string>
     <string name="content_description_splash_background">Splash screen background</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="text_login">Login</string>
+    <string name="text_have_account">Don\'t have an account?</string>
+    <string name="text_email">Email address</string>
+    <string name="text_password">Password</string>
 </resources>
