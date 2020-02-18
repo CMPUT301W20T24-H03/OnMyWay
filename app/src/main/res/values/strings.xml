@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">OnMyWay</string>
+    <string name="content_description_logo">OnMyWay logo</string>
+    <string name="content_description_splash_background">Splash screen background</string>
 </resources>
