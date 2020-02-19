@@ -85,10 +85,14 @@ public class SplashScreenActivity extends AppCompatActivity {
                                                 if (document.getBoolean("driver")) {
                                                     // GO TO DRIVER MAP ACTIVITY
                                                     Log.d(TAG, "Switching to MainDriverMapActivity");
+                                                    Intent intent = new Intent(SplashScreenActivity.this, MainDriverMapActivity.class);
+                                                    startActivity(intent);
                                                 }
                                                 else {
                                                     // GO TO RIDER MAP ACTIVITY
                                                     Log.d(TAG, "Switching to MainRiderMapActivity");
+                                                    Intent intent = new Intent(SplashScreenActivity.this, MainRiderMapActivity.class);
+                                                    startActivity(intent);
                                                 }
                                             }
                                             else {

@@ -25,4 +25,16 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
+
+    // Called when the user presses a button
+    public void openMainDriverMapActivity(View view) {
+        Intent intent = new Intent(this, MainDriverMapActivity.class);
+        startActivity(intent);
+    }
+
+    // Called when the user presses a button
+    public void openMainRiderMapActivity(View view) {
+        Intent intent = new Intent(this, MainRiderMapActivity.class);
+        startActivity(intent);
+    }
 }
