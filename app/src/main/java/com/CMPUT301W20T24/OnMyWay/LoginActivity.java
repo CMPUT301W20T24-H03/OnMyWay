@@ -12,6 +12,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -52,14 +56,53 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private boolean validatePassword(CharSequence passwordChars) {
-        return true; // Inplement this later
+        return true; // Implement this later
     }
 
 
-    private void checkUserType(FirebaseUser user) {
-        Log.d(TAG, "Checking user type");
-        Log.d(TAG, user.toString());
-        // Check if user is driver or rider here
+    // Check if user is driver or rider here
+    private void checkUserType(FirebaseUser currentUser) {
+        currentUser.getUid();
+        Log.d(TAG, "Logged in successfully. Checking user type");
+        Log.d(TAG, currentUser.toString());
+        Log.d(TAG, currentUser.getUid());
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance(); // Access a Cloud Firestore instance from your Activity
+
+        // COMBINE THIS WITH SAME FUNCTION IN SPLASH SCREEN ACTIVITY
+
+        /// Google Firebase, Get data with Cloud Firestore
+        /// https://firebase.google.com/docs/firestore/query-data/get-data
+        db.collection("users").document(currentUser.getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                     @Override
+                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                         if (task.isSuccessful()) {
+                             DocumentSnapshot document = task.getResult();
+                             if (document.exists()) {
+                                 Log.d(TAG, "User information fetched from database");
+                                 Map<String, Object> userData = document.getData(); // SHOULD SAVE THIS TO STATE HERE WHILE WE HAVE THE INFORMATION
+
+                                 if (document.getBoolean("driver")) {
+                                     // GO TO DRIVER MAP ACTIVITY
+                                     Log.d(TAG, "Switching to MainDriverMapActivity");
+                                 }
+                                 else {
+                                     // GO TO RIDER MAP ACTIVITY
+                                     Log.d(TAG, "Switching to MainRiderMapActivity");
+                                 }
+                             }
+                             else {
+                                 Log.d(TAG, "User not found in database");
+                            }
+                         }
+                         else {
+                            Log.d(TAG, "Get failed with ", task.getException());
+                         }
+            }
+        });
+
     }
 
 
@@ -73,17 +116,16 @@ public class LoginActivity extends AppCompatActivity {
     private void loginUser(String emailAddress, String password) {
         Log.d(TAG, "Logging in user");
 
+        /// Google Firebase Docs, Get Started with Firebase Authentication on Android
+        /// https://firebase.google.com/docs/auth/android/start
         mAuth.signInWithEmailAndPassword(emailAddress, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithEmail:success");
                             checkUserType(mAuth.getCurrentUser());
                         }
                         else {
-                            // If sign in fails, display a message to the user.
                             showLoginError(task.getException());
                         }
                     }
