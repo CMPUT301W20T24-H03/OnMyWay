@@ -45,14 +45,14 @@ public class SplashScreenActivity extends AppCompatActivity {
         /// https://firebase.google.com/docs/auth/android/start
         FirebaseUser currentUser = mAuth.getCurrentUser(); // Check if user is signed in (non-null)
 
-        int splashDuration = 1000; // How long the screen stays open, in ms
+        int splashDuration = 200; // How long the screen stays open, in ms
         long timeDifference = new Date().getTime() - startTime.getTime();
 
         /// StackOverflow post by Dullahan
         /// Author: https://stackoverflow.com/users/2509341/dullahan
         /// Answer: https://stackoverflow.com/questions/17237287/how-can-i-wait-for-10-second-without-locking-application-ui-in-android
         if (timeDifference < splashDuration) {
-            Log.d(TAG, "Waiting for " + String.valueOf(2000 - timeDifference) + " more milliseconds");
+            Log.d(TAG, "Waiting for " + String.valueOf(splashDuration - timeDifference) + " more milliseconds");
 
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
