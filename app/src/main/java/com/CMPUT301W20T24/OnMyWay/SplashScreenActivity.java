@@ -1,6 +1,8 @@
 package com.CMPUT301W20T24.OnMyWay;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -9,6 +11,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Date;
 
 public class SplashScreenActivity extends AppCompatActivity {
+    private static final String TAG = "DEBUG";
     private Date startTime;
     private FirebaseAuth mAuth;
 
@@ -39,15 +42,18 @@ public class SplashScreenActivity extends AppCompatActivity {
         /// Author: https://stackoverflow.com/users/2509341/dullahan
         /// Answer: https://stackoverflow.com/questions/17237287/how-can-i-wait-for-10-second-without-locking-application-ui-in-android
         if (timeDifference < splashDuration) {
-            Log.d("DEBUG", "Waiting for " + String.valueOf(2000 - timeDifference));
+            Log.d(TAG, "Waiting for " + String.valueOf(2000 - timeDifference) + " more milliseconds");
+
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
                     if (currentUser == null) {
-                        Log.d("DEBUG", "Go to login page");
+                        Log.d(TAG, "Go to login page");
+                        Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
+                        startActivity(intent);
                     }
                     else {
-                        Log.d("DEBUG", "Check if driver or rider and go to map page");
+                        Log.d(TAG, "Check if driver or rider and go to map page");
                     }
                 }
             }, splashDuration - timeDifference);
