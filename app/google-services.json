@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "598123806929",
+    "firebase_url": "https://onmyway-3250f.firebaseio.com",
+    "project_id": "onmyway-3250f",
+    "storage_bucket": "onmyway-3250f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:598123806929:android:f045f1c828ab30909ec5f0",
+        "android_client_info": {
+          "package_name": "com.CMPUT301W20T24.OnMyWay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "598123806929-4idohijdu4h160i4039958fqq5nneqs6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2pXKTo-JIw3mP_vwpOccl-EqhFYK9Ips"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "598123806929-4idohijdu4h160i4039958fqq5nneqs6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
