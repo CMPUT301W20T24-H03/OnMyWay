@@ -38,12 +38,6 @@
             android:name=".RiderMapActivity"
             android:label="@string/title_activity_rider_map" />
         <activity
-            android:name=".MainDriverMapActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".MainRiderMapActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/AppTheme.NoActionBar" />
