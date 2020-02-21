@@ -87,14 +87,14 @@ public class LoginActivity extends AppCompatActivity {
 
                                  if (document.getBoolean("driver")) {
                                      // GO TO DRIVER MAP ACTIVITY
-                                     Log.d(TAG, "Switching to MainDriverMapActivity");
-                                     Intent intent = new Intent(LoginActivity.this, MainDriverMapActivity.class);
+                                     Log.d(TAG, "Switching to DriverMapActivity");
+                                     Intent intent = new Intent(LoginActivity.this, DriverMapActivity.class);
                                      startActivity(intent);
                                  }
                                  else {
                                      // GO TO RIDER MAP ACTIVITY
-                                     Log.d(TAG, "Switching to MainRiderMapActivity");
-                                     Intent intent = new Intent(LoginActivity.this, MainRiderMapActivity.class);
+                                     Log.d(TAG, "Switching to RiderMapActivity");
+                                     Intent intent = new Intent(LoginActivity.this, RiderMapActivity.class);
                                      startActivity(intent);
                                  }
                              }
