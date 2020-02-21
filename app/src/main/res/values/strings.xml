@@ -7,4 +7,6 @@
     <string name="text_have_account">Don\'t have an account?</string>
     <string name="text_email">Email address</string>
     <string name="text_password">Password</string>
+    <string name="title_activity_rider_map">Map</string>
+    <string name="title_activity_driver_map">Map</string>
 </resources>
