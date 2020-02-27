@@ -79,7 +79,7 @@ def main():
 							RemoveWhitespace(resource)
 						)
 					),
-					findall(r'(?:\/{3}.*\n[\t ]*){2,3}', code)	# Find comments
+					findall(r'(?:\/{3}.*\n[\t ]*){1,3}', code)	# Find comments
 			)
 		)
 
@@ -96,7 +96,7 @@ def main():
 							RemoveWhitespace(resource)
 						)
 					),
-					findall(r'(?:<!---.*\n[\t ]*){2,3}', code)	# Find comments
+					findall(r'(?:<!---.*\n[\t ]*){1,3}', code)	# Find comments
 			)
 		)
 
@@ -116,18 +116,18 @@ def main():
 
 	# Get comments from all Java files
 	def CollectJavaCode(package_directory):
-		file_list = []
+		code_list = []
 
 		for file_name in glob('app/src/main/java/' + package_directory + '/*.java'):
-			file_list.append(Load(file_name))
+			code_list.append(Load(file_name))
 
-		return Concatenate(file_list)
+		return Concatenate(code_list)
 
 
 
 	# Get comments from all Java files
 	def CollectResCode(package_directory):
-		file_list = []
+		code_list = []
 		path_start = 'app/src/main/res/'
 		path_end = '/*.xml'
 		file_name_list = glob(path_start + 'drawable'  + path_end)
@@ -137,9 +137,9 @@ def main():
 		file_name_list.extend(glob(path_start + 'values'  + path_end))
 
 		for file_name in file_name_list:
-			file_list.append(Load(file_name))
+			code_list.append(Load(file_name))
 
-		return Concatenate(file_list)
+		return Concatenate(code_list)
 
 
 
@@ -153,7 +153,9 @@ def main():
 
 
 	readme_name = 'README.md'
-	package_directory = 'com/CMPUT301W20T24-H03/OnMyWay'
+	package_directory = 'com/CMPUT301W20T24/OnMyWay'
+
+	# print(JoinResources(package_directory))
 
 	Save(readme_name, ReplaceReadmeText(Load(readme_name), JoinResources(package_directory)))
 

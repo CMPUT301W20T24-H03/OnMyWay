@@ -25,7 +25,8 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
     private GoogleMap mMap;
 
-    /// FROM: USER: Android Coding, https://www.youtube.com/watch?v=boyyLhXAZAQ&t=22s
+    /// Android Coding via YouTube, How to Show Current Location On Map in Android Studio
+    /// https://www.youtube.com/watch?v=boyyLhXAZAQ&t=22s
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
     private static final int REQUEST_CODE = 101;
