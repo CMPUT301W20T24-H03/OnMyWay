@@ -15,8 +15,21 @@ public class InputValidator {
         return new InputValidatorResponse("Email address is not valid");
     }
 
+
     // IMPLEMENT THIS CLASS LATER TO CHECK WHETHER PASSWORDS ARE IN VALID FORM
     public static InputValidatorResponse checkPassword(CharSequence passwordChars) {
+        return new InputValidatorResponse();
+    }
+
+
+    // IMPLEMENT THIS CLASS LATER TO CHECK WHETHER NAMES ARE IN VALID FORM
+    public static InputValidatorResponse checkName(CharSequence nameChars) {
+        return new InputValidatorResponse();
+    }
+
+
+    // IMPLEMENT THIS CLASS LATER TO CHECK WHETHER PHONE NUMBERS ARE IN VALID FORM
+    public static InputValidatorResponse checkPhoneNumber(CharSequence phoneChars) {
         return new InputValidatorResponse();
     }
 }
