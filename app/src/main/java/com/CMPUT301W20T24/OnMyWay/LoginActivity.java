@@ -2,12 +2,10 @@ package com.CMPUT301W20T24.OnMyWay;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -15,9 +13,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.Map;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -45,19 +41,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
        // Literally nothing
-    }
-
-
-    /// StackOverflow post by mindriot
-    /// Author: https://stackoverflow.com/users/1011746/mindriot
-    /// Answer: https://stackoverflow.com/questions/1819142/how-should-i-validate-an-e-mail-address
-    private boolean validateEmail(CharSequence emailAddressChars) {
-        return !TextUtils.isEmpty(emailAddressChars) && android.util.Patterns.EMAIL_ADDRESS.matcher(emailAddressChars).matches();
-    }
-
-
-    private boolean validatePassword(CharSequence passwordChars) {
-        return true; // Implement this later
     }
 
 
@@ -117,7 +100,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-
     private void loginUser(String emailAddress, String password) {
         Log.d(TAG, "Logging in user");
 
@@ -140,18 +122,21 @@ public class LoginActivity extends AppCompatActivity {
 
     public void onLoginButtonPressed(View view) {
         CharSequence emailAddressChars = emailField.getText();
-        CharSequence passwordChars = passwordField.getText();
+        InputValidatorResponse emailStatus = InputValidator.checkEmail(emailAddressChars);
 
-        if (validateEmail(emailAddressChars)) {
-            if (validatePassword(passwordChars)) {
+        if (emailStatus.success()) {
+            CharSequence passwordChars = passwordField.getText();
+            InputValidatorResponse passwordStatus = InputValidator.checkPassword(passwordChars);
+
+            if (passwordStatus.success()) {
                 loginUser(emailAddressChars.toString(), passwordChars.toString());
             }
             else {
-                Log.d(TAG, "Password is not valid");
+                Log.d(TAG, passwordStatus.getErrorMsg());
             }
         }
         else {
-            Log.d(TAG, "Email address is not valid");
+            Log.d(TAG, emailStatus.getErrorMsg());
         }
     }
 }
