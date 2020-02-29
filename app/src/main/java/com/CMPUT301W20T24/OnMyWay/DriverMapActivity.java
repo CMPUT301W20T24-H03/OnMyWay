@@ -22,7 +22,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 public class DriverMapActivity extends FragmentActivity implements OnMapReadyCallback {
-
     private GoogleMap mMap;
 
     /// Android Coding via YouTube, How to Show Current Location On Map in Android Studio
@@ -40,6 +39,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         fetchLastLocation();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
+        Toast.makeText(DriverMapActivity.this, "DriverMapActivity", Toast.LENGTH_LONG).show();
     }
 
     private void fetchLastLocation() {
