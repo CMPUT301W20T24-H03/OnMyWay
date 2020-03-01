@@ -61,7 +61,9 @@ public class InputValidator {
     }
 
 
-    // IMPLEMENT THIS CLASS LATER TO CHECK WHETHER PHONE NUMBERS ARE IN VALID FORM
+    /// StackOverflow post by Trinimon
+    /// Author: https://stackoverflow.com/users/2092587/trinimon
+    /// Answer: https://stackoverflow.com/questions/15647327/phone-number-formatting-an-edittext-in-android
     public static InputValidatorResponse checkPhoneNumber(CharSequence phoneChars) {
         Log.d(TAG, "Checking phone number");
 
