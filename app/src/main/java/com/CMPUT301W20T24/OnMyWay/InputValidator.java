@@ -10,6 +10,8 @@ import static android.telephony.PhoneNumberUtils.formatNumber;
 // check was successful. Otherwise call with the error message
 public class InputValidator {
     private static final String TAG = "DEBUG";
+
+
     /// StackOverflow post by mindriot
     /// Author: https://stackoverflow.com/users/1011746/mindriot
     /// Answer: https://stackoverflow.com/questions/1819142/how-should-i-validate-an-e-mail-address
@@ -41,9 +43,8 @@ public class InputValidator {
     }
 
 
-    // IMPLEMENT THIS CLASS LATER TO CHECK WHETHER NAMES ARE IN VALID FORM
     private static InputValidatorResponse checkName(CharSequence nameChars, String nameType) {
-        Log.d(TAG, "Checking" + nameType + " name");
+        Log.d(TAG, "Checking " + nameType + " name");
 
         int nameLength = nameChars.length();
 
