@@ -8,7 +8,7 @@ public class InputValidatorTests {
     void testInputValidatorResponse() {
         String errorName = "Error name";
         InputValidatorResponse successResponse = new InputValidatorResponse();
-        InputValidatorResponse failureResponse = new InputValidatorResponse(errorName);
+        InputValidatorResponse failureResponse = new InputValidatorResponse(false, errorName);
 
         assertTrue(successResponse.success());
         assertFalse(failureResponse.success());
