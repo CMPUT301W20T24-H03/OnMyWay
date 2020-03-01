@@ -36,4 +36,10 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, RiderMapActivity.class);
         startActivity(intent);
     }
+
+    // Called when the user presses a button
+    public void openEditProfileActivity(View view) {
+        Intent intent = new Intent(this, EditProfileActivity.class);
+        startActivity(intent);
+    }
 }
