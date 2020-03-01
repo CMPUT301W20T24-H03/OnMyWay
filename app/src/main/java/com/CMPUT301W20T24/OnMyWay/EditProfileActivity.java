@@ -29,6 +29,11 @@ public class EditProfileActivity extends AppCompatActivity {
         lastNameField = findViewById(R.id.fieldLastName);
         emailField = findViewById(R.id.fieldEmail);
         phoneField = findViewById(R.id.fieldPhone);
+
+        // TODO: Get user profile photo from Gravatar
+        // TODO: Get user id and fill label
+        // TODO: Get user type and fill label
+        // TODO: Get user rating and fill label
     }
 
 
@@ -40,6 +45,24 @@ public class EditProfileActivity extends AppCompatActivity {
 
     public void onBackButtonPressed(View view) {
         Log.d(TAG, "Back button pressed");
+
+        super.onBackPressed();
+    }
+
+
+//    public void onLogoutButtonPressed(View view) {
+//        Log.d(TAG, "Logout button pressed");
+//        databaseManager.logoutUser();
+//
+//        Intent intent = new Intent(EditProfileActivity.this, SplashScreenActivity.class);
+//        intent.putExtra("isLoggedOut", true);
+//        startActivity(intent);
+//    }
+
+
+    public void onSaveButtonPressed(View view) {
+        Log.d(TAG, "Save button pressed");
+
         CharSequence firstNameChars = firstNameField.getText();
         CharSequence lastNameChars = lastNameField.getText();
         CharSequence emailAddressChars = emailField.getText();
@@ -81,16 +104,7 @@ public class EditProfileActivity extends AppCompatActivity {
         // TODO: Save stuff to database before returning to parent activity
         Log.d(TAG, "All inputs are valid. Returning to parent activity");
         this.finish();  // Return to parent activity
-    }
 
-
-    public void onLogoutButtonPressed(View view) {
-        Log.d(TAG, "Logout button pressed");
-        databaseManager.logoutUser();
-
-        Intent intent = new Intent(EditProfileActivity.this, SplashScreenActivity.class);
-        intent.putExtra("isLoggedOut", true);
-        startActivity(intent);
     }
 
 
