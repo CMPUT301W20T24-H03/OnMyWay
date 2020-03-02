@@ -16,8 +16,8 @@ import com.squareup.picasso.Picasso;
 public class EditProfileActivity extends AppCompatActivity {
     private static final String TAG = "DEBUG";
     private DBManager dbManager;
-    private EditText fullNameField;
-//    private EditText lastNameField;
+    private EditText firstNameField;
+    private EditText lastNameField;
     private EditText emailField;
     private EditText phoneField;
     private ImageView profilePhotoImage;
@@ -33,7 +33,8 @@ public class EditProfileActivity extends AppCompatActivity {
         TextView userIdLabel = findViewById(R.id.labelUserId);
         TextView userTypeLabel = findViewById(R.id.labelUserType);
         TextView userRatingLabel = findViewById(R.id.labelRating);
-        fullNameField = findViewById(R.id.fieldFullName);
+        firstNameField = findViewById(R.id.fieldFirstName);
+        lastNameField = findViewById(R.id.fieldLastName);
         emailField = findViewById(R.id.fieldEmail);
         phoneField = findViewById(R.id.fieldPhone);
         profilePhotoImage = findViewById(R.id.imageProfilePhoto);
@@ -46,7 +47,8 @@ public class EditProfileActivity extends AppCompatActivity {
         Log.d(TAG, currentUser.getProfilePhotoUrl());   // TODO: Get user profile photo from Gravatar
         Picasso.get().load(currentUser.getProfilePhotoUrl()).into(profilePhotoImage);
 
-        fullNameField.setText(currentUser.getName());
+        firstNameField.setText(currentUser.getFirstName());
+        lastNameField.setText(currentUser.getLastName());
         emailField.setText(currentUser.getEmail());
         phoneField.setText(currentUser.getPhoneNumber());
     }
@@ -68,16 +70,23 @@ public class EditProfileActivity extends AppCompatActivity {
     public void onSaveButtonPressed(View view) {
         Log.d(TAG, "Save button pressed");
 
-        CharSequence fullNameChars = fullNameField.getText();
+        CharSequence firstNameChars = firstNameField.getText();
+        CharSequence lastNameChars = lastNameField.getText();
         CharSequence emailAddressChars = emailField.getText();
         CharSequence phoneNumberChars = phoneField.getText();
 
-        InputValidatorResponse fullNameStatus = InputValidator.checkFullName(fullNameChars);
+        InputValidatorResponse firstNameStatus = InputValidator.checkFirstName(firstNameChars);
+        InputValidatorResponse lastNameStatus = InputValidator.checkLastName(lastNameChars);
         InputValidatorResponse emailAddressStatus = InputValidator.checkEmail(emailAddressChars);
         InputValidatorResponse phoneStatus = InputValidator.checkPhoneNumber(phoneNumberChars);
 
-        if (!fullNameStatus.success()) {
-            showInputErrorMsg(fullNameStatus.getErrorMsg());
+        if (!firstNameStatus.success()) {
+            showInputErrorMsg(firstNameStatus.getErrorMsg());
+            return;
+        }
+
+        if (!lastNameStatus.success()) {
+            showInputErrorMsg(lastNameStatus.getErrorMsg());
             return;
         }
 
@@ -98,14 +107,14 @@ public class EditProfileActivity extends AppCompatActivity {
 
         User currentUser = State.getCurrentUser();
 
-        currentUser.setName(fullNameStatus.getResult());
+        currentUser.setFirstName(firstNameStatus.getResult());
+        currentUser.setLastName(lastNameStatus.getResult());
         currentUser.setEmail(emailAddressStatus.getResult());
         currentUser.setPhone(phoneStatus.getResult());
         State.updateCurrentUser();
 
         Log.d(TAG, "All inputs are valid. Returning to parent activity");
         this.finish();  // Return to parent activity
-
     }
 
 

@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
 
 
 public class DBManager {
-    private static volatile DBManager instance;
+//    private static volatile DBManager instance;
     private static final String TAG = "DEBUG";
     private FirebaseAuth auth;
     private FirebaseFirestore db;
@@ -47,29 +47,6 @@ public class DBManager {
     }
 
 
-    /// Google Firebase Docs, Add data to Cloud Firestore
-    /// https://firebase.google.com/docs/firestore/manage-data/add-data
-//    public void setUserIsDriver(String userId, boolean isDriver) {
-//        Map<String, Object> isDriverObj = new HashMap<>();
-//        isDriverObj.put("isDriver", isDriver);
-//
-//        db.collection("users").document(userId)
-//                .set(isDriverObj)
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        Log.d(TAG, "isDriver updated successfully");
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.w(TAG, "Error updating isDriver", e);
-//                    }
-//                });
-//    }
-
-
     public void loginUser(String emailAddress, String password, Activity parentActivity) {
         Log.d(TAG, "Logging in user");
 
@@ -81,7 +58,9 @@ public class DBManager {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (loginListener != null) {
                             if (task.isSuccessful()) {
-                                loginListener.onLoginSuccess(auth.getCurrentUser());    // TODO: Probably shouldn't call this because then it won't call fetchCurrentUserInfo()
+                                // TODO: Probably shouldn't call this because then it won't call
+                                //  fetchCurrentUserInfo(). Somehow still working?
+                                loginListener.onLoginSuccess();
 
                                 fetchCurrentUserInfo();
                             }
@@ -139,15 +118,14 @@ public class DBManager {
 
                                 User newUser = new User(
                                         firebaseUser,
-                                        Utilities.checkStringNotNull(document.getString("name")),
+                                        Utilities.checkStringNotNull(document.getString("firstName")),
+                                        Utilities.checkStringNotNull(document.getString("lastName")),
                                         Utilities.checkBooleanNotNull(document.getBoolean("isDriver")),
                                         Utilities.checkStringNotNull(document.getString("email")),
                                         Utilities.checkStringNotNull(document.getString("phone")),
                                         Utilities.checkLongNotNull(document.getLong("upRatings")),
                                         Utilities.checkLongNotNull(document.getLong("totalRatings"))
                                 );
-
-//                                State.setCurrentUser(newUser);
 
                                 if (userInfoPulledListener == null) {
                                     Log.d(TAG, "No listeners are assigned for userInfoPulledListener");
@@ -172,7 +150,8 @@ public class DBManager {
     /// https://firebase.google.com/docs/firestore/manage-data/add-data
     public void pushUserInfo(User updatedUser) {
         Map<String, Object> updatedUserObj = new HashMap<>();
-        updatedUserObj.put("name", updatedUser.getName());
+        updatedUserObj.put("firstName", updatedUser.getFirstName());
+        updatedUserObj.put("lastName", updatedUser.getFirstName());
         updatedUserObj.put("isDriver", updatedUser.isDriver());
         updatedUserObj.put("email", updatedUser.getEmail());
         updatedUserObj.put("phone", updatedUser.getPhoneNumber());

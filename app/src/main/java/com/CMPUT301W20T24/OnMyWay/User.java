@@ -6,7 +6,8 @@ import com.google.firebase.auth.FirebaseUser;
 public class User {
     private static final String TAG = "DEBUG";
     private FirebaseUser firebaseUser;
-    private String name;
+    private String firstName;
+    private String lastName;
     private boolean driver;
     private String email;
     private String phone;
@@ -15,9 +16,10 @@ public class User {
     private String profilePhotoUrl;
 
 
-    public User(FirebaseUser firebaseUser, String name, boolean driver, String email, String phone, int upRatings, int totalRatings) {
+    public User(FirebaseUser firebaseUser, String firstName, String lastName, boolean driver, String email, String phone, int upRatings, int totalRatings) {
         setFirebaseUser(firebaseUser);
-        setName(name);
+        setFirstName(firstName);
+        setLastName(lastName);
         setDriver(driver);
         setEmail(email);
         setPhone(phone);
@@ -34,9 +36,15 @@ public class User {
     }
 
 
-    public void setName(String newName) {
-        if (newName != null) {
-            this.name = newName;
+    public void setFirstName(String newFirstName) {
+        if (newFirstName != null) {
+            this.firstName = newFirstName;
+        }
+    }
+
+    public void setLastName(String newLastName) {
+        if (newLastName != null) {
+            this.lastName = newLastName;
         }
     }
 
@@ -79,8 +87,16 @@ public class User {
         return firebaseUser.getUid();
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getFullName() {
+        return firstName + " " + lastName;
     }
 
     public String getEmail() {
