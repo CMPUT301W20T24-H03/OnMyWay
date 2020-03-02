@@ -12,7 +12,7 @@ import java.util.Date;
 public class SplashScreenActivity extends AppCompatActivity {
     private static final String TAG = "DEBUG";
     private Date startTime;
-    private DatabaseManager databaseManager;
+    private DBManager dbManager;
 
 
     /// Android Open Source Project, Get Started with Firebase Authentication on Android
@@ -32,7 +32,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
 
         startTime = new Date();
-        databaseManager = new DatabaseManager();
+        dbManager = DBManager.getInstance();
     }
 
 
@@ -52,8 +52,8 @@ public class SplashScreenActivity extends AppCompatActivity {
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
-                    if (databaseManager.isLoggedIn()) {
-                        databaseManager.setUserTypeCheckListener(new UserTypeCheckListener() {
+                    if (dbManager.isLoggedIn()) {
+                        dbManager.setUserTypeCheckListener(new UserTypeCheckListener() {
                             public void onDriverLoggedIn() {
                                 // GO TO DRIVER MAP ACTIVITY
                                 Log.d(TAG, "Switching to DriverMapActivity");
@@ -69,7 +69,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                             }
                         });
 
-                        databaseManager.checkUserType(databaseManager.getCurrentUser());
+                        dbManager.checkUserType(dbManager.getCurrentUser().getFirebaseUser());
                     }
                     else {
                         Log.d(TAG, "Go to login page");

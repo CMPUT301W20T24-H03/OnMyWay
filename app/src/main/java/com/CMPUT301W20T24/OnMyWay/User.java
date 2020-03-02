@@ -1,59 +1,161 @@
 package com.CMPUT301W20T24.OnMyWay;
 
+import android.net.Uri;
+import android.util.Log;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import androidx.annotation.NonNull;
+
+
 public class User {
+    private static final String TAG = "DEBUG";
+    private FirebaseUser firebaseUser;
+//    private DBManager dbManager;
+    private boolean driver;
+    private float rating;
+    private int ratingcount;
 
-    private int userID;
-    private String firstName;
-    private String lastName;
-    private String phoneNumber;
-    private String email;
 
-    public User(int userID, String firstName, String lastName, String phoneNumber, String email) {
-        this.userID = userID;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
+    public User(FirebaseUser firebaseUser) {
+        setFirebaseUser(firebaseUser);
+
+//        dbManager = DBManager.getInstance();
+        Log.d(TAG, "User created");
     }
 
-    public int getUserID() {
-        return userID;
+
+    public User(FirebaseUser firebaseUser, boolean isDriver) {
+        setFirebaseUser(firebaseUser);
+        setDriver(isDriver);
+
+//        dbManager = DBManager.getInstance();
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
+
+    public boolean isDriver() {
+        return driver;
     }
 
-    public String getFirstName() {
-        return firstName;
+
+    public void setDriver(boolean isDriver) {
+        driver = isDriver;
+        DBManager.setUserIsDriver(getUserID(), isDriver);
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+
+    public String getUserID() {
+        return firebaseUser.getUid();
     }
 
-    public String getLastName() {
-        return lastName;
+
+    public float getRating() {
+        return rating;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+
+    // TODO: Implement setRating
+    public void setRating() {
+
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+
+    public int getRatingCount() {
+        return ratingcount;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+
+    // TODO: Implement setRating
+    public void setRatingCount() {
+
     }
+
+
+    public String getName() {
+        return firebaseUser.getDisplayName();
+    }
+
+
+    public void setName(String fullName) {
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(fullName).build();
+
+        firebaseUser.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "User name updated.");
+                        }
+                    }
+                });
+    }
+
+
+    public void setProfilePhoto(String photoUrl) {
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setPhotoUri(Uri.parse(photoUrl)).build();
+
+        firebaseUser.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "User profile photo updated");
+                        }
+                    }
+                });
+    }
+
+    public String getProfilePhoto() {
+        return firebaseUser.getPhotoUrl().toString();
+    }
+
 
     public String getEmail() {
-        return email;
+        return firebaseUser.getEmail();
     }
 
+
+    // TODO: Send verification email
     public void setEmail(String email) {
-        this.email = email;
+        firebaseUser.updateEmail(email);
     }
 
+
+    public String getPhoneNumber() {
+        return firebaseUser.getPhoneNumber();
+    }
+
+
+    // TODO: Implement this later. A pain because we have to verify the phone number first
+//    public void setPhoneNumber(String phoneNumber) {
+//        firebaseUser.updatePhoneNumber(/* Phone number goes here */);
+//    }
+
+
+    public FirebaseUser getFirebaseUser() {
+        return firebaseUser;
+    }
+
+
+    public void setFirebaseUser(FirebaseUser firebaseUser) {
+        this.firebaseUser = firebaseUser;
+    }
+
+
+    /// https://firebase.google.com/docs/auth/android/manage-users
+    private void pullUser() {
+        DBManager.setUserInfoPulledListener(new UserInfoPulledListener() {
+            public void onUserInfoPulled(FirebaseUser newFirebaseUser, boolean isDriver) {
+                Log.d(TAG, "User info fetched");
+                firebaseUser = newFirebaseUser;
+                setDriver(isDriver);
+            }
+        });
+
+//        dbManager.loginUser(emailAddress, password, this);
+        DBManager.fetchUserInfo(getFirebaseUser());
+    }
 }

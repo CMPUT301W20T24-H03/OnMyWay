@@ -19,7 +19,7 @@ public class InputValidator {
         Log.d(TAG, "Checking email address");
 
         if (!TextUtils.isEmpty(emailAddressChars) && android.util.Patterns.EMAIL_ADDRESS.matcher(emailAddressChars).matches()) {
-            return new InputValidatorResponse();
+            return new InputValidatorResponse(true, emailAddressChars.toString());
         }
         return new InputValidatorResponse(false, "Email address is not valid");
     }
@@ -33,33 +33,52 @@ public class InputValidator {
     }
 
 
-    public static InputValidatorResponse checkFirstName(CharSequence nameChars) {
-        return checkName(nameChars, "first");
-    }
+//    public static InputValidatorResponse checkFirstName(CharSequence nameChars) {
+//        return checkName(nameChars, "first");
+//    }
+//
+//
+//    public static InputValidatorResponse checkLastName(CharSequence nameChars) {
+//        return checkName(nameChars, "last");
+//    }
 
 
-    public static InputValidatorResponse checkLastName(CharSequence nameChars) {
-        return checkName(nameChars, "last");
-    }
-
-
-    private static InputValidatorResponse checkName(CharSequence nameChars, String nameType) {
-        Log.d(TAG, "Checking " + nameType + " name");
+    public static InputValidatorResponse checkFullName(CharSequence nameChars) {
+        Log.d(TAG, "Checking name");
 
         int nameLength = nameChars.length();
 
         if (nameLength <= 1) {
-            return new InputValidatorResponse(false, "The " + nameType + " name entered is too short");
+            return new InputValidatorResponse(false, "The name entered is too short");
         }
         else if (nameLength > 40) {
-            return new InputValidatorResponse(false, "The " + nameType + " name entered is too long");
+            return new InputValidatorResponse(false, "The name entered is too long");
         }
-        else if (Pattern.matches("[a-zA-Z]+", nameChars)) {
-            return new InputValidatorResponse();
+        else if (Pattern.matches("^[a-zA-Z]+(?: [a-zA-Z]+){1,4}$", nameChars)) {
+            return new InputValidatorResponse(true, "CAPITALIZED NAME HERE");   // TODO: Capitalize full name
         }
 
-        return new InputValidatorResponse(false, "The " + nameType + " name entered is not valid");
+        return new InputValidatorResponse(false, "The name entered is not valid. Make sure it is your full name");
     }
+
+
+//    private static InputValidatorResponse checkName(CharSequence nameChars, String nameType) {
+//        Log.d(TAG, "Checking " + nameType + " name");
+//
+//        int nameLength = nameChars.length();
+//
+//        if (nameLength <= 1) {
+//            return new InputValidatorResponse(false, "The " + nameType + " name entered is too short");
+//        }
+//        else if (nameLength > 40) {
+//            return new InputValidatorResponse(false, "The " + nameType + " name entered is too long");
+//        }
+//        else if (Pattern.matches("[a-zA-Z]+", nameChars)) {
+//            return new InputValidatorResponse();
+//        }
+//
+//        return new InputValidatorResponse(false, "The " + nameType + " name entered is not valid");
+//    }
 
 
     /// StackOverflow post by Trinimon

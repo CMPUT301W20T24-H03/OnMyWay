@@ -154,7 +154,7 @@
         app:layout_constraintTop_toBottomOf="@+id/upperConstraintLayout">
 
         <EditText
-            android:id="@+id/fieldFirstName"
+            android:id="@+id/fieldFullName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin"
@@ -162,31 +162,14 @@
             android:layout_marginEnd="@dimen/margin"
             android:autofillHints="personGivenName"
             android:ems="10"
-            android:hint="@string/text_first_name"
-            android:inputType="textPersonName"
-            android:maxLength="30"
-            app:layout_constraintBottom_toTopOf="@+id/fieldLastName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/fieldLastName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin"
-            android:layout_marginEnd="@dimen/margin"
-            android:autofillHints="personFamilyName"
-            android:ems="10"
-            android:hint="@string/text_last_name"
+            android:hint="@string/text_full_name"
             android:inputType="textPersonName"
             android:maxLength="30"
             app:layout_constraintBottom_toTopOf="@+id/fieldEmail"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fieldFirstName" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/fieldEmail"
@@ -203,7 +186,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fieldLastName" />
+            app:layout_constraintTop_toBottomOf="@+id/fieldFullName" />
 
         <EditText
             android:id="@+id/fieldPhone"

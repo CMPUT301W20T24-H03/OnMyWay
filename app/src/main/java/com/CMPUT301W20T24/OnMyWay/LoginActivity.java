@@ -13,7 +13,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "DEBUG";
     private EditText emailField;
     private EditText passwordField;
-    private DatabaseManager databaseManager;
+    private DBManager dbManager;
 
 
     @Override
@@ -21,7 +21,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        databaseManager = new DatabaseManager();
+        dbManager = DBManager.getInstance();
 
         emailField = findViewById(R.id.emailField);
         passwordField = findViewById(R.id.passwordField);
@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void checkUserType() {
-        databaseManager.setUserTypeCheckListener(new UserTypeCheckListener() {
+        dbManager.setUserTypeCheckListener(new UserTypeCheckListener() {
             public void onDriverLoggedIn() {
                 // GO TO DRIVER MAP ACTIVITY
                 Log.d(TAG, "Switching to DriverMapActivity");
@@ -58,14 +58,14 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        databaseManager.checkUserType(databaseManager.getCurrentUser());
+        dbManager.checkUserType(dbManager.getCurrentUser().getFirebaseUser());
     }
 
 
     private void loginUser(String emailAddress, String password) {
-        databaseManager.setLoginListener(new LoginListener() {
+        dbManager.setLoginListener(new LoginListener() {
             public void onLoginSuccess() {
-                Log.d(TAG, "YES");
+                Log.d(TAG, "Authentication successful");
                 checkUserType();
             }
 
@@ -74,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        databaseManager.loginUser(emailAddress, password, this);
+        dbManager.loginUser(emailAddress, password, this);
     }
 
 

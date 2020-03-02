@@ -24,7 +24,7 @@ public class State {
         if (instance == null) {
             // If there is no instance available, create new one
             synchronized (State.class) {
-                //Check for the second time. If there is no instance available, create new one
+                // Check for the second time. If there is no instance available, create new one
                 if (instance == null) {
                     instance = new State();
                 }
