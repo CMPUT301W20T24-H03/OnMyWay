@@ -151,7 +151,7 @@ public class DBManager {
     public void pushUserInfo(User updatedUser) {
         Map<String, Object> updatedUserObj = new HashMap<>();
         updatedUserObj.put("firstName", updatedUser.getFirstName());
-        updatedUserObj.put("lastName", updatedUser.getFirstName());
+        updatedUserObj.put("lastName", updatedUser.getLastName());
         updatedUserObj.put("isDriver", updatedUser.isDriver());
         updatedUserObj.put("email", updatedUser.getEmail());
         updatedUserObj.put("phone", updatedUser.getPhoneNumber());

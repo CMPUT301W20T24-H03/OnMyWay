@@ -35,26 +35,33 @@
             android:name=".EditProfileActivity"
             android:label="@string/title_activity_edit_profile"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName="com.CMPUT301W20T24.OnMyWay.SplashScreenActivity" />
+            android:parentActivityName="com.CMPUT301W20T24.OnMyWay.SplashScreenActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".DriverMapActivity"
-            android:label="@string/title_activity_driver_map" />
+            android:label="@string/title_activity_driver_map"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".RiderMapActivity"
-            android:label="@string/title_activity_rider_map" />
+            android:label="@string/title_activity_rider_map"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".SplashScreenActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".MainActivity">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
