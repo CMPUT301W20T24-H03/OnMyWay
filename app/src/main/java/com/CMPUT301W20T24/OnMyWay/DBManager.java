@@ -18,7 +18,7 @@ import androidx.annotation.NonNull;
 
 public class DBManager {
 //    private static volatile DBManager instance;
-    private static final String TAG = "DEBUG";
+    private static final String TAG = "OMW/DBManager";
     private FirebaseAuth auth;
     private FirebaseFirestore db;
     private LoginListener loginListener;

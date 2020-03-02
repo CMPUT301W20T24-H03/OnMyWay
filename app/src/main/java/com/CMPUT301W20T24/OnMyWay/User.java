@@ -4,7 +4,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 
 public class User {
-    private static final String TAG = "DEBUG";
+    private static final String TAG = "OMW/User";
     private FirebaseUser firebaseUser;
     private String firstName;
     private String lastName;

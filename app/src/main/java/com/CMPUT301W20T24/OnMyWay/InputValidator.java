@@ -3,16 +3,13 @@ package com.CMPUT301W20T24.OnMyWay;
 import android.text.TextUtils;
 import android.util.Log;
 import java.util.regex.Pattern;
-
-import okhttp3.internal.Util;
-
 import static android.telephony.PhoneNumberUtils.formatNumber;
 
 
 /* Validate various types of text inputs. Call InputValidatorResponse() without arguments if the
 check was successful. Otherwise call with the error message */
 public class InputValidator {
-    private static final String TAG = "DEBUG";
+    private static final String TAG = "OMW/InputValidator";
 
 
     /// StackOverflow post by mindriot

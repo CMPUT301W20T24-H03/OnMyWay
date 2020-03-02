@@ -1,7 +1,7 @@
 package com.CMPUT301W20T24.OnMyWay;
 
-
 import java.time.LocalTime;
+
 
 public class Request {
     private int requestId;

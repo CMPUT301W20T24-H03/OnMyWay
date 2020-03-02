@@ -1,7 +1,7 @@
 package com.CMPUT301W20T24.OnMyWay;
 
-public class Rating {
 
+public class Rating {
     private int userID;
     private int driverID;
     private int requestID;

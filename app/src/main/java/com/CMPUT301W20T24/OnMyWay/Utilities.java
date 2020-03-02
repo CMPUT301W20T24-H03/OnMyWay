@@ -3,7 +3,11 @@ package com.CMPUT301W20T24.OnMyWay;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+
 public class Utilities {
+    private static final String TAG = "OMW/Utilities";
+
+
     /// https://stackoverflow.com/questions/4846484/md5-hashing-in-android
     public static String md5(String string) {
         try {

@@ -22,12 +22,6 @@ public class InputValidatorResponse {
     }
 
 
-//    public InputValidatorResponse(String errorMsg) {
-//        this(false, errorMsg);
-//
-//    }
-
-
     public boolean success() {
         return status;
     }

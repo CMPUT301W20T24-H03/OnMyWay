@@ -1,7 +1,6 @@
 package com.CMPUT301W20T24.OnMyWay;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,12 +8,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.squareup.picasso.Picasso;
 
 
 public class EditProfileActivity extends AppCompatActivity {
-    private static final String TAG = "DEBUG";
+    private static final String TAG = "OMW/EditProfileActivity";
     private DBManager dbManager;
     private EditText firstNameField;
     private EditText lastNameField;

@@ -1,7 +1,7 @@
 package com.CMPUT301W20T24.OnMyWay;
 
-public class Offer {
 
+public class Offer {
     private int requestID;
     private int driverID;
 
