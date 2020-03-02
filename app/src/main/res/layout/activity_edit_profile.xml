@@ -68,18 +68,20 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
+        <!--- https://github.com/hdodenhof/CircleImageView -->
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageProfilePhoto"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="48dp"
-            android:layout_marginBottom="4dp"
-            android:contentDescription="@string/content_description_profile_photo"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="8dp"
+            app:civ_border_width="6dp"
+            app:civ_border_color="#FFFFFFFF"
             app:layout_constraintBottom_toTopOf="@+id/labelUserId"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_face_white_24dp" />
+            app:srcCompat="@drawable/ic_face_white_24dp"/>
 
         <TextView
             android:id="@+id/labelUserId"

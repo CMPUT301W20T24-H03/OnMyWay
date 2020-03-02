@@ -59,7 +59,7 @@ public class User {
     }
 
     private void setProfilePhotoUrl(String emailAddress) {
-        this.profilePhotoUrl = "https://www.gravatar.com/avatar/" + Utilities.md5(emailAddress) + "?d=identicon&s=256";
+        this.profilePhotoUrl = "https://www.gravatar.com/avatar/" + Utilities.md5(emailAddress) + "?d=identicon&s=512";
     }
 
     public void addRating(boolean isPositive) {

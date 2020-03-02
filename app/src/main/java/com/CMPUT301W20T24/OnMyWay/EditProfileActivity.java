@@ -6,8 +6,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 
 public class EditProfileActivity extends AppCompatActivity {
@@ -17,6 +20,7 @@ public class EditProfileActivity extends AppCompatActivity {
 //    private EditText lastNameField;
     private EditText emailField;
     private EditText phoneField;
+    private ImageView profilePhotoImage;
 
 
     @Override
@@ -32,12 +36,15 @@ public class EditProfileActivity extends AppCompatActivity {
         fullNameField = findViewById(R.id.fieldFullName);
         emailField = findViewById(R.id.fieldEmail);
         phoneField = findViewById(R.id.fieldPhone);
+        profilePhotoImage = findViewById(R.id.imageProfilePhoto);
+
         User currentUser = State.getCurrentUser();
 
         userIdLabel.setText(currentUser.getUserID());
         userTypeLabel.setText(currentUser.isDriver() ? "Driver" : "Rider");
         userRatingLabel.setText(String.valueOf(currentUser.getRating()));
         Log.d(TAG, currentUser.getProfilePhotoUrl());   // TODO: Get user profile photo from Gravatar
+        Picasso.get().load(currentUser.getProfilePhotoUrl()).into(profilePhotoImage);
 
         fullNameField.setText(currentUser.getName());
         emailField.setText(currentUser.getEmail());
@@ -84,16 +91,11 @@ public class EditProfileActivity extends AppCompatActivity {
             return;
         }
 
-        // TODO: Reenable this later when User has setPhoneNumber implemented
-        if (phoneStatus.success()) {
-            String formmattedPhoneNumber = phoneStatus.getResult(); // TODO: Use this phone number later to save to database
-        }
-        else {
+        if (!phoneStatus.success()) {
             showInputErrorMsg(phoneStatus.getErrorMsg());
             return;
         }
 
-        // TODO: Save stuff to database before returning to parent activity
         User currentUser = State.getCurrentUser();
 
         currentUser.setName(fullNameStatus.getResult());
