@@ -24,31 +24,24 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        dbManager = DBManager.getInstance();
+        dbManager = new DBManager();
 
         TextView userIdLabel = findViewById(R.id.labelUserId);
         TextView userTypeLabel = findViewById(R.id.labelUserType);
         TextView userRatingLabel = findViewById(R.id.labelRating);
-
         fullNameField = findViewById(R.id.fieldFullName);
         emailField = findViewById(R.id.fieldEmail);
         phoneField = findViewById(R.id.fieldPhone);
-
-        User currentUser = dbManager.getCurrentUser();
+        User currentUser = State.getCurrentUser();
 
         userIdLabel.setText(currentUser.getUserID());
         userTypeLabel.setText(currentUser.isDriver() ? "Driver" : "Rider");
         userRatingLabel.setText(String.valueOf(currentUser.getRating()));
+        Log.d(TAG, currentUser.getProfilePhotoUrl());   // TODO: Get user profile photo from Gravatar
 
         fullNameField.setText(currentUser.getName());
         emailField.setText(currentUser.getEmail());
         phoneField.setText(currentUser.getPhoneNumber());
-
-
-        // TODO: Get user profile photo from Gravatar
-        // TODO: Get user id and fill label
-        // TODO: Get user type and fill label
-        // TODO: Get user rating and fill label
     }
 
 
@@ -63,16 +56,6 @@ public class EditProfileActivity extends AppCompatActivity {
 
         super.onBackPressed();
     }
-
-
-//    public void onLogoutButtonPressed(View view) {
-//        Log.d(TAG, "Logout button pressed");
-//        dbManager.logoutUser();
-//
-//        Intent intent = new Intent(EditProfileActivity.this, SplashScreenActivity.class);
-//        intent.putExtra("isLoggedOut", true);
-//        startActivity(intent);
-//    }
 
 
     public void onSaveButtonPressed(View view) {
@@ -102,20 +85,21 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         // TODO: Reenable this later when User has setPhoneNumber implemented
-//        if (phoneStatus.success()) {
-//            String formmattedPhoneNumber = phoneStatus.getResult(); // TODO: Use this phone number later to save to database
-//        }
-//        else {
-//            showInputErrorMsg(phoneStatus.getErrorMsg());
-//            return;
-//        }
+        if (phoneStatus.success()) {
+            String formmattedPhoneNumber = phoneStatus.getResult(); // TODO: Use this phone number later to save to database
+        }
+        else {
+            showInputErrorMsg(phoneStatus.getErrorMsg());
+            return;
+        }
 
         // TODO: Save stuff to database before returning to parent activity
-        User currentUser = dbManager.getCurrentUser();
+        User currentUser = State.getCurrentUser();
 
         currentUser.setName(fullNameStatus.getResult());
         currentUser.setEmail(emailAddressStatus.getResult());
-//        currentUser.setPhone(phoneStatus.getResult());    // TODO: Need to implement setPhone in User
+        currentUser.setPhone(phoneStatus.getResult());
+        State.updateCurrentUser();
 
         Log.d(TAG, "All inputs are valid. Returning to parent activity");
         this.finish();  // Return to parent activity

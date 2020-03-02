@@ -20,38 +20,15 @@ public class DBManager {
     private static volatile DBManager instance;
     private static final String TAG = "DEBUG";
     private FirebaseAuth auth;
-//    private FirebaseUser currentUser;
-    private User currentUser;
-    static private FirebaseFirestore db;
+    private FirebaseFirestore db;
     private LoginListener loginListener;
-    private UserTypeCheckListener userTypeCheckListener;
-    static private UserInfoPulledListener userInfoPulledListener;
+    private CurrentUserInfoPulledListener currentUserInfoPulledListener;
+    private UserInfoPulledListener userInfoPulledListener;
 
 
-    // Private constructor
-    private DBManager() {
-        if (instance != null) {
-            throw new RuntimeException("Use getInstance() method to get the single instance of this class.");
-        }
-        else {
-            auth = FirebaseAuth.getInstance();     // Initialize Firebase Auth
-            currentUser = new User(auth.getCurrentUser());
-            db = FirebaseFirestore.getInstance();  // Access a Cloud Firestore instance from your Activity
-        }
-    }
-
-
-    public static DBManager getInstance() {
-        if (instance == null) {
-            // If there is no instance available, create new one
-            synchronized (State.class) {
-                // Check for the second time. If there is no instance available, create new one
-                if (instance == null) {
-                    instance = new DBManager();
-                }
-            }
-        }
-        return instance;
+    public DBManager() {
+        auth = FirebaseAuth.getInstance();     // Initialize Firebase Auth
+        db = FirebaseFirestore.getInstance();  // Access a Cloud Firestore instance from your Activity
     }
 
 
@@ -60,47 +37,37 @@ public class DBManager {
     }
 
 
-    public void setUserTypeCheckListener(UserTypeCheckListener userTypeCheckListener) {
-        this.userTypeCheckListener = userTypeCheckListener;
+    public void setCurrentUserInfoPulledListener(CurrentUserInfoPulledListener currentUserInfoPulledListener) {
+        this.currentUserInfoPulledListener = currentUserInfoPulledListener;
     }
 
 
-    static public void setUserInfoPulledListener(UserInfoPulledListener userInfoPulledListener2) {
-//        this.userTypeCheckListener = userTypeCheckListener;
-        userInfoPulledListener = userInfoPulledListener2;
+    public void setUserInfoPulledListener(UserInfoPulledListener userInfoPulledListener) {
+        this.userInfoPulledListener = userInfoPulledListener;
     }
 
 
-    public User getCurrentUser() {
-        return currentUser;
-    }
-
-
+    /// Google Firebase Docs, Add data to Cloud Firestore
     /// https://firebase.google.com/docs/firestore/manage-data/add-data
-    static public void setUserIsDriver(String userId, boolean isDriver) {
-        Map<String, Object> isDriverObj = new HashMap<>();
-        isDriverObj.put("isDriver", isDriver);
-
-        db.collection("users").document(userId)
-                .set(isDriverObj)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "isDriver updated successfully");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error updating isDriver", e);
-                    }
-                });
-    }
-
-
-    public boolean isLoggedIn() {
-        return currentUser != null;
-    }
+//    public void setUserIsDriver(String userId, boolean isDriver) {
+//        Map<String, Object> isDriverObj = new HashMap<>();
+//        isDriverObj.put("isDriver", isDriver);
+//
+//        db.collection("users").document(userId)
+//                .set(isDriverObj)
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        Log.d(TAG, "isDriver updated successfully");
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.w(TAG, "Error updating isDriver", e);
+//                    }
+//                });
+//    }
 
 
     public void loginUser(String emailAddress, String password, Activity parentActivity) {
@@ -114,8 +81,9 @@ public class DBManager {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (loginListener != null) {
                             if (task.isSuccessful()) {
-                                currentUser.setFirebaseUser(auth.getCurrentUser());
-                                loginListener.onLoginSuccess();
+                                loginListener.onLoginSuccess(auth.getCurrentUser());    // TODO: Probably shouldn't call this because then it won't call fetchCurrentUserInfo()
+
+                                fetchCurrentUserInfo();
                             }
                             else {
                                 loginListener.onLoginFailure(task.getException());
@@ -126,15 +94,39 @@ public class DBManager {
     }
 
 
-    public void logoutUser() {
-        FirebaseAuth.getInstance().signOut();
+    public FirebaseUser getFirebaseUser() {
+        return auth.getCurrentUser();
+    }
+
+
+//    public void logoutUser() {
+//        FirebaseAuth.getInstance().signOut();
+//    }
+
+
+    public void fetchCurrentUserInfo() {
+        setUserInfoPulledListener(new UserInfoPulledListener() {
+            @Override
+            public void onUserInfoPulled(User currentUser) {
+                State.setCurrentUser(currentUser);
+
+                if (currentUserInfoPulledListener == null) {
+                    Log.d(TAG, "No listeners are assigned for currentUserInfoPulledListener");
+                }
+                else {
+                    currentUserInfoPulledListener.onCurrentUserInfoPulled();    // Call listener once user data is stored
+                }
+            }
+        });
+
+        fetchUserInfo(auth.getCurrentUser());
     }
 
 
     /// Google Firebase, Get data with Cloud Firestore
     /// https://firebase.google.com/docs/firestore/query-data/get-data
-    public void checkUserType(FirebaseUser currentUser) {
-        db.collection("users").document(currentUser.getUid())
+    public void fetchUserInfo(FirebaseUser firebaseUser) {
+        db.collection("users").document(firebaseUser.getUid())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -144,15 +136,24 @@ public class DBManager {
 
                             if (document.exists()) {
                                 Log.d(TAG, "User information fetched from database");
-                                Map<String, Object> userData = document.getData(); // SHOULD SAVE THIS TO STATE HERE WHILE WE HAVE THE INFORMATION
 
-                                if (userTypeCheckListener != null) {
-                                    if (document.getBoolean("isDriver")) {
-                                        userTypeCheckListener.onDriverLoggedIn();
-                                    }
-                                    else {
-                                        userTypeCheckListener.onRiderLoggedIn();
-                                    }
+                                User newUser = new User(
+                                        firebaseUser,
+                                        Utilities.checkStringNotNull(document.getString("name")),
+                                        Utilities.checkBooleanNotNull(document.getBoolean("isDriver")),
+                                        Utilities.checkStringNotNull(document.getString("email")),
+                                        Utilities.checkStringNotNull(document.getString("phone")),
+                                        Utilities.checkLongNotNull(document.getLong("upRatings")),
+                                        Utilities.checkLongNotNull(document.getLong("totalRatings"))
+                                );
+
+//                                State.setCurrentUser(newUser);
+
+                                if (userInfoPulledListener == null) {
+                                    Log.d(TAG, "No listeners are assigned for userInfoPulledListener");
+                                }
+                                else {
+                                    userInfoPulledListener.onUserInfoPulled(newUser);  // Call listener when we are finished
                                 }
                             }
                             else {
@@ -167,40 +168,29 @@ public class DBManager {
     }
 
 
-    public void fetchCurrentUserInfo() {
+    /// Google Firebase Docs, Add data to Cloud Firestore
+    /// https://firebase.google.com/docs/firestore/manage-data/add-data
+    public void pushUserInfo(User updatedUser) {
+        Map<String, Object> updatedUserObj = new HashMap<>();
+        updatedUserObj.put("name", updatedUser.getName());
+        updatedUserObj.put("isDriver", updatedUser.isDriver());
+        updatedUserObj.put("email", updatedUser.getEmail());
+        updatedUserObj.put("phone", updatedUser.getPhoneNumber());
+        updatedUserObj.put("upRatings", updatedUser.getUpRatings());
+        updatedUserObj.put("totalRatings", updatedUser.getTotalRatings());
 
-    }
-
-
-    /// Google Firebase, Get data with Cloud Firestore
-    /// https://firebase.google.com/docs/firestore/query-data/get-data
-    static public void fetchUserInfo(FirebaseUser currentFirebaseUser) {
-        db.collection("users").document(currentFirebaseUser.getUid())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        db.collection("users").document(updatedUser.getUserID())
+                .set(updatedUserObj)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-
-                            if (document.exists()) {
-                                Log.d(TAG, "User information fetched from database");
-                                Map<String, Object> userData = document.getData(); // SHOULD SAVE THIS TO STATE HERE WHILE WE HAVE THE INFORMATION
-//                                User newUser = new User()
-
-
-                                userInfoPulledListener.onUserInfoPulled(
-                                        currentFirebaseUser,
-                                        document.getBoolean("isDriver")
-                                );  // Call listener when we are finished
-                            }
-                            else {
-                                Log.d(TAG, "User not found in database");
-                            }
-                        }
-                        else {
-                            Log.d(TAG, "Get failed with ", task.getException());
-                        }
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "User profile updated successfully");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error updating user profile", e);
                     }
                 });
     }

@@ -32,7 +32,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
 
         startTime = new Date();
-        dbManager = DBManager.getInstance();
+        dbManager = new DBManager();
     }
 
 
@@ -52,24 +52,28 @@ public class SplashScreenActivity extends AppCompatActivity {
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
-                    if (dbManager.isLoggedIn()) {
-                        dbManager.setUserTypeCheckListener(new UserTypeCheckListener() {
-                            public void onDriverLoggedIn() {
-                                // GO TO DRIVER MAP ACTIVITY
-                                Log.d(TAG, "Switching to DriverMapActivity");
-                                Intent intent = new Intent(SplashScreenActivity.this, DriverMapActivity.class);
-                                startActivity(intent);
-                            }
+                    if (State.isLoggedIn()) {
+                        dbManager.setCurrentUserInfoPulledListener(new CurrentUserInfoPulledListener() {
+                            public void onCurrentUserInfoPulled() {
+                                Log.d(TAG, "Info for current user pulled successfully");
 
-                            public void onRiderLoggedIn() {
-                                // GO TO RIDER MAP ACTIVITY
-                                Log.d(TAG, "Switching to RiderMapActivity");
-                                Intent intent = new Intent(SplashScreenActivity.this, RiderMapActivity.class);
-                                startActivity(intent);
+                                // TODO: Check state and either go to rider map or driver map
+                                if (State.getCurrentUser().isDriver()) {
+                                    // Go to DriverMapActivity
+                                    Log.d(TAG, "Switching to DriverMapActivity");
+                                    Intent intent = new Intent(SplashScreenActivity.this, DriverMapActivity.class);
+                                    startActivity(intent);
+                                }
+                                else {
+                                    // Go to RiderMapActivity
+                                    Log.d(TAG, "Switching to RiderMapActivity");
+                                    Intent intent = new Intent(SplashScreenActivity.this, RiderMapActivity.class);
+                                    startActivity(intent);
+                                }
                             }
                         });
 
-                        dbManager.checkUserType(dbManager.getCurrentUser().getFirebaseUser());
+                        dbManager.fetchCurrentUserInfo();
                     }
                     else {
                         Log.d(TAG, "Go to login page");

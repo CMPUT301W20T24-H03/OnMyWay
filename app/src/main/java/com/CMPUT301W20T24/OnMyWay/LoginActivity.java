@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+import com.google.firebase.auth.FirebaseUser;
 import androidx.appcompat.app.AppCompatActivity;
 
 
@@ -21,7 +22,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        dbManager = DBManager.getInstance();
+        dbManager = new DBManager();
 
         emailField = findViewById(R.id.emailField);
         passwordField = findViewById(R.id.passwordField);
@@ -41,32 +42,30 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    private void checkUserType() {
-        dbManager.setUserTypeCheckListener(new UserTypeCheckListener() {
-            public void onDriverLoggedIn() {
-                // GO TO DRIVER MAP ACTIVITY
-                Log.d(TAG, "Switching to DriverMapActivity");
-                Intent intent = new Intent(LoginActivity.this, DriverMapActivity.class);
-                startActivity(intent);
-            }
-
-            public void onRiderLoggedIn() {
-                // GO TO RIDER MAP ACTIVITY
-                Log.d(TAG, "Switching to RiderMapActivity");
-                Intent intent = new Intent(LoginActivity.this, RiderMapActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        dbManager.checkUserType(dbManager.getCurrentUser().getFirebaseUser());
-    }
-
-
     private void loginUser(String emailAddress, String password) {
         dbManager.setLoginListener(new LoginListener() {
             public void onLoginSuccess() {
                 Log.d(TAG, "Authentication successful");
-                checkUserType();
+
+                dbManager.setCurrentUserInfoPulledListener(new CurrentUserInfoPulledListener() {
+                    public void onCurrentUserInfoPulled() {
+                        Log.d(TAG, "Info for current user pulled successfully");
+
+                        // TODO: Check state and either go to rider map or driver map
+                        if (State.getCurrentUser().isDriver()) {
+                            // Go to DriverMapActivity
+                            Log.d(TAG, "Switching to DriverMapActivity");
+                            Intent intent = new Intent(LoginActivity.this, DriverMapActivity.class);
+                            startActivity(intent);
+                        }
+                        else {
+                            // Go to RiderMapActivity
+                            Log.d(TAG, "Switching to RiderMapActivity");
+                            Intent intent = new Intent(LoginActivity.this, RiderMapActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                });
             }
 
             public void onLoginFailure(Exception exception) {

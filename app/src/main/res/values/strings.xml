@@ -17,7 +17,7 @@
     <string name="text_logout">Logout</string>
     <string name="content_description_profile_photo">Profile photo</string>
     <string name="placeholder_user_id">000000000000000000000000000</string>
-    <string name="placeholder_user_type">Rider</string>
+    <string name="placeholder_user_type">-</string>
     <string name="symbol_star">★</string>
     <string name="placeholder_rating">4.8</string>
     <string name="text_delete_account">Delete account</string>

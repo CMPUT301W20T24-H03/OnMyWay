@@ -6,8 +6,8 @@ import java.util.regex.Pattern;
 import static android.telephony.PhoneNumberUtils.formatNumber;
 
 
-// Validate various types of text inputs. Call InputValidatorResponse() without arguments if the
-// check was successful. Otherwise call with the error message
+/* Validate various types of text inputs. Call InputValidatorResponse() without arguments if the
+check was successful. Otherwise call with the error message */
 public class InputValidator {
     private static final String TAG = "DEBUG";
 
@@ -43,6 +43,7 @@ public class InputValidator {
 //    }
 
 
+    // TODO: Reimplement first name and last name
     public static InputValidatorResponse checkFullName(CharSequence nameChars) {
         Log.d(TAG, "Checking name");
 
@@ -55,7 +56,7 @@ public class InputValidator {
             return new InputValidatorResponse(false, "The name entered is too long");
         }
         else if (Pattern.matches("^[a-zA-Z]+(?: [a-zA-Z]+){1,4}$", nameChars)) {
-            return new InputValidatorResponse(true, "CAPITALIZED NAME HERE");   // TODO: Capitalize full name
+            return new InputValidatorResponse(true, Utilities.capitalize(nameChars.toString()));   // TODO: Capitalize full name
         }
 
         return new InputValidatorResponse(false, "The name entered is not valid. Make sure it is your full name");
