@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 public class LoginActivity extends AppCompatActivity {
-    private static final String TAG = "OMW/LoginActivity";
+    private static final String TAG = "OMW/LoginActivity";   // Use this tag for call Log.d()
     private EditText emailField;
     private EditText passwordField;
     private DBManager dbManager;
@@ -23,6 +23,7 @@ public class LoginActivity extends AppCompatActivity {
 
         dbManager = new DBManager();
 
+        // Get text from EditTexts
         emailField = findViewById(R.id.emailField);
         passwordField = findViewById(R.id.passwordField);
     }
@@ -35,22 +36,26 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+    // A helper function to display error messages in console and in a toast
     private void showLoginErrorMsg(String errorMsg) {
         Log.w(TAG, errorMsg);
         Toast.makeText(LoginActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
     }
 
 
+    // Handle logging in user using DBManager
     private void loginUser(String emailAddress, String password) {
         dbManager.setLoginListener(new LoginListener() {
             public void onLoginSuccess() {
                 Log.d(TAG, "Authentication successful");
 
+                // Honestly not 100% sure how this works since onLoginSuccess() is never called
+                // Maybe this can be moved outside to the method root?
                 dbManager.setCurrentUserInfoPulledListener(new CurrentUserInfoPulledListener() {
                     public void onCurrentUserInfoPulled() {
                         Log.d(TAG, "Info for current user pulled successfully");
 
-                        // TODO: Check state and either go to rider map or driver map
+                        // Check state and either go to rider map or driver map
                         if (State.getCurrentUser().isDriver()) {
                             // Go to DriverMapActivity
                             Log.d(TAG, "Switching to DriverMapActivity");
@@ -76,15 +81,19 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
+    // Called when login button pressed. Defined in XML
     public void onLoginButtonPressed(View view) {
         CharSequence emailAddressChars = emailField.getText();
+        // Make sure the email address is valid
         InputValidatorResponse emailStatus = InputValidator.checkEmail(emailAddressChars);
 
         if (emailStatus.success()) {
             CharSequence passwordChars = passwordField.getText();
+            // Make sure password is valid
             InputValidatorResponse passwordStatus = InputValidator.checkPassword(passwordChars);
 
             if (passwordStatus.success()) {
+                // Pass the email address and password to loginUser if inputs are valid
                 loginUser(emailAddressChars.toString(), passwordChars.toString());
             }
             else {

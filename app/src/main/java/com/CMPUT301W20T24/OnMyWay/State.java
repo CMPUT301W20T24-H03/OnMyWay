@@ -1,8 +1,10 @@
 package com.CMPUT301W20T24.OnMyWay;
 
 
+// Keeps track of the main application state. It holds the current user for now
+// Should probably save this offline
 public class State {
-    private static final String TAG = "OMW/State";
+    private static final String TAG = "OMW/State";   // Use this tag for call Log.d()
     static private User currentUser;
     static private DBManager dbManager = new DBManager();
 
@@ -12,6 +14,8 @@ public class State {
     }
 
 
+    // Set current user only if there isn't one already.
+    // May have to change this if we save data offline
     static public void setCurrentUser(User newUser) {
         if (currentUser == null) {
             currentUser = newUser;
@@ -20,11 +24,13 @@ public class State {
     }
 
 
+    // Calls DBManager to push new user info to FireStore
     static public void updateCurrentUser() {
         dbManager.pushUserInfo(getCurrentUser());
     }
 
 
+    // Checks if there is a user logged in
     static public boolean isLoggedIn() {
         return dbManager.getFirebaseUser() != null;
     }

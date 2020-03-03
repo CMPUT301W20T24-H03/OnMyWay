@@ -12,21 +12,17 @@ import com.squareup.picasso.Picasso;
 
 
 public class EditProfileActivity extends AppCompatActivity {
-    private static final String TAG = "OMW/EditProfileActivity";
-    private DBManager dbManager;
+    private static final String TAG = "OMW/EditProfileActivity";  // Use this tag for call Log.d()
     private EditText firstNameField;
     private EditText lastNameField;
     private EditText emailField;
     private EditText phoneField;
-    private ImageView profilePhotoImage;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
-
-        dbManager = new DBManager();
 
         TextView userIdLabel = findViewById(R.id.labelUserId);
         TextView userTypeLabel = findViewById(R.id.labelUserType);
@@ -35,14 +31,17 @@ public class EditProfileActivity extends AppCompatActivity {
         lastNameField = findViewById(R.id.fieldLastName);
         emailField = findViewById(R.id.fieldEmail);
         phoneField = findViewById(R.id.fieldPhone);
-        profilePhotoImage = findViewById(R.id.imageProfilePhoto);
+        ImageView profilePhotoImage = findViewById(R.id.imageProfilePhoto);
 
         User currentUser = State.getCurrentUser();
 
         userIdLabel.setText(currentUser.getUserID());
+
+        // Check isDriver. If true, set text to "Driver". Otherwise set text to "Rider"
         userTypeLabel.setText(currentUser.isDriver() ? "Driver" : "Rider");
         userRatingLabel.setText(String.valueOf(currentUser.getRating()));
-        Log.d(TAG, currentUser.getProfilePhotoUrl());   // TODO: Get user profile photo from Gravatar
+
+        // Download the profile photo for the current user and display it
         Picasso.get().load(currentUser.getProfilePhotoUrl()).into(profilePhotoImage);
 
         firstNameField.setText(currentUser.getFirstName());
@@ -52,32 +51,38 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
 
+    // A helper function to display error messages in console and in a toast
     private void showInputErrorMsg(String errorMsg) {
         Log.w(TAG, errorMsg);
         Toast.makeText(EditProfileActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
     }
 
 
+    // Called when back button is pressed. Defined in XML
     public void onBackButtonPressed(View view) {
         Log.d(TAG, "Back button pressed");
 
-        super.onBackPressed();
+        super.onBackPressed();  // Do whatever the normal back button does
     }
 
 
+    // Called when save button is pressed. Defined in XML
     public void onSaveButtonPressed(View view) {
         Log.d(TAG, "Save button pressed");
 
+        // Get text from EditTexts
         CharSequence firstNameChars = firstNameField.getText();
         CharSequence lastNameChars = lastNameField.getText();
         CharSequence emailAddressChars = emailField.getText();
         CharSequence phoneNumberChars = phoneField.getText();
 
+        // Check if the inputs are valid and store the responses in InputValidatorResponses
         InputValidatorResponse firstNameStatus = InputValidator.checkFirstName(firstNameChars);
         InputValidatorResponse lastNameStatus = InputValidator.checkLastName(lastNameChars);
         InputValidatorResponse emailAddressStatus = InputValidator.checkEmail(emailAddressChars);
         InputValidatorResponse phoneStatus = InputValidator.checkPhoneNumber(phoneNumberChars);
 
+        // If any of the inputs fail validation, show the error message and exit the method
         if (!firstNameStatus.success()) {
             showInputErrorMsg(firstNameStatus.getErrorMsg());
             return;
@@ -103,19 +108,20 @@ public class EditProfileActivity extends AppCompatActivity {
             return;
         }
 
-        User currentUser = State.getCurrentUser();
+        User currentUser = State.getCurrentUser();  // Grab the current user from State
 
+        // If all the inputs are valid, update the current user with new values
         currentUser.setFirstName(firstNameStatus.getResult());
         currentUser.setLastName(lastNameStatus.getResult());
         currentUser.setEmail(emailAddressStatus.getResult());
         currentUser.setPhone(phoneStatus.getResult());
-        State.updateCurrentUser();
+        State.updateCurrentUser();  // Tell State we want to push user changes to FireStore
 
         Log.d(TAG, "All inputs are valid. Returning to parent activity");
         this.finish();  // Return to parent activity
     }
 
-
+    // Called when save button is pressed. Defined in XML. Not implemented yet
     public void onDeleteAccountPressed(View view) {
         Log.d(TAG, "Delete Account button pressed");
         // TODO: Show prompt here and call deleteAccount in DBManager (probably?)

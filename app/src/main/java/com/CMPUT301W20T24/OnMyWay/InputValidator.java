@@ -6,10 +6,9 @@ import java.util.regex.Pattern;
 import static android.telephony.PhoneNumberUtils.formatNumber;
 
 
-/* Validate various types of text inputs. Call InputValidatorResponse() without arguments if the
-check was successful. Otherwise call with the error message */
+// Validate various types of text inputs. Look at InputValidatorResponse() to see how to call it correctly.
 public class InputValidator {
-    private static final String TAG = "OMW/InputValidator";
+    private static final String TAG = "OMW/InputValidator";   // Use this tag for call Log.d()
 
 
     /// StackOverflow post by mindriot
@@ -19,6 +18,7 @@ public class InputValidator {
         Log.d(TAG, "Checking email address");
 
         if (!TextUtils.isEmpty(emailAddressChars) && android.util.Patterns.EMAIL_ADDRESS.matcher(emailAddressChars).matches()) {
+            // Return true if the email address is okay
             return new InputValidatorResponse(true, emailAddressChars.toString());
         }
         return new InputValidatorResponse(false, "Email address is not valid");
@@ -29,20 +29,26 @@ public class InputValidator {
     public static InputValidatorResponse checkPassword(CharSequence passwordChars) {
         Log.d(TAG, "Checking password");
 
-        return new InputValidatorResponse();
+        return new InputValidatorResponse();    // This just returns true for now
     }
 
 
+    // Helper method to check if first name is valid. Takes a CharSequence from an EditText
     public static InputValidatorResponse checkFirstName(CharSequence nameChars) {
+        // Just call checkName but tell it what type of name so it can print log messages
         return checkName(nameChars, "first");
     }
 
 
+    // Helper method to check if last name is valid. Takes a CharSequence from an EditText
     public static InputValidatorResponse checkLastName(CharSequence nameChars) {
+        // Just call checkName but tell it what type of name so it can print log messages
         return checkName(nameChars, "last");
     }
 
 
+    // Method to check if a name is valid. Takes a CharSequence from an EditText.
+    // Private because we never call it directly from outside
     private static InputValidatorResponse checkName(CharSequence nameChars, String nameType) {
         Log.d(TAG, "Checking " + nameType + " name");
 
@@ -55,7 +61,7 @@ public class InputValidator {
             return new InputValidatorResponse(false, "The " + nameType + " name entered is too long");
         }
         else if (Pattern.matches("[a-zA-Z]+", nameChars)) {
-            // Capitalize the name and return it
+            // Capitalize the name and return it if the email address is formatted correctly
             return new InputValidatorResponse(true, Utilities.capitalize(nameChars.toString()));
         }
 
@@ -63,15 +69,21 @@ public class InputValidator {
     }
 
 
+    // Method to check if a phone number is valid. Takes a CharSequence from an EditText.
+    // If valid, returns a nicely formatted phone number. Use this result
+
     /// StackOverflow post by Trinimon
     /// Author: https://stackoverflow.com/users/2092587/trinimon
     /// Answer: https://stackoverflow.com/questions/15647327/phone-number-formatting-an-edittext-in-android
     public static InputValidatorResponse checkPhoneNumber(CharSequence phoneChars) {
         Log.d(TAG, "Checking phone number");
 
+        // Format the phone number nicely, if possible.
+        // Locale is fixed to CA to prevent consistency issues
         String formattedPhoneNumber = formatNumber(phoneChars.toString(), "CA");
 
         if (formattedPhoneNumber != null) {
+            // If its a real phone number, return the nicely formatted version
             return new InputValidatorResponse(true, formattedPhoneNumber);
         }
         else {
