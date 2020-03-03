@@ -68,6 +68,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!--- Henning Dodenhof, CircleImageView library -->
         <!--- https://github.com/hdodenhof/CircleImageView -->
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imageProfilePhoto"
@@ -143,7 +144,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/labelRatingStar" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

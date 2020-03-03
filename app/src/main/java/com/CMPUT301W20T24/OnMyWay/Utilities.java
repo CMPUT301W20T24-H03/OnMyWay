@@ -8,7 +8,9 @@ public class Utilities {
     private static final String TAG = "OMW/Utilities";
 
 
-    /// https://stackoverflow.com/questions/4846484/md5-hashing-in-android
+    /// StackOverflow post by Den Delimarsky
+    /// Author: https://stackoverflow.com/users/303696/den-delimarsky
+    /// Answer: https://stackoverflow.com/questions/4846484/md5-hashing-in-android
     public static String md5(String string) {
         try {
             // Create MD5 Hash

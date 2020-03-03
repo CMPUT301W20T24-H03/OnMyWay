@@ -10,7 +10,7 @@ import java.util.Date;
 
 
 public class SplashScreenActivity extends AppCompatActivity {
-    private static final String TAG = "OMW/SplashScreenActivity";
+    private static final String TAG = "OMW/SplashScreenActi...";
     private Date startTime;
     private DBManager dbManager;
 

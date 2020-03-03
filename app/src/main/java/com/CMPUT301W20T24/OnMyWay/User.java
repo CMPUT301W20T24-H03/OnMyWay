@@ -111,7 +111,9 @@ public class User {
         return profilePhotoUrl;
     }
 
-    /// https://stackoverflow.com/questions/2538787/how-to-display-an-output-of-float-data-with-2-decimal-places-in-java
+    /// StackOverflow post by John P.
+    /// Author: https://stackoverflow.com/users/1309401/john-p
+    /// Answer: https://stackoverflow.com/questions/2538787/how-to-display-an-output-of-float-data-with-2-decimal-places-in-java
     public String getRating() {
         return String.format("%.1f", (float) (upRatings * 5) / (float) totalRatings);
     }
