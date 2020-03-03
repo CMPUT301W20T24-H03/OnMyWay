@@ -12,34 +12,44 @@
 - Android Coding via YouTube, How to Show Current Location On Map in Android Studio\
 [Link](https://www.youtube.com/watch?v=boyyLhXAZAQ&t=22s)
 
-- StackOverflow post by mindriot\
-Author: [Link](https://stackoverflow.com/users/1011746/mindriot)\
-Answer: [Link](https://stackoverflow.com/questions/1819142/how-should-i-validate-an-e-mail-address)
-
-- Google Firebase, Get data with Cloud Firestore\
-[Link](https://firebase.google.com/docs/firestore/query-data/get-data)
+- Google Firebase Docs, Add data to Cloud Firestore\
+[Link](https://firebase.google.com/docs/firestore/manage-data/add-data)
 
 - Google Firebase Docs, Get Started with Firebase Authentication on Android\
 [Link](https://firebase.google.com/docs/auth/android/start)
-
-- Android Coding via YouTube, How to Show Current Location On Map in Android Studio\
-[Link](https://www.youtube.com/watch?v=boyyLhXAZAQ&t=22s)
 
 - Android Open Source Project, Get Started with Firebase Authentication on Android\
 [Link](https://firebase.google.com/docs/auth/android/start?authuser=1)
 
-- Google Firebase Docs, Get Started with Firebase Authentication on Android\
-[Link](https://firebase.google.com/docs/auth/android/start)
+- Henning Dodenhof, CircleImageView library\
+[Link](https://github.com/hdodenhof/CircleImageView)
+
+- Google Firebase, Get data with Cloud Firestore\
+[Link](https://firebase.google.com/docs/firestore/query-data/get-data)
+
+- StackOverflow post by John P.\
+Author: [Link](https://stackoverflow.com/users/1309401/john-p)\
+Answer: [Link](https://stackoverflow.com/questions/2538787/how-to-display-an-output-of-float-data-with-2-decimal-places-in-java)
+
+- StackOverflow post by Den Delimarsky\
+Author: [Link](https://stackoverflow.com/users/303696/den-delimarsky)\
+Answer: [Link](https://stackoverflow.com/questions/4846484/md5-hashing-in-android)
 
 - StackOverflow post by Dullahan\
 Author: [Link](https://stackoverflow.com/users/2509341/dullahan)\
 Answer: [Link](https://stackoverflow.com/questions/17237287/how-can-i-wait-for-10-second-without-locking-application-ui-in-android)
 
-- Google Firebase, Get data with Cloud Firestore\
-[Link](https://firebase.google.com/docs/firestore/query-data/get-data)
+- StackOverflow post by mindriot\
+Author: [Link](https://stackoverflow.com/users/1011746/mindriot)\
+Answer: [Link](https://stackoverflow.com/questions/1819142/how-should-i-validate-an-e-mail-address)
 
-- Keval Patel via Medium, How to make the perfect Singleton?\
-[Link](https://medium.com/@kevalpatel2106/how-to-make-the-perfect-singleton-de6b951dfdb0)
+- StackOverflow post by Trinimon\
+Author: [Link](https://stackoverflow.com/users/2092587/trinimon)\
+Answer: [Link](https://stackoverflow.com/questions/15647327/phone-number-formatting-an-edittext-in-android)
+
+- StackOverflow post by Rupesh\
+Author: [Link](https://stackoverflow.com/users/787438/rupesh)\
+Answer: [Link](https://stackoverflow.com/questions/994840/how-to-create-our-own-listener-interface-in-android)
 
 
 ## License
