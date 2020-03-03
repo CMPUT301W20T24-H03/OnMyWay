@@ -2,16 +2,13 @@ package com.CMPUT301W20T24.OnMyWay;
 
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
-
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.widget.Toast;
-
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -22,7 +19,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 public class DriverMapActivity extends FragmentActivity implements OnMapReadyCallback {
-
+    private static final String TAG = "OMW/DriverMapActivity";
     private GoogleMap mMap;
 
     /// Android Coding via YouTube, How to Show Current Location On Map in Android Studio
@@ -40,6 +37,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         fetchLastLocation();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
+        Toast.makeText(DriverMapActivity.this, "DriverMapActivity", Toast.LENGTH_LONG).show();
     }
 
     private void fetchLastLocation() {
