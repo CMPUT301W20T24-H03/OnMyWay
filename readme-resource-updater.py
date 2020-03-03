@@ -92,7 +92,7 @@ def main():
 			map(
 				lambda resource: '- ' +
 					FormatUrls(
-						sub(r'(?:[\t ]*<!---[\t ]*|[\t ]*--->|\\$)', '',	# Remove last backslash, comment escape chars, and whitespace
+						sub(r'(?:[\t ]*<!---[\t ]*|[\t ]*-->|\\$)', '',	# Remove last backslash, comment escape chars, and whitespace
 							RemoveWhitespace(resource)
 						)
 					),
@@ -148,7 +148,7 @@ def main():
 		resource_list = ParseJavaResources(CollectJavaCode(package_directory))
 		resource_list.extend(ParseResResources(CollectResCode(package_directory)))
 
-		return Concatenate(resource_list)
+		return Concatenate(set(resource_list))
 
 
 
