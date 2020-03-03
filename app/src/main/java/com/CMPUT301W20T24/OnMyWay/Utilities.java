@@ -5,7 +5,7 @@ import java.security.NoSuchAlgorithmException;
 
 
 public class Utilities {
-    private static final String TAG = "OMW/Utilities";
+    private static final String TAG = "OMW/Utilities";   // Use this tag for call Log.d()
 
 
     /// StackOverflow post by Den Delimarsky
@@ -35,11 +35,13 @@ public class Utilities {
     }
 
 
+    // Capitalize the first letter of a string
     static public String capitalize(String string) {
         return string.substring(0, 1).toUpperCase() + string.substring(1);
     }
 
 
+    // Check if a string is null and throw an error if so
     static public String checkStringNotNull(String stringToCheck) {
         if (stringToCheck == null) {
             throw new NullPointerException("The string fetched from FireStore is null. Make sure data is added for this user");
@@ -50,6 +52,7 @@ public class Utilities {
     }
 
 
+    // Check if a Boolean object is null and return the value if not
     static public boolean checkBooleanNotNull(Boolean booleanToCheck) {
         if (booleanToCheck == null) {
             throw new NullPointerException("The string fetched from FireStore is null. Make sure data is added for this user");
@@ -60,6 +63,7 @@ public class Utilities {
     }
 
 
+    // CHeck if a Long object is null and return the value as an int if not
     static public int checkLongNotNull(Long longToCheck) {
         if (longToCheck == null) {
             throw new NullPointerException("The string fetched from FireStore is null. Make sure data is added for this user");

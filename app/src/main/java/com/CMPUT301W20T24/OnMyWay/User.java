@@ -4,15 +4,15 @@ import com.google.firebase.auth.FirebaseUser;
 
 
 public class User {
-    private static final String TAG = "OMW/User";
+    private static final String TAG = "OMW/User";   // Use this tag for call Log.d()
     private FirebaseUser firebaseUser;
     private String firstName;
     private String lastName;
     private boolean driver;
     private String email;
     private String phone;
-    private int upRatings;
-    private int totalRatings;
+    private int upRatings;      // The number of positive ratings for a user
+    private int totalRatings;   // The total number of ratings for a user
     private String profilePhotoUrl;
 
 
@@ -37,39 +37,49 @@ public class User {
 
 
     public void setFirstName(String newFirstName) {
+        // Don't update if the input is null. We may want to keep the old values
         if (newFirstName != null) {
             this.firstName = newFirstName;
         }
     }
 
     public void setLastName(String newLastName) {
+        // Don't update if the input is null. We may want to keep the old values
         if (newLastName != null) {
             this.lastName = newLastName;
         }
     }
 
     public void setEmail(String newEmail) {
+        // Don't update if the input is null. We may want to keep the old values
         if (newEmail != null) {
             this.email = newEmail;
+
+            // When we get a new email address, also generate a new profile photo url
             setProfilePhotoUrl(newEmail);
         }
     }
 
     public void setPhone(String newPhoneNumber) {
+        // Don't update if the input is null. We may want to keep the old values
         if (newPhoneNumber != null) {
             this.phone = newPhoneNumber;
         }
     }
 
+    // Set both ratings at once
     private void setRatings(int newUpRatings, int newTotalRatings) {
         this.upRatings = newUpRatings;
         this.totalRatings = newTotalRatings;
     }
 
+    // Generate a unique profile photo for each user using Gravatar
     private void setProfilePhotoUrl(String emailAddress) {
         this.profilePhotoUrl = "https://www.gravatar.com/avatar/" + Utilities.md5(emailAddress) + "?d=identicon&s=512";
     }
 
+    // Call to add a rating to the user. If isPositive is true, it adds a positive rating.
+    // Otherwise it adds a negative rating
     public void addRating(boolean isPositive) {
         upRatings += (isPositive) ? 1 : 0;
         ++totalRatings;
@@ -110,6 +120,8 @@ public class User {
     public String getProfilePhotoUrl() {
         return profilePhotoUrl;
     }
+
+    // Use upRatings and totalRatings to calculate the users rating out of 5
 
     /// StackOverflow post by John P.
     /// Author: https://stackoverflow.com/users/1309401/john-p
