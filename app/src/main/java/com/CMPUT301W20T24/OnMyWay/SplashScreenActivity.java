@@ -47,52 +47,35 @@ public class SplashScreenActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
-        int splashDuration = 200; // How long the screen stays open, in ms
-        // Find out how much longer we have to wait
-        long timeDifference = new Date().getTime() - startTime.getTime();
+        // If user is logged in, fetch addional user info and go to a map activity
+        if (State.isLoggedIn()) {
+            dbManager.setCurrentUserInfoPulledListener(new CurrentUserInfoPulledListener() {
+                // This is called after fetchCurrentUserInfo() finishes
+                public void onCurrentUserInfoPulled() {
+                    Log.d(TAG, "Info for current user pulled successfully");
 
-        /// StackOverflow post by Dullahan
-        /// Author: https://stackoverflow.com/users/2509341/dullahan
-        /// Answer: https://stackoverflow.com/questions/17237287/how-can-i-wait-for-10-second-without-locking-application-ui-in-android
-        if (timeDifference < splashDuration) {
-            Log.d(TAG, "Waiting for " + String.valueOf(splashDuration - timeDifference) + " more milliseconds");
-
-            // Wait for a certain amount of time before moving on. This gives a nice splash screen effect
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    // If user is logged in, fetch addional user info and go to a map activity
-                    if (State.isLoggedIn()) {
-                        dbManager.setCurrentUserInfoPulledListener(new CurrentUserInfoPulledListener() {
-                            // This is called after fetchCurrentUserInfo() finishes
-                            public void onCurrentUserInfoPulled() {
-                                Log.d(TAG, "Info for current user pulled successfully");
-
-                                // Check state and either go to rider map or driver map
-                                if (State.getCurrentUser().isDriver()) {
-                                    // Go to DriverMapActivity
-                                    Log.d(TAG, "Switching to DriverMapActivity");
-                                    Intent intent = new Intent(SplashScreenActivity.this, DriverMapActivity.class);
-                                    startActivity(intent);
-                                }
-                                else {
-                                    // Go to RiderMapActivity
-                                    Log.d(TAG, "Switching to RiderMapActivity");
-                                    Intent intent = new Intent(SplashScreenActivity.this, RiderMapActivity.class);
-                                    startActivity(intent);
-                                }
-                            }
-                        });
-
-                        dbManager.fetchCurrentUserInfo();   // Fetch additional info for the current user
+                    // Check state and either go to rider map or driver map
+                    if (State.getCurrentUser().isDriver()) {
+                        // Go to DriverMapActivity
+                        Log.d(TAG, "Switching to DriverMapActivity");
+                        Intent intent = new Intent(SplashScreenActivity.this, DriverMapActivity.class);
+                        startActivity(intent);
                     }
                     else {
-                        Log.d(TAG, "Go to login page"); // Go to login page if user is not logged in
-                        Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
+                        // Go to RiderMapActivity
+                        Log.d(TAG, "Switching to RiderMapActivity");
+                        Intent intent = new Intent(SplashScreenActivity.this, RiderMapActivity.class);
                         startActivity(intent);
                     }
                 }
-            }, splashDuration - timeDifference);
+            });
+
+            dbManager.fetchCurrentUserInfo();   // Fetch additional info for the current user
+        }
+        else {
+            Log.d(TAG, "Go to login page"); // Go to login page if user is not logged in
+            Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
+            startActivity(intent);
         }
     }
 }
