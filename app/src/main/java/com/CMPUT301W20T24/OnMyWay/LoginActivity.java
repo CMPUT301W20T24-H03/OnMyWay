@@ -104,4 +104,9 @@ public class LoginActivity extends AppCompatActivity {
             showLoginErrorMsg(emailStatus.getErrorMsg());
         }
     }
+
+    public void onSignUpPressed(View view){
+        Intent intent = new Intent(this, SignUpActivity.class);
+        startActivity(intent);
+    }
 }
