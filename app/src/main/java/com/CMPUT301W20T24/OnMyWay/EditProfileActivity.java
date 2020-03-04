@@ -42,7 +42,7 @@ public class EditProfileActivity extends AppCompatActivity {
         userRatingLabel.setText(String.valueOf(currentUser.getRating()));
 
         // Download the profile photo for the current user and display it
-        Picasso.get().load(currentUser.getProfilePhotoUrl()).into(profilePhotoImage);
+        Picasso.get().load(currentUser.getProfilePhotoUrl()).noFade().into(profilePhotoImage);
 
         firstNameField.setText(currentUser.getFirstName());
         lastNameField.setText(currentUser.getLastName());

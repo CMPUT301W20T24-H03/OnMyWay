@@ -11,6 +11,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
+
 import java.util.HashMap;
 import java.util.Map;
 import androidx.annotation.NonNull;
@@ -131,6 +133,7 @@ public class DBManager {
             @Override
             public void onUserInfoPulled(User currentUser) {
                 State.setCurrentUser(currentUser);
+                Picasso.get().load(currentUser.getProfilePhotoUrl()).fetch();
 
                 if (currentUserInfoPulledListener == null) {
                     Log.d(TAG, "No listeners are assigned for currentUserInfoPulledListener");
