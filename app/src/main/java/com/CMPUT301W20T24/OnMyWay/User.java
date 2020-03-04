@@ -1,5 +1,7 @@
 package com.CMPUT301W20T24.OnMyWay;
 
+import android.util.Log;
+
 import com.google.firebase.auth.FirebaseUser;
 
 
@@ -76,6 +78,7 @@ public class User {
     // Generate a unique profile photo for each user using Gravatar
     private void setProfilePhotoUrl(String emailAddress) {
         this.profilePhotoUrl = "https://www.gravatar.com/avatar/" + Utilities.md5(emailAddress) + "?d=identicon&s=512";
+        Log.d(TAG, "User profile photo url set to " + profilePhotoUrl);
     }
 
     // Call to add a rating to the user. If isPositive is true, it adds a positive rating.
