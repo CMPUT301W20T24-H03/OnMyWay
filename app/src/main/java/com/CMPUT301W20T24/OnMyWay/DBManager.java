@@ -119,9 +119,9 @@ public class DBManager {
 
 
     // This function works. Don't know if this should be here or in State
-//    public void logoutUser() {
-//        FirebaseAuth.getInstance().signOut();
-//    }
+    public void logoutUser() {
+        FirebaseAuth.getInstance().signOut();
+    }
 
 
     // Get additional info for the current user (email, phone, rating, etc.)
