@@ -77,10 +77,10 @@ public class EditProfileActivity extends AppCompatActivity {
         CharSequence phoneNumberChars = phoneField.getText();
 
         // Check if the inputs are valid and store the responses in InputValidatorResponses
-        InputValidatorResponse firstNameStatus = InputValidator.checkFirstName(firstNameChars);
-        InputValidatorResponse lastNameStatus = InputValidator.checkLastName(lastNameChars);
-        InputValidatorResponse emailAddressStatus = InputValidator.checkEmail(emailAddressChars);
-        InputValidatorResponse phoneStatus = InputValidator.checkPhoneNumber(phoneNumberChars);
+        ResponseStatus firstNameStatus = InputValidator.checkFirstName(firstNameChars);
+        ResponseStatus lastNameStatus = InputValidator.checkLastName(lastNameChars);
+        ResponseStatus emailAddressStatus = InputValidator.checkEmail(emailAddressChars);
+        ResponseStatus phoneStatus = InputValidator.checkPhoneNumber(phoneNumberChars);
 
         // If any of the inputs fail validation, show the error message and exit the method
         if (!firstNameStatus.success()) {

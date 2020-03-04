@@ -85,12 +85,12 @@ public class LoginActivity extends AppCompatActivity {
     public void onLoginButtonPressed(View view) {
         CharSequence emailAddressChars = emailField.getText();
         // Make sure the email address is valid
-        InputValidatorResponse emailStatus = InputValidator.checkEmail(emailAddressChars);
+        ResponseStatus emailStatus = InputValidator.checkEmail(emailAddressChars);
 
         if (emailStatus.success()) {
             CharSequence passwordChars = passwordField.getText();
             // Make sure password is valid
-            InputValidatorResponse passwordStatus = InputValidator.checkPassword(passwordChars);
+            ResponseStatus passwordStatus = InputValidator.checkPassword(passwordChars);
 
             if (passwordStatus.success()) {
                 // Pass the email address and password to loginUser if inputs are valid
