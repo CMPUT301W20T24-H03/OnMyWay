@@ -6,6 +6,8 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -26,6 +28,7 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
     /// https://www.youtube.com/watch?v=boyyLhXAZAQ&t=22s
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
+    View mapView;
     private static final int REQUEST_CODE = 101;
 
     @Override
@@ -36,7 +39,6 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-
         Toast.makeText(RiderMapActivity.this, "RiderMapActivity", Toast.LENGTH_LONG).show();
     }
 
@@ -52,6 +54,7 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
                     currentLocation = location;
                     Toast.makeText(getApplicationContext(), currentLocation.getLatitude() + " " + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+                    mapView = mapFragment.getView();
                     mapFragment.getMapAsync(RiderMapActivity.this);
                 }
             }
@@ -72,11 +75,20 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setMyLocationEnabled(true);
 
         // Add a marker in Sydney and move the camera
         LatLng current_coordinates = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
         mMap.addMarker(new MarkerOptions().position(current_coordinates).title("Marker at current location (RIDER)"));
         mMap.animateCamera(CameraUpdateFactory.newLatLng(current_coordinates));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(current_coordinates,15));
+
+        // Stack Overflow post by Adam https://stackoverflow.com/users/6789978/adam
+        // Answer https://stackoverflow.com/questions/36785542/how-to-change-the-position-of-my-location-button-in-google-maps-using-android-st
+        View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+        RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
+        // position on right bottom
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);rlp.setMargins(30,30,30,120);
     }
 }
