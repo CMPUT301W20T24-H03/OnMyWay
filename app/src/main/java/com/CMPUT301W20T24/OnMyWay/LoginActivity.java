@@ -157,4 +157,9 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(LoginActivity.this, "Please check your inputs again", Toast.LENGTH_SHORT).show();
         }
     }
+
+    public void onSignUpPressed(View view){
+        Intent intent = new Intent(this, SignUpActivity.class);
+        startActivity(intent);
+    }
 }
