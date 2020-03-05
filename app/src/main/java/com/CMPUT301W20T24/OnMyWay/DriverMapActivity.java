@@ -55,6 +55,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                     currentLocation = location;
                     Toast.makeText(getApplicationContext(), currentLocation.getLatitude() + " " + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+                    mapView = mapFragment.getView();
                     mapFragment.getMapAsync(DriverMapActivity.this);
                 }
             }
