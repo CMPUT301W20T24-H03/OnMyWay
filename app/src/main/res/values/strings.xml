@@ -7,9 +7,11 @@
     <string name="text_have_account">Don\'t have an account?</string>
     <string name="text_email">Email address</string>
     <string name="text_password">Password</string>
-    <string name="title_activity_rider_map">Map</string>
-    <string name="title_activity_driver_map">Map</string>
+    <string name="title_activity_rider_map">Rider Map</string>
+    <string name="title_activity_driver_map">Driver Map</string>
     <string name="title_activity_edit_profile">Edit Profile</string>
+    <string name="title_activity_splash_screen">Splash Screen</string>
+    <string name="title_activity_main_activity">Test Activity</string>
     <string name="text_phone_number">Phone number</string>
     <string name="text_first_name">First name</string>
     <string name="text_last_name">Last name</string>

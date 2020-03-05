@@ -9,6 +9,7 @@ public class State {
     static private DBManager dbManager = new DBManager();
 
 
+    // This will be null if user doesn't exist
     static public User getCurrentUser() {
         return currentUser;
     }
