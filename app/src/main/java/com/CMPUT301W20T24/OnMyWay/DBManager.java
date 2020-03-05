@@ -11,6 +11,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.squareup.picasso.Picasso;
+
 import java.util.HashMap;
 import java.util.Map;
 import androidx.annotation.NonNull;
@@ -119,9 +121,9 @@ public class DBManager {
 
 
     // This function works. Don't know if this should be here or in State
-//    public void logoutUser() {
-//        FirebaseAuth.getInstance().signOut();
-//    }
+    public void logoutUser() {
+        FirebaseAuth.getInstance().signOut();
+    }
 
 
     // Get additional info for the current user (email, phone, rating, etc.)
@@ -131,6 +133,7 @@ public class DBManager {
             @Override
             public void onUserInfoPulled(User currentUser) {
                 State.setCurrentUser(currentUser);
+                Picasso.get().load(currentUser.getProfilePhotoUrl()).fetch();
 
                 if (currentUserInfoPulledListener == null) {
                     Log.d(TAG, "No listeners are assigned for currentUserInfoPulledListener");

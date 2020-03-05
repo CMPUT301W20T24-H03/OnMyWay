@@ -3,12 +3,13 @@ package com.CMPUT301W20T24.OnMyWay;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+
 public class InputValidatorTests {
     @Test
-    void testInputValidatorResponse() {
+    void testResponseStatus() {
         String errorName = "Error name";
-        InputValidatorResponse successResponse = new InputValidatorResponse();
-        InputValidatorResponse failureResponse = new InputValidatorResponse(false, errorName);
+        ResponseStatus successResponse = new ResponseStatus();
+        ResponseStatus failureResponse = new ResponseStatus(false, errorName);
 
         assertTrue(successResponse.success());
         assertFalse(failureResponse.success());
