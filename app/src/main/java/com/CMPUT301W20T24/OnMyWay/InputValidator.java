@@ -25,11 +25,25 @@ public class InputValidator {
     }
 
 
-    // TODO: IMPLEMENT THIS CLASS LATER TO CHECK WHETHER PASSWORDS ARE IN VALID FORM
+
     public static ResponseStatus checkPassword(CharSequence passwordChars) {
         Log.d(TAG, "Checking password");
 
-        return new ResponseStatus();    // This just returns true for now
+        int passwordLength = passwordChars.length();
+
+        if (passwordLength < 8) {
+            return new ResponseStatus(false, "The password entered is too short");
+        }
+        else if (passwordLength > 40) {
+            return new ResponseStatus(false, "The password entered is too long");
+        }
+        else if (Pattern.matches("^[a-zA-Z0-9_$&+,:;=?@#|'`<>.^*()%!-~\\[\\]\\{\\}\\\\]+$", passwordChars)) {
+            // Allowed characters:
+            // A-Z, 0-9, and _$&+,:;=?@#|'`<>.^*()%!-~[]{}\
+            return new ResponseStatus();
+        }
+
+        return new ResponseStatus(false, "Password is not valid");    // This just returns true for now
     }
 
 

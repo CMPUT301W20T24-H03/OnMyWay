@@ -3,7 +3,6 @@ package com.CMPUT301W20T24.OnMyWay;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 import java.util.Date;

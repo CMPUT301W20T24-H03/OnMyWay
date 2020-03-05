@@ -85,7 +85,7 @@ public class EditProfileActivity extends AppCompatActivity {
         CharSequence emailAddressChars = emailField.getText();
         CharSequence phoneNumberChars = phoneField.getText();
 
-        // Check if the inputs are valid and store the responses in InputValidatorResponses
+        // Check if the inputs are valid and store the responses in ResponseStatuses
         ResponseStatus firstNameStatus = InputValidator.checkFirstName(firstNameChars);
         ResponseStatus lastNameStatus = InputValidator.checkLastName(lastNameChars);
         ResponseStatus emailAddressStatus = InputValidator.checkEmail(emailAddressChars);
@@ -127,8 +127,6 @@ public class EditProfileActivity extends AppCompatActivity {
         }
         else {
             Toast.makeText(EditProfileActivity.this, "Please check your inputs again", Toast.LENGTH_SHORT).show();
-
-            return; // Exit method without doing anything
         }
     }
 
