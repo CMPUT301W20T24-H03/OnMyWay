@@ -127,6 +127,7 @@
         app:layout_constraintStart_toEndOf="@+id/firstname"
         app:layout_constraintTop_toBottomOf="@+id/passwordField" />
 
+
     <Button
         android:id="@+id/signUpButton"
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
@@ -135,10 +136,45 @@
         android:layout_marginStart="@dimen/margin"
         android:layout_marginEnd="@dimen/margin"
         android:layout_marginBottom="@dimen/margin"
+        android:onClick="onDriverSignUpPressed"
         android:text="Driver sign up"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        android:onClick="onDriverSignUpPressed"/>
+        app:layout_constraintTop_toBottomOf="@+id/Register"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/Register"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="@dimen/margin"
+        android:onClick="onRegisterButtonPressed"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:text="Sign Up"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lastnameField" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:visibility="gone"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.715" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 
