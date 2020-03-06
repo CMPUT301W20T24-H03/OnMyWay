@@ -1,4 +1,17 @@
 package com.CMPUT301W20T24.OnMyWay;
+/**
+ * Class is responsible for handling the sign up procedure for any new rider
+ * With an option linking to a new activity for driver account creation
+ *
+ * Things left to do:
+ *  - Add phone number field
+ *  - Add additional intent for driver sign up
+ *  - Ensure the new user sign-up works
+ *  - Ensure that thte user is added to the 'users' collection on firebase
+ *
+ *  Working on rn:
+ *      - Working on database linking with the help of DBManager.pushUserInfo()
+ */
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +45,8 @@ public class SignUpRider extends AppCompatActivity {
 
     ProgressBar progressBar;
 
+    //instrantiating DBManager()
+    DBManager db = new DBManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +60,10 @@ public class SignUpRider extends AppCompatActivity {
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+
+
     }
 
     public void onRegisterButtonPressed(View view){
@@ -104,6 +120,12 @@ public class SignUpRider extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             finish();
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            if(user != null){
+                                //get dbmanager to push all the info to firebase
+                                User newUser = new User(user, userfirstName, userlastName, false,userEmail, "1231231234", 0,0);
+                                db.pushUserInfo(newUser);
+                            }
                             startActivity(new Intent(SignUpRider.this, LoginActivity.class));
                         }
                         else{
@@ -117,6 +139,8 @@ public class SignUpRider extends AppCompatActivity {
 
                     }
                 });
+
+
     }
 
     public void onDriverSignUpPressed(){
