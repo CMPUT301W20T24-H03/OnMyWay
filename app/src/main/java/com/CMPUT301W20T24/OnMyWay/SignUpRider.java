@@ -123,5 +123,6 @@ public class SignUpRider extends AppCompatActivity {
         //Launch driver sign up page
         //To implement
 
+
     }
 }
