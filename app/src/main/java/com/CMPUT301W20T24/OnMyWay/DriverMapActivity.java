@@ -3,9 +3,11 @@ package com.CMPUT301W20T24.OnMyWay;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -30,6 +32,14 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     FusedLocationProviderClient fusedLocationProviderClient;
     private static final int REQUEST_CODE = 101;
     View mapView;
+
+    // HACK TO GO BACK TO THE MAIN ACTIVITY WHEN THE BACK BUTTON IS PRESSED. REMOVE LATER
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "Switching to MainActivity");
+        Intent intent = new Intent(DriverMapActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

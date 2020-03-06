@@ -12,26 +12,31 @@ public class Utilities {
     /// Author: https://stackoverflow.com/users/303696/den-delimarsky
     /// Answer: https://stackoverflow.com/questions/4846484/md5-hashing-in-android
     public static String md5(String string) {
-        try {
-            // Create MD5 Hash
-            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
-            digest.update(string.getBytes());
-            byte[] messageDigest = digest.digest();
-
-            // Create Hex String
-            StringBuilder hexString = new StringBuilder();
-            for (byte aMessageDigest : messageDigest) {
-                String hexDigit = Integer.toHexString(0xFF & aMessageDigest);
-                while (hexDigit.length() < 2)
-                    hexDigit = "0" + hexDigit;
-                hexString.append(hexDigit);
-            }
-            return hexString.toString();
-
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+        if (string == "" || string == null) {
+            throw new IllegalArgumentException("Getting the hash of an empty string makes no sense");
         }
-        return "";
+        else {
+            try {
+                // Create MD5 Hash
+                MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
+                digest.update(string.getBytes());
+                byte[] messageDigest = digest.digest();
+
+                // Create Hex String
+                StringBuilder hexString = new StringBuilder();
+                for (byte aMessageDigest : messageDigest) {
+                    String hexDigit = Integer.toHexString(0xFF & aMessageDigest);
+                    while (hexDigit.length() < 2)
+                        hexDigit = "0" + hexDigit;
+                    hexString.append(hexDigit);
+                }
+                return hexString.toString();
+
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+            return "";
+        }
     }
 
 

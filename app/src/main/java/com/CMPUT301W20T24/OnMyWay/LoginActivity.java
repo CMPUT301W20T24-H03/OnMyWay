@@ -9,11 +9,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity{
     private static final String TAG = "OMW/LoginActivity";   // Use this tag for call Log.d()
     private EditText emailField;
     private EditText passwordField;
     private DBManager dbManager;
+    private boolean areAllInputsValid;
 
 
     @Override
@@ -23,23 +24,38 @@ public class LoginActivity extends AppCompatActivity {
 
         dbManager = new DBManager();
 
-        // Get text from EditTexts
+        // Get EditTexts
         emailField = findViewById(R.id.emailField);
         passwordField = findViewById(R.id.passwordField);
     }
 
 
-    // Ignore presses of the back button
+    // HACK TO GO BACK TO THE MAIN ACTIVITY WHEN THE BACK BUTTON IS PRESSED. DISABLE BACK BUTTON LATER
     @Override
     public void onBackPressed() {
-       // Literally nothing
+        Log.d(TAG, "Switching to MainActivity");
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
 
     // A helper function to display error messages in console and in a toast
-    private void showLoginErrorMsg(String errorMsg) {
+//    private void showInputErrorMsg(String errorMsg) {
+//        Log.w(TAG, errorMsg);
+//        Toast.makeText(LoginActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+//    }
+
+
+    // A helper function to display error messages in console and in a toast
+    private void showInputErrorMsg(String errorMsg, EditText fieldWithError) {
+        areAllInputsValid = false;
+
         Log.w(TAG, errorMsg);
-        Toast.makeText(LoginActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(EditProfileActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+
+        if (fieldWithError != null) {
+            fieldWithError.setError(errorMsg);
+        }
     }
 
 
@@ -73,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             public void onLoginFailure(Exception exception) {
-                showLoginErrorMsg("Authentication failed. Please check your email and password again" + exception.toString());
+                showInputErrorMsg("Authentication failed. Please check your email and password again" + exception.toString(), null);
             }
         });
 
@@ -82,31 +98,68 @@ public class LoginActivity extends AppCompatActivity {
 
 
     // Called when login button pressed. Defined in XML
-    public void onLoginButtonPressed(View view) {
+/*    public void onLoginButtonPressed(View view) {
         CharSequence emailAddressChars = emailField.getText();
         // Make sure the email address is valid
-        InputValidatorResponse emailStatus = InputValidator.checkEmail(emailAddressChars);
+        ResponseStatus emailStatus = InputValidator.checkEmail(emailAddressChars);
 
         if (emailStatus.success()) {
             CharSequence passwordChars = passwordField.getText();
             // Make sure password is valid
-            InputValidatorResponse passwordStatus = InputValidator.checkPassword(passwordChars);
+            ResponseStatus passwordStatus = InputValidator.checkPassword(passwordChars);
 
             if (passwordStatus.success()) {
                 // Pass the email address and password to loginUser if inputs are valid
                 loginUser(emailAddressChars.toString(), passwordChars.toString());
             }
             else {
-                showLoginErrorMsg(passwordStatus.getErrorMsg());
+                showInputErrorMsg(passwordStatus.getErrorMsg(), passwordField);
             }
         }
         else {
-            showLoginErrorMsg(emailStatus.getErrorMsg());
+            showInputErrorMsg(emailStatus.getErrorMsg(), emailField);
+        }
+    }*/
+
+    public void onLoginButtonPressed(View view) {
+        Log.d(TAG, "Login button pressed");
+
+        areAllInputsValid = true;   // Assume all the inputs are valid at the start
+
+        // Get text from EditTexts
+        CharSequence emailAddressChars = emailField.getText();
+        CharSequence passwordChars = passwordField.getText();
+
+        // If any of the inputs fail validation, show the error message and update UI
+
+        // Check if the inputs are valid and store the responses in ResponseStatuses
+        ResponseStatus emailStatus = InputValidator.checkEmail(emailAddressChars);
+        ResponseStatus passwordStatus = InputValidator.checkPassword(passwordChars);
+
+        /// StackOverflow post by SilentKiller
+        /// Author: https://stackoverflow.com/users/1160282/silentkiller
+        /// Answer: https://stackoverflow.com/questions/18225365/show-error-on-the-tip-of-the-edit-text-android
+        if (!emailStatus.success()) {
+            showInputErrorMsg(emailStatus.getErrorMsg(), emailField);
+        }
+
+        if (!passwordStatus.success()) {
+            showInputErrorMsg(passwordStatus.getErrorMsg(), passwordField);
+        }
+
+        if (areAllInputsValid) {
+            Log.d(TAG, "All inputs are valid. Trying to login now");
+
+            // Pass the email address and password to loginUser if inputs are valid
+            loginUser(emailAddressChars.toString(), passwordChars.toString());
+        }
+        else {
+            Toast.makeText(LoginActivity.this, "Please check your inputs again", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void onSignUpPressed(View view){
-        Intent intent = new Intent(this, SignUpActivity.class);
+        Intent intent = new Intent(this, SignUpRider.class);
         startActivity(intent);
     }
 }

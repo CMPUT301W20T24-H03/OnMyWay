@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import static android.telephony.PhoneNumberUtils.formatNumber;
 
 
-// Validate various types of text inputs. Look at InputValidatorResponse() to see how to call it correctly.
+// Validate various types of text inputs. Look at ResponseStatus() to see how to call it correctly.
 public class InputValidator {
     private static final String TAG = "OMW/InputValidator";   // Use this tag for call Log.d()
 
@@ -14,34 +14,48 @@ public class InputValidator {
     /// StackOverflow post by mindriot
     /// Author: https://stackoverflow.com/users/1011746/mindriot
     /// Answer: https://stackoverflow.com/questions/1819142/how-should-i-validate-an-e-mail-address
-    public static InputValidatorResponse checkEmail(CharSequence emailAddressChars) {
+    public static ResponseStatus checkEmail(CharSequence emailAddressChars) {
         Log.d(TAG, "Checking email address");
 
         if (!TextUtils.isEmpty(emailAddressChars) && android.util.Patterns.EMAIL_ADDRESS.matcher(emailAddressChars).matches()) {
             // Return true if the email address is okay
-            return new InputValidatorResponse(true, emailAddressChars.toString());
+            return new ResponseStatus(true, emailAddressChars.toString());
         }
-        return new InputValidatorResponse(false, "Email address is not valid");
+        return new ResponseStatus(false, "Email address is not valid");
     }
 
 
-    // TODO: IMPLEMENT THIS CLASS LATER TO CHECK WHETHER PASSWORDS ARE IN VALID FORM
-    public static InputValidatorResponse checkPassword(CharSequence passwordChars) {
+
+    public static ResponseStatus checkPassword(CharSequence passwordChars) {
         Log.d(TAG, "Checking password");
 
-        return new InputValidatorResponse();    // This just returns true for now
+        int passwordLength = passwordChars.length();
+
+        if (passwordLength < 6) {
+            return new ResponseStatus(false, "The password entered is too short");
+        }
+        else if (passwordLength > 40) {
+            return new ResponseStatus(false, "The password entered is too long");
+        }
+        else if (Pattern.matches("^[a-zA-Z0-9_$&+,:;=?@#|'`<>.^*()%!-~\\[\\]\\{\\}\\\\]+$", passwordChars)) {
+            // Allowed characters:
+            // A-Z, 0-9, and _$&+,:;=?@#|'`<>.^*()%!-~[]{}\
+            return new ResponseStatus();
+        }
+
+        return new ResponseStatus(false, "Password is not valid");    // This just returns true for now
     }
 
 
     // Helper method to check if first name is valid. Takes a CharSequence from an EditText
-    public static InputValidatorResponse checkFirstName(CharSequence nameChars) {
+    public static ResponseStatus checkFirstName(CharSequence nameChars) {
         // Just call checkName but tell it what type of name so it can print log messages
         return checkName(nameChars, "first");
     }
 
 
     // Helper method to check if last name is valid. Takes a CharSequence from an EditText
-    public static InputValidatorResponse checkLastName(CharSequence nameChars) {
+    public static ResponseStatus checkLastName(CharSequence nameChars) {
         // Just call checkName but tell it what type of name so it can print log messages
         return checkName(nameChars, "last");
     }
@@ -49,23 +63,23 @@ public class InputValidator {
 
     // Method to check if a name is valid. Takes a CharSequence from an EditText.
     // Private because we never call it directly from outside
-    private static InputValidatorResponse checkName(CharSequence nameChars, String nameType) {
+    private static ResponseStatus checkName(CharSequence nameChars, String nameType) {
         Log.d(TAG, "Checking " + nameType + " name");
 
         int nameLength = nameChars.length();
 
         if (nameLength <= 1) {
-            return new InputValidatorResponse(false, "The " + nameType + " name entered is too short");
+            return new ResponseStatus(false, "The " + nameType + " name entered is too short");
         }
         else if (nameLength > 40) {
-            return new InputValidatorResponse(false, "The " + nameType + " name entered is too long");
+            return new ResponseStatus(false, "The " + nameType + " name entered is too long");
         }
         else if (Pattern.matches("[a-zA-Z]+", nameChars)) {
             // Capitalize the name and return it if the email address is formatted correctly
-            return new InputValidatorResponse(true, Utilities.capitalize(nameChars.toString()));
+            return new ResponseStatus(true, Utilities.capitalize(nameChars.toString()));
         }
 
-        return new InputValidatorResponse(false, "The " + nameType + " name entered is not valid");
+        return new ResponseStatus(false, "The " + nameType + " name entered is not valid");
     }
 
 
@@ -75,7 +89,7 @@ public class InputValidator {
     /// StackOverflow post by Trinimon
     /// Author: https://stackoverflow.com/users/2092587/trinimon
     /// Answer: https://stackoverflow.com/questions/15647327/phone-number-formatting-an-edittext-in-android
-    public static InputValidatorResponse checkPhoneNumber(CharSequence phoneChars) {
+    public static ResponseStatus checkPhoneNumber(CharSequence phoneChars) {
         Log.d(TAG, "Checking phone number");
 
         // Format the phone number nicely, if possible.
@@ -84,10 +98,10 @@ public class InputValidator {
 
         if (formattedPhoneNumber != null) {
             // If its a real phone number, return the nicely formatted version
-            return new InputValidatorResponse(true, formattedPhoneNumber);
+            return new ResponseStatus(true, formattedPhoneNumber);
         }
         else {
-            return new InputValidatorResponse(false, "The phone number entered is not valid");
+            return new ResponseStatus(false, "The phone number entered is not valid");
         }
     }
 }

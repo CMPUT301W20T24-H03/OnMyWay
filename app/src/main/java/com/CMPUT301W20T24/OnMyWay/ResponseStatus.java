@@ -1,6 +1,6 @@
 package com.CMPUT301W20T24.OnMyWay;
 
-public class InputValidatorResponse {
+public class ResponseStatus {
     private boolean status;
     private String errorMsg;
     private String result;
@@ -8,7 +8,7 @@ public class InputValidatorResponse {
 
     // A helpful object for returning status (true, false) as well as an error messages or result
     // from a method call
-    public InputValidatorResponse(boolean status, String string) {
+    public ResponseStatus(boolean status, String string) {
         if (status) {
             setResult(string);      // If status is true, set the result
         }
@@ -20,7 +20,7 @@ public class InputValidatorResponse {
 
 
     // If called with no arguments, we assume the result was successful
-    public InputValidatorResponse() {
+    public ResponseStatus() {
         this(true, null);
     }
 
