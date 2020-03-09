@@ -1,10 +1,13 @@
 package com.CMPUT301W20T24.OnMyWay;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,9 +35,11 @@ public class ShowProfileFragment extends DialogFragment implements View.OnClickL
             throw new NullPointerException("User can't be null");
         }
         else if (user == State.getCurrentUser()) {
+            Log.d(TAG, "Creating profile dialog for current user");
             showLogoutButton = true;
         }
         else {
+            Log.d(TAG, "Creating profile dialog for some user");
             showLogoutButton = false;
         }
 
@@ -74,6 +79,9 @@ public class ShowProfileFragment extends DialogFragment implements View.OnClickL
 
         Button backButton = view.findViewById(R.id.buttonBack);
         backButton.setOnClickListener(this);
+
+        Button editButton = view.findViewById(R.id.buttonEditProfile);
+        editButton.setOnClickListener(this);
 
         logoutButton = view.findViewById(R.id.buttonLogout);
         logoutButton.setOnClickListener(this);
@@ -124,13 +132,28 @@ public class ShowProfileFragment extends DialogFragment implements View.OnClickL
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.buttonLogout) {
+        Log.d(TAG, "Button pressed");
+        final int viewId = view.getId();
+        Activity parentActivity = getActivity();
+
+        if (viewId == R.id.buttonBack) {
+            Log.d(TAG, "Back button pressed");
+            this.dismiss();
+        }
+        else if (viewId == R.id.buttonEditProfile) {
+            Log.d(TAG, "Edit profile button pressed");
+            Intent intent = new Intent(parentActivity, EditProfileActivity.class);
+            startActivity(intent);
+        }
+        else if (viewId == R.id.buttonLogout) {
+            Log.d(TAG, "Logout button pressed");
             new DBManager().logoutUser();
-            Intent intent = new Intent(getActivity(), SplashScreenActivity.class);
+            Intent intent = new Intent(parentActivity, SplashScreenActivity.class);
             intent.putExtra("isLoggedOut", true);
             startActivity(intent);
         }
-
-        this.dismiss();
+        else {
+            throw new NullPointerException("No button with the correct ID was found");
+        }
     }
 }
