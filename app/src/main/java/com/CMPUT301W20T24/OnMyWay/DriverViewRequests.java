@@ -23,7 +23,7 @@ public class DriverViewRequests extends AppCompatActivity {
     ListView requestListView;
 
     // need to change later when finalize request class, just dummy one for now
-    ArrayList<String> requests = new ArrayList<String>();
+    ArrayList<dummyRequest> requests = new ArrayList<dummyRequest>();
 
     float a = (float) 15.32;
 
@@ -63,12 +63,12 @@ public class DriverViewRequests extends AppCompatActivity {
 
             // 0.15 in lat long ~ = 11 km, searching within this range for requests
             if (dist < 0.15){
-                requests.add(requestsin.get(i).getUsername());
+                requests.add(requestsin.get(i));
             }
         }
 
 
-        arrayAdapter = new CustomListDriverRequest(this, requestsin);
+        arrayAdapter = new CustomListDriverRequest(this, requests);
 
         requestListView.setAdapter(arrayAdapter);
 
