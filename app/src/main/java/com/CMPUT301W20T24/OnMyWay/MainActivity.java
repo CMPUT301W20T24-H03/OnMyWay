@@ -66,4 +66,6 @@ public class MainActivity extends AppCompatActivity {
         Log.w(TAG, msg);
         Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
     }
+
+
 }
