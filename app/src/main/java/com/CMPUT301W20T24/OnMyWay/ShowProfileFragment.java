@@ -1,0 +1,136 @@
+package com.CMPUT301W20T24.OnMyWay;
+
+import android.content.Intent;
+import android.os.Bundle;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import de.hdodenhof.circleimageview.CircleImageView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import com.squareup.picasso.Picasso;
+
+
+/// CodePath, Using DialogFragment
+/// https://guides.codepath.com/android/using-dialogfragment
+public class ShowProfileFragment extends DialogFragment implements View.OnClickListener {
+    private static final String TAG = "OMW/ShowProfileFragment";  // Use this tag for call Log.d()
+    private static boolean showLogoutButton = false;
+    private Button logoutButton;
+
+
+    public ShowProfileFragment() {
+        // Empty constructor required here
+        // Use newInstance() to create a new instance of the dialog
+    }
+
+
+    public static ShowProfileFragment newInstance(User user) {
+        if (user == null) {
+            throw new NullPointerException("User can't be null");
+        }
+        else if (user == State.getCurrentUser()) {
+            showLogoutButton = true;
+        }
+        else {
+            showLogoutButton = false;
+        }
+
+        ShowProfileFragment fragment = new ShowProfileFragment();
+        Bundle args = new Bundle();
+
+        args.putString("profilePhotoUrl", user.getProfilePhotoUrl());
+        args.putString("userId", user.getUserID());
+        args.putString("userType", (user.isDriver()) ? "Driver" : "Rider");
+        args.putString("rating", user.getRating());
+        args.putString("fullName", user.getFullName());
+        args.putString("email", user.getEmail());
+        args.putString("phone", user.getPhoneNumber());
+
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
+
+    /// StackOverflow post by jmaculate
+    /// Author: https://stackoverflow.com/users/1908451/jmaculate
+    /// Answer: https://stackoverflow.com/questions/12478520/how-to-set-dialogfragments-width-and-height
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_show_profile, container);
+
+        Button backButton = view.findViewById(R.id.buttonBack);
+        backButton.setOnClickListener(this);
+
+        logoutButton = view.findViewById(R.id.buttonLogout);
+        logoutButton.setOnClickListener(this);
+
+        if (showLogoutButton) {
+            logoutButton.setVisibility(view.VISIBLE);
+        }
+
+        return view;
+    }
+
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Get field from view
+        TextView labelUserId = view.findViewById(R.id.labelUserId);
+        TextView labelUserType = view.findViewById(R.id.labelUserType);
+        TextView labelUserRating = view.findViewById(R.id.labelRating);
+        TextView fullNameText = view.findViewById(R.id.textFullName);
+        TextView emailText = view.findViewById(R.id.textEmail);
+        TextView phoneText = view.findViewById(R.id.textPhone);
+        CircleImageView profilePhotoImage = view.findViewById(R.id.imageProfilePhoto);
+
+        // Fetch arguments from bundle and set title
+        Bundle bundle = getArguments();
+        String profilePhotoUrl = bundle.getString("profilePhotoUrl", "");
+        String userId = bundle.getString("userId", "-");
+        String userType = bundle.getString("userType", "-");
+        String rating = bundle.getString("rating", "-");
+        String fullName = bundle.getString("fullName", "-");
+        String email = bundle.getString("email", "-");
+        String phone = bundle.getString("phone", "-");
+
+        labelUserId.setText(userId);
+        labelUserType.setText(userType);
+        labelUserRating.setText(rating);
+        fullNameText.setText(fullName);
+        emailText.setText(email);
+        phoneText.setText(phone);
+
+        // TODO: Download this image and cache when we first get the user (in DBManager?)
+        // Download the profile photo for the user and display it
+        Picasso.get().load(profilePhotoUrl).noFade().into(profilePhotoImage);
+    }
+
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.buttonLogout) {
+            new DBManager().logoutUser();
+            Intent intent = new Intent(getActivity(), SplashScreenActivity.class);
+            intent.putExtra("isLoggedOut", true);
+            startActivity(intent);
+        }
+
+        this.dismiss();
+    }
+}
