@@ -32,7 +32,7 @@ public class EditProfileActivity extends AppCompatActivity {
         lastNameField = findViewById(R.id.fieldLastName);
         emailField = findViewById(R.id.fieldEmail);
         phoneField = findViewById(R.id.fieldPhone);
-        ImageView profilePhotoImage = findViewById(R.id.imageProfilePhoto);
+        ImageView profilePhotoImage = findViewById(R.id.imageCurrentProfilePhoto);
 
         User currentUser = State.getCurrentUser();
 
