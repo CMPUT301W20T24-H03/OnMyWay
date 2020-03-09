@@ -100,6 +100,3 @@ public class Request {
         this.timeAccepted = timeAccepted;
     }
 }
-
-
-

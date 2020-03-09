@@ -6,6 +6,8 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +21,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
@@ -30,6 +34,9 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     /// https://www.youtube.com/watch?v=boyyLhXAZAQ&t=22s
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
+    LocationManager locationManager;
+    LocationListener locationListener;
+
     private static final int REQUEST_CODE = 101;
     View mapView;
 
@@ -100,5 +107,32 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         // position on right bottom
         rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);rlp.setMargins(30,30,30,120);
+
+
+       // 53.54624° N, -113.49037° E
+        /*
+        LatLng lln1 = new LatLng(53.535,-113.452);
+        LatLng lln2 = new LatLng(53.525,-112.362);
+
+        mMap.addMarker(new MarkerOptions().position(lln1).title("user1"));
+        mMap.addMarker(new MarkerOptions().position(lln2).title("user2"));
+
+        Polyline polylineRide = mMap.addPolyline(new PolylineOptions().clickable(true).add(lln1,current_coordinates));
+        */
     }
+
+    public void findRider(View view) {
+        if (currentLocation != null) {
+            Intent intent = new Intent(this, DriverViewRequests.class);
+            double lat = currentLocation.getLatitude();
+            double lon = currentLocation.getLongitude();
+            intent.putExtra("DRIVER_LAT",lat);
+            intent.putExtra("DRIVER_LON",lon);
+            startActivity(intent);
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "Unable to find your current location", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }
