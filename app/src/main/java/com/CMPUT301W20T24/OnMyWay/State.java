@@ -35,4 +35,16 @@ public class State {
     static public boolean isLoggedIn() {
         return dbManager.getFirebaseUser() != null;
     }
+
+
+    static private void removeCurrentUser() {
+        currentUser = null;
+    }
+
+
+    // This function works. Don't know if this should be here or in State
+    static public void logoutUser() {
+        removeCurrentUser();
+        dbManager.logoutUser();
+    }
 }

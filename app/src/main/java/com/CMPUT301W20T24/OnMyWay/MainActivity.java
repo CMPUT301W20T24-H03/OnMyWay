@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "OMW/MainActivity";   // Use this tag for Log.d()
     private TextView statusTextCurrentUser;
     private User currentUser;
+    private DBManager dbManager;
     private FragmentManager fm;
     private ShowProfileFragment showProfileFragment;
 
@@ -26,13 +27,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         this.setTitle("Test Activity");
 
+        dbManager = new DBManager();
         fm = getSupportFragmentManager();
 
         statusTextCurrentUser = findViewById(R.id.statusTextCurrentUser);
         currentUser = State.getCurrentUser();
 
         if (currentUser != null) {
-            statusTextCurrentUser.setText(currentUser.getUserID());
+            statusTextCurrentUser.setText(currentUser.getUserId());
             statusTextCurrentUser.setTextColor(ContextCompat.getColor(this, R.color.colorSuccess));
         }
     }
@@ -76,34 +78,56 @@ public class MainActivity extends AppCompatActivity {
     // Called when the user presses a button
     public void showCurrentUserProfile(View view) {
         showProfileFragment = ShowProfileFragment.newInstance(currentUser);
-        showProfileFragment.show(fm, "show_profile_fragment");
+        showProfileFragment.show(fm);
     }
 
 
     // Called when the user presses a button
     // TODO: Implement this. Need to rewrite User and DBManager first
     public void showRiderTestProfile(View view) {
-//        FragmentManager fm = getSupportFragmentManager();
-//        ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(user);
-//        showProfileFragment.show(fm, "show_profile_fragment");
+        // Use the listener we made to listen for when the function finishes
+        dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
+            @Override
+            public void onUserInfoPulled(User fetchedUser) {
+                ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(fetchedUser);
+                showProfileFragment.show(fm);
+            }
+        });
+
+        // Fetch the user info of a test rider user
+        dbManager.fetchUserInfo("pcpzIGU4W7XomSe7o6AUXcFGDJy1");
     }
 
 
     // Called when the user presses a button
     // TODO: Implement this. Need to rewrite User and DBManager first
     public void showDriverTestProfile(View view) {
-//        FragmentManager fm = getSupportFragmentManager();
-//        ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(user);
-//        showProfileFragment.show(fm, "show_profile_fragment");
+        // Use the listener we made to listen for when the function finishes
+        dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
+            @Override
+            public void onUserInfoPulled(User fetchedUser) {
+                ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(fetchedUser);
+                showProfileFragment.show(fm);
+            }
+        });
+
+        // Fetch the user info of a test driver user
+        dbManager.fetchUserInfo("dYG5SQAAGVbmglT5k8dUhufAnpq1");
     }
 
 
     // Called when the user presses a button
     public void logout(View view) {
         String msg = "Logged out";
-        new DBManager().logoutUser();
+
+        State.logoutUser();
+        Intent intent = new Intent(this, SplashScreenActivity.class);
+        intent.putExtra("isLoggedOut", true);
+        startActivity(intent);
+
         Log.w(TAG, msg);
         Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+
         statusTextCurrentUser.setText("None");
         statusTextCurrentUser.setTextColor(ContextCompat.getColor(this, R.color.colorError));
     }

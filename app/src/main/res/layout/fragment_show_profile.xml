@@ -170,8 +170,8 @@
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:backgroundTint="#F44336"
         android:backgroundTintMode="multiply"
         android:drawableStart="@drawable/ic_exit_to_app_red_24dp"
@@ -179,7 +179,16 @@
         android:elevation="6dp"
         android:text="@string/text_logout"
         android:textColor="@color/colorError"
-        android:visibility="invisible"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textPhone" />
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
