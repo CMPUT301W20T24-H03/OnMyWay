@@ -6,11 +6,7 @@ package com.CMPUT301W20T24.OnMyWay;
  * Things left to do:
  *  - Add phone number field
  *  - Add additional intent for driver sign up
- *  - Ensure the new user sign-up works
- *  - Ensure that thte user is added to the 'users' collection on firebase
- *
- *  Working on rn:
- *      - Working on database linking with the help of DBManager.pushUserInfo()
+ *  
  */
 
 import androidx.annotation.NonNull;
@@ -34,7 +30,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.regex.Pattern;
 
-public class SignUpRider extends AppCompatActivity {
+public class SignUp extends AppCompatActivity {
     //User Inputs
     private EditText emailID;
     private EditText password;
@@ -51,7 +47,7 @@ public class SignUpRider extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up_rider);
+        setContentView(R.layout.activity_sign_up);
 
         emailID = findViewById(R.id.emailField);
         password = findViewById(R.id.passwordField);
@@ -108,6 +104,8 @@ public class SignUpRider extends AppCompatActivity {
             return;
         }
 
+
+
         progressBar.setVisibility(View.VISIBLE);
 
 
@@ -126,7 +124,7 @@ public class SignUpRider extends AppCompatActivity {
                                 User newUser = new User(user, userfirstName, userlastName, false,userEmail, "1231231234", 0,0);
                                 db.pushUserInfo(newUser);
                             }
-                            startActivity(new Intent(SignUpRider.this, LoginActivity.class));
+                            startActivity(new Intent(SignUp.this, LoginActivity.class));
                         }
                         else{
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
