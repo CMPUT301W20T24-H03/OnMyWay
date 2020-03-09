@@ -25,10 +25,12 @@ public class DriverViewRequests extends AppCompatActivity {
     // need to change later when finalize request class, just dummy one for now
     ArrayList<String> requests = new ArrayList<String>();
 
+    float a = (float) 15.32;
+
     ArrayList<dummyRequest> requestsin = new ArrayList<dummyRequest>();
-    dummyRequest request1 = new dummyRequest("Bob", 53.54,-113.49);
-    dummyRequest request2 = new dummyRequest("jerry",53.46, -113.52);
-    dummyRequest request3 = new dummyRequest("bill", 53.9, -113.8);
+    dummyRequest request1 = new dummyRequest("Bob", 53.54,-113.49, a);
+    dummyRequest request2 = new dummyRequest("jerry",53.46, -113.52, a);
+    dummyRequest request3 = new dummyRequest("bill", 53.9, -113.8, a);
 
 
 
@@ -65,11 +67,14 @@ public class DriverViewRequests extends AppCompatActivity {
             }
         }
 
-        arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,requests);
+
+        arrayAdapter = new CustomListDriverRequest(this, requestsin);
 
         requestListView.setAdapter(arrayAdapter);
 
     }
+
+
 
     public double geoDist(double latDriver, double lonDriver, double latRider, double longRider){
 

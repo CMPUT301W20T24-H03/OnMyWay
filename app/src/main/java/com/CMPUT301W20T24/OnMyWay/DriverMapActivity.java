@@ -130,6 +130,9 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             intent.putExtra("DRIVER_LON",lon);
             startActivity(intent);
         }
+        else{
+            Toast.makeText(getApplicationContext(), "Unable to find your current location", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

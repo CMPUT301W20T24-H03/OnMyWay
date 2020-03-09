@@ -6,12 +6,13 @@ public class dummyRequest{
     private String username;
     private double lat;
     private double lon;
+    private float payment;
 
-
-    public dummyRequest(String username, double lat, double lon) {
+    public dummyRequest(String username, double lat, double lon, float payment) {
         this.username = username;
         this.lat = lat;
         this.lon = lon;
+        this.payment = payment;
     }
 
     public String getUsername() {
@@ -36,5 +37,13 @@ public class dummyRequest{
 
     public void setLat(double lat) {
         this.lat = lat;
+    }
+
+    public float getPayment() {
+        return payment;
+    }
+
+    public void setPayment(float payment) {
+        this.payment = payment;
     }
 }
