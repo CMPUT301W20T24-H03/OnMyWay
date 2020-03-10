@@ -123,7 +123,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
         com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(marker.getPosition().latitude,marker.getPosition().longitude);
 
-        my_geoApi = new GeoApiContext.Builder().apiKey("AIzaSyCR4H0LPNO44iok2PLe2rs-d5WtwMvrUG4").build();
+        my_geoApi = new GeoApiContext.Builder().apiKey(getString(R.string.google_api_key)).build();
         DirectionsApiRequest directions = new DirectionsApiRequest(my_geoApi);
 
         directions.alternatives(true);
