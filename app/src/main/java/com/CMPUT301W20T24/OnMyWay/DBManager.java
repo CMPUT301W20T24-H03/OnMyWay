@@ -12,7 +12,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
-
 import java.util.HashMap;
 import java.util.Map;
 import androidx.annotation.NonNull;
@@ -120,7 +119,7 @@ public class DBManager {
     }
 
 
-    // This function works. Don't know if this should be here or in State
+    // Don't call this directly. Call the method in State to clean up local data also
     public void logoutUser() {
         FirebaseAuth.getInstance().signOut();
     }
@@ -133,7 +132,6 @@ public class DBManager {
             @Override
             public void onUserInfoPulled(User currentUser) {
                 State.setCurrentUser(currentUser);
-                Picasso.get().load(currentUser.getProfilePhotoUrl()).fetch();
 
                 if (currentUserInfoPulledListener == null) {
                     Log.d(TAG, "No listeners are assigned for currentUserInfoPulledListener");
@@ -145,15 +143,15 @@ public class DBManager {
         });
 
         // Fetch the user info of the current user. Should not be null because we checked this before
-        fetchUserInfo(auth.getCurrentUser());
+        fetchUserInfo(auth.getCurrentUser().getUid());
     }
 
 
     /// Google Firebase, Get data with Cloud Firestore
     /// https://firebase.google.com/docs/firestore/query-data/get-data
-    public void fetchUserInfo(FirebaseUser firebaseUser) {
+    public void fetchUserInfo(String userId) {
         // Look for the user with the given user id in FireStore
-        db.collection("users").document(firebaseUser.getUid())
+        db.collection("users").document(userId)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -169,7 +167,7 @@ public class DBManager {
                                 // Check each one to make sure its not null
                                 // Everything from FireStore should be okay if we store it correctly
                                 User newUser = new User(
-                                        firebaseUser,
+                                        userId,
                                         Utilities.checkStringNotNull(document.getString("firstName")),
                                         Utilities.checkStringNotNull(document.getString("lastName")),
                                         Utilities.checkBooleanNotNull(document.getBoolean("isDriver")),
@@ -178,6 +176,9 @@ public class DBManager {
                                         Utilities.checkLongNotNull(document.getLong("upRatings")),
                                         Utilities.checkLongNotNull(document.getLong("totalRatings"))
                                 );
+
+                                // Download the user's profile photo and cache it for later
+                                Picasso.get().load(newUser.getProfilePhotoUrl()).fetch();
 
                                 if (userInfoPulledListener == null) {
                                     Log.d(TAG, "No listeners are assigned for userInfoPulledListener");
@@ -215,7 +216,7 @@ public class DBManager {
         updatedUserObj.put("totalRatings", updatedUser.getTotalRatings());
 
         // Extract the user id from updatedUser and update that document on FireStore
-        db.collection("users").document(updatedUser.getUserID())
+        db.collection("users").document(updatedUser.getUserId())
                 .set(updatedUserObj)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
