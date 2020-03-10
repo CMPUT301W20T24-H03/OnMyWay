@@ -6,10 +6,12 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentActivity;
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -19,6 +21,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -36,6 +39,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.internal.PolylineEncoding;
@@ -201,22 +205,18 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             @Override
             public boolean onMarkerClick(Marker marker) {
                 calculateDirections(marker);
+
+                BottomSheetDialog dialog = new BottomSheetDialog(DriverMapActivity.this);
+                dialog.setContentView(R.layout.confirm_ride_driver);
+                dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+                dialog.show();
+
+
                 return false;
             }
+
         });
 
-
-
-       // 53.54624° N, -113.49037° E
-        /*
-        LatLng lln1 = new LatLng(53.535,-113.452);
-        LatLng lln2 = new LatLng(53.525,-112.362);
-
-        mMap.addMarker(new MarkerOptions().position(lln1).title("user1"));
-        mMap.addMarker(new MarkerOptions().position(lln2).title("user2"));
-
-        Polyline polylineRide = mMap.addPolyline(new PolylineOptions().clickable(true).add(lln1,current_coordinates));
-        */
     }
 
     public void findRider(View view) {
