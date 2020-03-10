@@ -2,10 +2,14 @@ package com.CMPUT301W20T24.OnMyWay;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentActivity;
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -113,13 +117,13 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     private GeoApiContext my_geoApi;
     private void calculateDirections(Marker marker){
 
-        LatLng destination = new LatLng(marker.getPosition().latitude,marker.getPosition().longitude);
+        com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(marker.getPosition().latitude,marker.getPosition().longitude);
 
         my_geoApi = new GeoApiContext.Builder().apiKey("AIzaSyCR4H0LPNO44iok2PLe2rs-d5WtwMvrUG4").build();
         DirectionsApiRequest directions = new DirectionsApiRequest(my_geoApi);
 
         directions.alternatives(true);
-        directions.origin(new com.google.maps.model.LatLng(currentLocation.getLatitude(),currentLocation.getLongitude()));
+        directions.origin(new com.google.maps.model.LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
 
         directions.destination(String.valueOf(destination)).setCallback(new com.google.maps.PendingResult.Callback<DirectionsResult>() {
             @Override
@@ -129,7 +133,8 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
             @Override
             public void onFailure(Throwable e) {
-                System.out.println(e.getMessage());
+                System.out.println("HELLO");
+                System.out.println(e.toString());
             }
 
         });
@@ -137,8 +142,10 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
     /// YouTube video by CodingWithMitch: Adding Polylines to a Google Map
     /// https://www.youtube.com/watch?v=xl0GwkLNpNI&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=20
+    Polyline polyline;
     private void addPolylinesToMap(final DirectionsResult result){
         new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @SuppressLint("ResourceType")
             @Override
             public void run() {
                 Log.d(TAG, "run: result routes: " + result.routes.length);
@@ -152,16 +159,16 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
                     // This loops through all the LatLng coordinates of ONE polyline.
                     for(com.google.maps.model.LatLng latLng: decodedPath){
 
-//                        Log.d(TAG, "run: latlng: " + latLng.toString());
-
                         newDecodedPath.add(new LatLng(
                                 latLng.lat,
                                 latLng.lng
                         ));
                     }
-                    Polyline polyline = mMap.addPolyline(new PolylineOptions().addAll(newDecodedPath));
-                    //polyline.setColor(ContextCompat.getColor(getActivity(), R.color.darkGrey));
-                    polyline.setClickable(true);
+
+                    if(polyline!=null){
+                        polyline.remove();
+                    }
+                    polyline = mMap.addPolyline(new PolylineOptions().addAll(newDecodedPath).color(getApplicationContext().getResources().getColor(R.color.colorPolyline)).clickable(true).width(10));
 
                 }
             }
@@ -185,7 +192,8 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
         // position on right bottom
         rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);rlp.setMargins(30,30,30,120);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+        rlp.setMargins(30,30,30,120);
 
         addMarkers();
 
