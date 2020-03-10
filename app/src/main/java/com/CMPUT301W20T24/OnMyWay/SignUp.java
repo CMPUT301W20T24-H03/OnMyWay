@@ -36,7 +36,7 @@ public class SignUp extends AppCompatActivity {
     private EditText password;
     private EditText firstName;
     private EditText lastName;
-
+    private boolean driverStatus = false;
     private FirebaseAuth mAuth;
 
     ProgressBar progressBar;
@@ -121,7 +121,7 @@ public class SignUp extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             if(user != null){
                                 //get dbmanager to push all the info to firebase
-                                User newUser = new User(user, userfirstName, userlastName, false,userEmail, "1231231234", 0,0);
+                                User newUser = new User(user, userfirstName, userlastName, driverStatus,userEmail, "1231231234", 0,0);
                                 db.pushUserInfo(newUser);
                             }
                             startActivity(new Intent(SignUp.this, LoginActivity.class));
@@ -141,10 +141,4 @@ public class SignUp extends AppCompatActivity {
 
     }
 
-    public void onDriverSignUpPressed(){
-        //Launch driver sign up page
-        //To implement
-
-
-    }
 }
