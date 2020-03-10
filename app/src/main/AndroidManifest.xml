@@ -58,6 +58,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".RiderCost"
+            android:label="Rider Cost View"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main_activity"
             android:screenOrientation="portrait">

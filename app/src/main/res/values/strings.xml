@@ -25,4 +25,11 @@
     <string name="text_delete_account">Delete account</string>
     <string name="text_save">Save</string>
     <string name="text_full_name">Full name</string>
+    <string name="price_estimate">Price Estimate</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="edit">EDIT</string>
+    <string name="new_price">New Price</string>
+    <string name="ok">OK</string>
+    <string name="confirm1">Confirm</string>
+    <string name="edit1">Edit</string>
 </resources>
