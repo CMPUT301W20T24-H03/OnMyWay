@@ -32,11 +32,11 @@ public class EditProfileActivity extends AppCompatActivity {
         lastNameField = findViewById(R.id.fieldLastName);
         emailField = findViewById(R.id.fieldEmail);
         phoneField = findViewById(R.id.fieldPhone);
-        ImageView profilePhotoImage = findViewById(R.id.imageProfilePhoto);
+        ImageView profilePhotoImage = findViewById(R.id.imageCurrentProfilePhoto);
 
         User currentUser = State.getCurrentUser();
 
-        userIdLabel.setText(currentUser.getUserID());
+        userIdLabel.setText(currentUser.getUserId());
 
         // Check isDriver. If true, set text to "Driver". Otherwise set text to "Rider"
         userTypeLabel.setText(currentUser.isDriver() ? "Driver" : "Rider");
@@ -57,7 +57,6 @@ public class EditProfileActivity extends AppCompatActivity {
         areAllInputsValid = false;
 
         Log.w(TAG, errorMsg);
-//        Toast.makeText(EditProfileActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
 
         if (fieldWithError != null) {
             fieldWithError.setError(errorMsg);

@@ -3,17 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".EditProfileActivity">
+    android:layout_height="wrap_content"
+    android:elevation="24dp"
+    tools:context=".ShowProfileFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/upperConstraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="380dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/splash_screen_background"
         android:elevation="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -27,24 +26,21 @@
             android:layout_marginTop="8dp"
             android:drawableStart="@drawable/ic_arrow_back_white_24dp"
             android:elevation="6dp"
-            android:onClick="onBackButtonPressed"
             android:text="@string/text_back"
             android:textColor="@android:color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
-            android:id="@+id/buttonSave"
+            android:id="@+id/buttonEditProfile"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:drawableStart="@drawable/ic_save_white_24dp"
-            android:drawablePadding="4sp"
+            android:drawableStart="@drawable/ic_edit_white_24dp"
             android:elevation="6dp"
-            android:onClick="onSaveButtonPressed"
-            android:text="@string/text_save"
+            android:text="@string/text_edit"
             android:textAlignment="center"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
@@ -53,18 +49,18 @@
         <!--- Henning Dodenhof, CircleImageView library -->
         <!--- https://github.com/hdodenhof/CircleImageView -->
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/imageCurrentProfilePhoto"
+            android:id="@+id/imageProfilePhoto"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="128dp"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="8dp"
-            app:civ_border_width="4dp"
             app:civ_border_color="#FFFFFFFF"
+            app:civ_border_width="4dp"
             app:layout_constraintBottom_toTopOf="@+id/labelUserId"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_face_white_24dp"/>
+            app:srcCompat="@drawable/ic_face_white_24dp" />
 
         <TextView
             android:id="@+id/labelUserId"
@@ -128,98 +124,73 @@
             app:layout_constraintStart_toEndOf="@+id/labelRatingStar" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/lowerConstraintLayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+    <TextView
+        android:id="@+id/textFullName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:ems="10"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/upperConstraintLayout" />
+
+    <TextView
+        android:id="@+id/textEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:autoLink="email"
+        android:ems="10"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textFullName" />
+
+    <TextView
+        android:id="@+id/textPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:autoLink="phone"
+        android:ems="10"
+        android:maxLength="15"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textEmail" />
+
+    <Button
+        android:id="@+id/buttonLogout"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#F44336"
+        android:backgroundTintMode="multiply"
+        android:drawableStart="@drawable/ic_exit_to_app_red_24dp"
+        android:drawablePadding="4sp"
+        android:elevation="6dp"
+        android:text="@string/text_logout"
+        android:textColor="@color/colorError"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/upperConstraintLayout">
+        app:layout_constraintTop_toBottomOf="@+id/textPhone" />
 
-        <EditText
-            android:id="@+id/fieldFirstName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="@dimen/margin"
-            android:autofillHints="personGivenName"
-            android:ems="10"
-            android:hint="@string/text_first_name"
-            android:inputType="textPersonName"
-            android:maxLength="30"
-            app:layout_constraintBottom_toTopOf="@+id/fieldLastName"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/fieldLastName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin"
-            android:layout_marginEnd="@dimen/margin"
-            android:autofillHints="personFamilyName"
-            android:ems="10"
-            android:hint="@string/text_last_name"
-            android:inputType="textPersonName"
-            android:maxLength="30"
-            app:layout_constraintBottom_toTopOf="@+id/fieldEmail"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fieldFirstName" />
-
-        <EditText
-            android:id="@+id/fieldEmail"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin"
-            android:layout_marginEnd="@dimen/margin"
-            android:autofillHints="emailAddress"
-            android:ems="10"
-            android:hint="@string/text_email"
-            android:inputType="textEmailAddress"
-            android:maxLength="60"
-            app:layout_constraintBottom_toTopOf="@+id/fieldPhone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fieldLastName" />
-
-        <EditText
-            android:id="@+id/fieldPhone"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin"
-            android:layout_marginEnd="@dimen/margin"
-            android:autofillHints="phoneNumber"
-            android:ems="10"
-            android:hint="@string/text_phone_number"
-            android:inputType="phone"
-            android:maxLength="15"
-            app:layout_constraintBottom_toTopOf="@+id/buttonDeleteAccount"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fieldEmail" />
-
-        <Button
-            android:id="@+id/buttonDeleteAccount"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:drawableStart="@drawable/ic_delete_red_24dp"
-            android:onClick="onDeleteAccountPressed"
-            android:text="@string/text_delete_account"
-            android:textColor="@color/colorError"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fieldPhone" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textPhone" />
 </androidx.constraintlayout.widget.ConstraintLayout>
