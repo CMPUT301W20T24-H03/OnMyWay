@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -40,6 +41,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.internal.PolylineEncoding;
@@ -105,16 +107,33 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
 
     public void addMarkers(){
-        ArrayList<LatLng> the_markers = new ArrayList<>();
-        the_markers.add(new LatLng(53.523089, -113.623933));
-        the_markers.add(new LatLng(53.565421, -113.563956));
-        the_markers.add(new LatLng(53.537817, -113.476856));
+        ArrayList<dummyRequest> requests = new ArrayList<dummyRequest>();
 
-        MarkerOptions marker = new MarkerOptions().position(new LatLng(53.523089, -113.623933)).title("Potential Rider");
+        float a = 15.32f;
+        dummyRequest request1 = new dummyRequest("Bob", 53.54,-113.49, a);
+        dummyRequest request2 = new dummyRequest("jerry",53.46, -113.52, a);
+        dummyRequest request3 = new dummyRequest("bill", 53.9, -113.8, a);
+        dummyRequest request4 = new dummyRequest("ali", 53.523089, -113.623933, a);
+        dummyRequest request5 = new dummyRequest("jane",53.565421, -113.563956, a);
+        dummyRequest request6 = new dummyRequest("joan", 53.537817, -113.476856, a);
+        dummyRequest request7 = new dummyRequest("alice",53.52328, -113.5264,a);
+        dummyRequest request8 = new dummyRequest("martha",53.52328, -113.5264,a);
 
-        for(LatLng i : the_markers){
-            Marker my_marker = mMap.addMarker(new MarkerOptions().position(i).title("Potential Rider"));
+
+        requests.add(request1);
+        requests.add(request2);
+        requests.add(request3);
+        requests.add(request4);
+        requests.add(request5);
+        requests.add(request6);
+        requests.add(request7);
+        requests.add(request8);
+
+        for(dummyRequest i : requests){
+            LatLng latlng = new LatLng (i.getLat(), i.getLon());
+            Marker my_marker = mMap.addMarker(new MarkerOptions().position(latlng).title(i.getUsername()).snippet(Float.toString(i.getPayment())));
             my_marker.setTag(new LatLng(53.671662, -113.636431));
+
         }
 
 
@@ -254,6 +273,12 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         rlp.setMargins(30,30,30,120);
 
+        // dummy request class will remove later when database ready
+
+        float a = 15.32f;
+
+        // end of request class call, to be removed later
+
         addMarkers();
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -261,18 +286,37 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             public boolean onMarkerClick(Marker marker) {
                 calculateDirections(marker);
                 calculateDirectionsDestination(marker);
-
-                BottomSheetDialog dialog = new BottomSheetDialog(DriverMapActivity.this);
-                dialog.setContentView(R.layout.confirm_ride_driver);
-                dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-                dialog.show();
-
-
+                showDialogue();
                 return false;
             }
-
         });
 
+    }
+
+    public void showDialogue(){
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(DriverMapActivity.this);
+        bottomSheetDialog.setContentView(R.layout.confirm_ride_driver);
+        bottomSheetDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        bottomSheetDialog.show();
+
+        Button acceptButton = bottomSheetDialog.findViewById(R.id.confirm_ride_button);
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /**
+                 * TODO:
+                 * Implement confirm ride
+                 * **/
+                System.out.println("hello");
+            }
+        });
+        Button denyButton = bottomSheetDialog.findViewById(R.id.deny_ride_button);
+        denyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.cancel();
+            }
+        });
     }
 
     public void findRider(View view) {
