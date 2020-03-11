@@ -38,7 +38,7 @@ public class RiderCost extends AppCompatActivity {
         calculateCost();
         // Set the TextView to the calculated cost
         TextView costText = (TextView) findViewById(R.id.priceEstimate);
-        costText.setText("Price Estimate: $"+ cost );
+        costText.setText("$" + cost);
 
         // on clicking the edit button, allow the user
         // to edit the price
@@ -54,7 +54,7 @@ public class RiderCost extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 cost = newPrice.getText().toString();
-                costText.setText("Price Estimate: $"+ cost );
+                costText.setText("$" + cost);
                 newPrice.getText().clear();
                 editField.setVisibility(View.INVISIBLE);
             }

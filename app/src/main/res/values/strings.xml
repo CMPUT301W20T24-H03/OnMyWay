@@ -35,4 +35,7 @@
     <string name="view_details">View Details</string>
     <string name="text_edit">Edit</string>
     <string name="rider_cost_activity">Rider Cost Activity</string>
+    <string name="confirm_ride">CONFIRM RIDE</string>
+    <string name="edit_price">EDIT PRICE</string>
+    <string name="confirm_price">CONFIRM PRICE</string>
 </resources>
