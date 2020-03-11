@@ -133,7 +133,7 @@ public class SignUp extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             if(user != null){
                                 //get dbmanager to push all the info to firebase
-                                User newUser = new User(user.getUid().toString(), userfirstName, userlastName, isdriver,userEmail, "1231231234", 0,0);
+                                User newUser = new User(user.getUid().toString(), userfirstName, userlastName, isdriver,userEmail, userPhoneNumber, 0,0);
                                 db.pushUserInfo(newUser);
                             }
                             startActivity(new Intent(SignUp.this, LoginActivity.class));
