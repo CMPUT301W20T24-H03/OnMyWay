@@ -2,12 +2,10 @@ package com.CMPUT301W20T24.OnMyWay;
 
 import android.util.Log;
 
-import com.google.firebase.auth.FirebaseUser;
-
 
 public class User {
     private static final String TAG = "OMW/User";   // Use this tag for call Log.d()
-    private FirebaseUser firebaseUser;
+    private String userId;
     private String firstName;
     private String lastName;
     private boolean driver;
@@ -18,8 +16,8 @@ public class User {
     private String profilePhotoUrl;
 
 
-    public User(FirebaseUser firebaseUser, String firstName, String lastName, boolean driver, String email, String phone, int upRatings, int totalRatings) {
-        setFirebaseUser(firebaseUser);
+    public User(String userId, String firstName, String lastName, boolean driver, String email, String phone, int upRatings, int totalRatings) {
+        setUserId(userId);
         setFirstName(firstName);
         setLastName(lastName);
         setDriver(driver);
@@ -28,15 +26,14 @@ public class User {
         setRatings(upRatings, totalRatings);
     }
 
-    private void setFirebaseUser(FirebaseUser firebaseUser) {
-        this.firebaseUser = firebaseUser;
-    }
 
+    private void setUserId(String newUserId) {
+        this.userId = newUserId;
+    }
 
     private void setDriver(boolean driver) {
         this.driver = driver;
     }
-
 
     public void setFirstName(String newFirstName) {
         // Don't update if the input is null. We may want to keep the old values
@@ -88,16 +85,12 @@ public class User {
         ++totalRatings;
     }
 
-    public FirebaseUser getFirebaseUser() {
-        return firebaseUser;
+    public String getUserId() {
+        return userId;
     }
 
     public boolean isDriver() {
         return driver;
-    }
-
-    public String getUserID() {
-        return firebaseUser.getUid();
     }
 
     public String getFirstName() {

@@ -31,7 +31,7 @@ public class InputValidator {
 
         int passwordLength = passwordChars.length();
 
-        if (passwordLength < 8) {
+        if (passwordLength < 6) {
             return new ResponseStatus(false, "The password entered is too short");
         }
         else if (passwordLength > 40) {

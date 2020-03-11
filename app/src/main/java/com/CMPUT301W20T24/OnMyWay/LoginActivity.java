@@ -9,7 +9,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity{
     private static final String TAG = "OMW/LoginActivity";   // Use this tag for call Log.d()
     private EditText emailField;
     private EditText passwordField;
@@ -159,7 +159,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void onSignUpPressed(View view){
-        Intent intent = new Intent(this, SignUpActivity.class);
+        Intent intent = new Intent(this, SignUpRider.class);
         startActivity(intent);
     }
 }
