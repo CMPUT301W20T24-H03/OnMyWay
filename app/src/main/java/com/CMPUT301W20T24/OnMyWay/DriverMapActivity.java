@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -40,6 +41,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.internal.PolylineEncoding;
@@ -261,18 +263,37 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             public boolean onMarkerClick(Marker marker) {
                 calculateDirections(marker);
                 calculateDirectionsDestination(marker);
-
-                BottomSheetDialog dialog = new BottomSheetDialog(DriverMapActivity.this);
-                dialog.setContentView(R.layout.confirm_ride_driver);
-                dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-                dialog.show();
-
-
+                showDialogue();
                 return false;
             }
-
         });
 
+    }
+
+    public void showDialogue(){
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(DriverMapActivity.this);
+        bottomSheetDialog.setContentView(R.layout.confirm_ride_driver);
+        bottomSheetDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        bottomSheetDialog.show();
+
+        Button acceptButton = bottomSheetDialog.findViewById(R.id.confirm_ride_button);
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /**
+                 * TODO:
+                 * Implement confirm ride
+                 * **/
+                System.out.println("hello");
+            }
+        });
+        Button denyButton = bottomSheetDialog.findViewById(R.id.deny_ride_button);
+        denyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.cancel();
+            }
+        });
     }
 
     public void findRider(View view) {

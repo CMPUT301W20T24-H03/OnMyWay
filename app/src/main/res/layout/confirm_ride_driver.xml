@@ -12,7 +12,6 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="100"
         android:id="@+id/foo"
         >
 
@@ -20,17 +19,16 @@
             android:id="@+id/textView"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="30dp"
             android:textSize="20sp"
             android:text="Accept Ride?"
             android:textStyle="bold"
-            android:layout_marginTop="5dp"
             />
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="30dp"
             >
             <TextView
                 android:layout_width="80dp"
@@ -63,27 +61,33 @@
 
         </LinearLayout>
 
-
-
-
-        <Button
-            android:id="@+id/addEntry"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Confirm Ride"
-            android:layout_marginTop="5dp"
-            />
+            android:gravity="center"
+            >
+            <Button
+                android:id="@+id/confirm_ride_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Confirm Ride"
+                />
 
-        <Button
-            android:id="@+id/deleteEntry"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Nah"
-            android:layout_marginTop="5dp"
-            android:textColor="#ff0000"
-            />
+            <Button
+                android:id="@+id/deny_ride_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Nah"
+                android:textColor="#ff0000"
+                />
+
+        </LinearLayout>
+
+
+
 
     </LinearLayout>
 
