@@ -33,5 +33,6 @@
     <string name="confirm1">Confirm</string>
     <string name="edit1">Edit</string>
     <string name="view_details">View Details</string>
-    <string name="view_details">View Details</string>
+    <string name="text_edit">Edit</string>
+    <string name="rider_cost_activity">Rider Cost Activity</string>
 </resources>

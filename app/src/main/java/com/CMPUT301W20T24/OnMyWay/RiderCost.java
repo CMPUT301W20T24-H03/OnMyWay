@@ -12,6 +12,8 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.api.Distribution;
+
 import java.util.Locale;
 
 // This screen will be displayed after a driver has accepted a request
@@ -29,6 +31,9 @@ public class RiderCost extends AppCompatActivity {
         setContentView(R.layout.activity_rider_cost);
         editField = findViewById(R.id.field_priceEntry);
         newPrice = findViewById(R.id.editText_price);
+
+        LinearLayout layout = (LinearLayout) findViewById(R.id.locationSearchBar);
+        layout.setVisibility(View.GONE);
 
         calculateCost();
         // Set the TextView to the calculated cost
