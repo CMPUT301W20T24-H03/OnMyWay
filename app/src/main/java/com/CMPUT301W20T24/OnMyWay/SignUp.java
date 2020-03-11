@@ -1,4 +1,13 @@
 package com.CMPUT301W20T24.OnMyWay;
+/**
+ * Class is responsible for handling the sign up procedure for any new rider
+ * With an option linking to a new activity for driver account creation
+ *
+ * Things left to do:
+ *  - Add phone number field
+ *  - Add additional intent for driver sign up
+ *  
+ */
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,22 +30,24 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.regex.Pattern;
 
-public class SignUpRider extends AppCompatActivity {
+public class SignUp extends AppCompatActivity {
     //User Inputs
     private EditText emailID;
     private EditText password;
     private EditText firstName;
     private EditText lastName;
-
+    private boolean driverStatus = false;
     private FirebaseAuth mAuth;
 
     ProgressBar progressBar;
 
+    //instrantiating DBManager()
+    DBManager db = new DBManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up_rider);
+        setContentView(R.layout.activity_sign_up);
 
         emailID = findViewById(R.id.emailField);
         password = findViewById(R.id.passwordField);
@@ -45,9 +56,10 @@ public class SignUpRider extends AppCompatActivity {
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+
+
     }
 
     public void onRegisterButtonPressed(View view){
@@ -92,6 +104,8 @@ public class SignUpRider extends AppCompatActivity {
             return;
         }
 
+
+
         progressBar.setVisibility(View.VISIBLE);
 
 
@@ -104,7 +118,13 @@ public class SignUpRider extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             finish();
-                            startActivity(new Intent(SignUpRider.this, LoginActivity.class));
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            if(user != null){
+                                //get dbmanager to push all the info to firebase
+                                User newUser = new User(user, userfirstName, userlastName, driverStatus,userEmail, "1231231234", 0,0);
+                                db.pushUserInfo(newUser);
+                            }
+                            startActivity(new Intent(SignUp.this, LoginActivity.class));
                         }
                         else{
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
@@ -117,12 +137,8 @@ public class SignUpRider extends AppCompatActivity {
 
                     }
                 });
-    }
-
-    public void onDriverSignUpPressed(){
-        //Launch driver sign up page
-        //To implement
 
 
     }
+
 }
