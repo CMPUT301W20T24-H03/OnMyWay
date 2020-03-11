@@ -131,4 +131,6 @@ public class MainActivity extends AppCompatActivity {
         statusTextCurrentUser.setText("None");
         statusTextCurrentUser.setTextColor(ContextCompat.getColor(this, R.color.colorError));
     }
+
+
 }

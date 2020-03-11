@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+
+    >
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="100"
+        android:id="@+id/foo"
+        >
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:textSize="20sp"
+            android:text="Accept Ride?"
+            android:textStyle="bold"
+            android:layout_marginTop="5dp"
+            />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            >
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="Rider_Name"
+                android:textStyle="bold"
+                android:layout_weight="10"
+                />
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:text="Payment"
+                android:textStyle="bold"
+                android:layout_weight="10"
+                />
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:text="Distance"
+                android:textStyle="bold"
+                android:layout_weight="10"
+                />
+
+        </LinearLayout>
+
+
+
+
+        <Button
+            android:id="@+id/addEntry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Confirm Ride"
+            android:layout_marginTop="5dp"
+            />
+
+        <Button
+            android:id="@+id/deleteEntry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Nah"
+            android:layout_marginTop="5dp"
+            android:textColor="#ff0000"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>

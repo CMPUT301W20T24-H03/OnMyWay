@@ -94,8 +94,8 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
         mMap.animateCamera(CameraUpdateFactory.newLatLng(current_coordinates));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(current_coordinates,15));
 
-        // Stack Overflow post by Adam https://stackoverflow.com/users/6789978/adam
-        // Answer https://stackoverflow.com/questions/36785542/how-to-change-the-position-of-my-location-button-in-google-maps-using-android-st
+        /// Stack Overflow post by Adam https://stackoverflow.com/users/6789978/adam
+        /// Answer https://stackoverflow.com/questions/36785542/how-to-change-the-position-of-my-location-button-in-google-maps-using-android-st
         View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
         // position on right bottom
