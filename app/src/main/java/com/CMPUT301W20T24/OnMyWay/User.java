@@ -123,7 +123,12 @@ public class User {
     /// Author: https://stackoverflow.com/users/1309401/john-p
     /// Answer: https://stackoverflow.com/questions/2538787/how-to-display-an-output-of-float-data-with-2-decimal-places-in-java
     public String getRating() {
-        return String.format("%.1f", (float) (upRatings * 5) / (float) totalRatings);
+        if (getTotalRatings() == 0) {
+            return "0.0";
+        }
+        else {
+            return String.format("%.1f", (float) (getUpRatings() * 5) / (float) getTotalRatings());
+        }
     }
 
     public int getUpRatings() {

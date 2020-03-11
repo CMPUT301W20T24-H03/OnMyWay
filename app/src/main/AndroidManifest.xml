@@ -19,8 +19,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".DriverViewRequests"></activity>
-        <activity android:name=".SignUpRider" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -33,6 +31,8 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <activity android:name=".DriverViewRequests" />
+        <activity android:name=".SignUp" />
         <activity
             android:name=".EditProfileActivity"
             android:label="@string/title_activity_edit_profile"
