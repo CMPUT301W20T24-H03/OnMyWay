@@ -44,7 +44,7 @@ public class RiderCost extends AppCompatActivity {
                 editField.setVisibility(View.VISIBLE);
             }
         });
-        final Button okButton = findViewById(R.id.button_ok);
+        final Button okButton = findViewById(R.id.ok_button);
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,6 +52,20 @@ public class RiderCost extends AppCompatActivity {
                 costText.setText("Price Estimate: $"+ cost );
                 newPrice.getText().clear();
                 editField.setVisibility(View.INVISIBLE);
+            }
+        });
+        // if the confirm button is clicked then the rider has settled on this price,
+        // store this price in teh database as the payment Amount
+        final Button confirmButton = findViewById(R.id.confirm_price_button);
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // store to the request in the database
+                // NOTE: after confirm is pressed, request creation is done (((but
+                // also need to know if ride was accepted)))
+                // so now lead to next activity for rider -
+                // - view details of ride
+
             }
         });
 
