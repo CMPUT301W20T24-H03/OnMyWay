@@ -127,10 +127,15 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         requests.add(request7);
         requests.add(request8);
 
-
         for(dummyRequest i : requests){
             LatLng latlng = new LatLng (i.getLat(), i.getLon());
             Marker my_marker = mMap.addMarker(new MarkerOptions().position(latlng).title(i.getUsername()).snippet(Float.toString(i.getPayment())));
+            if(currentLocation!= null) {
+                my_marker.setTag(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
+            }
+            else{
+                my_marker.setTag(new LatLng(53.671662, -113.636431));;
+            }
         }
 
 

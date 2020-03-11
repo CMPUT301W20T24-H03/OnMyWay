@@ -34,6 +34,8 @@ public class DriverViewRequests extends AppCompatActivity {
     dummyRequest request4 = new dummyRequest("ali", 53.523089, -113.623933, a);
     dummyRequest request5 = new dummyRequest("jane",53.565421, -113.563956, a);
     dummyRequest request6 = new dummyRequest("joan", 53.537817, -113.476856, a);
+    dummyRequest request7 = new dummyRequest("alice",53.52328, -113.5264,a);
+    dummyRequest request8 = new dummyRequest("martha",53.52328, -113.5264,a);
 
 
     ArrayAdapter arrayAdapter;
@@ -58,6 +60,8 @@ public class DriverViewRequests extends AppCompatActivity {
         requestsin.add(request4);
         requestsin.add(request5);
         requestsin.add(request6);
+        requestsin.add(request7);
+        requestsin.add(request8);
 
         double driverLat = getIntent().getDoubleExtra("DRIVER_LAT",0);
         double driverLon = getIntent().getDoubleExtra("DRIVER_LON", 0);
