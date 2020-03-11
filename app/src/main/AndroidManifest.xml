@@ -19,10 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-<<<<<<< HEAD
-=======
-        <activity android:name=".SignUpRider" />
->>>>>>> parent of d058f5f... switch and phone number working
+        <activity android:name=".SignUp" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
