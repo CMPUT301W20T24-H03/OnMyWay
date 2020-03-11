@@ -107,16 +107,33 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
 
     public void addMarkers(){
-        ArrayList<LatLng> the_markers = new ArrayList<>();
-        the_markers.add(new LatLng(53.523089, -113.623933));
-        the_markers.add(new LatLng(53.565421, -113.563956));
-        the_markers.add(new LatLng(53.537817, -113.476856));
+        ArrayList<dummyRequest> requests = new ArrayList<dummyRequest>();
 
-        MarkerOptions marker = new MarkerOptions().position(new LatLng(53.523089, -113.623933)).title("Potential Rider");
+        float a = 15.32f;
+        dummyRequest request1 = new dummyRequest("Bob", 53.54,-113.49, a);
+        dummyRequest request2 = new dummyRequest("jerry",53.46, -113.52, a);
+        dummyRequest request3 = new dummyRequest("bill", 53.9, -113.8, a);
+        dummyRequest request4 = new dummyRequest("ali", 53.523089, -113.623933, a);
+        dummyRequest request5 = new dummyRequest("jane",53.565421, -113.563956, a);
+        dummyRequest request6 = new dummyRequest("joan", 53.537817, -113.476856, a);
+        dummyRequest request7 = new dummyRequest("alice",53.52328, -113.5264,a);
+        dummyRequest request8 = new dummyRequest("martha",53.52328, -113.5264,a);
 
-        for(LatLng i : the_markers){
-            Marker my_marker = mMap.addMarker(new MarkerOptions().position(i).title("Potential Rider"));
+
+        requests.add(request1);
+        requests.add(request2);
+        requests.add(request3);
+        requests.add(request4);
+        requests.add(request5);
+        requests.add(request6);
+        requests.add(request7);
+        requests.add(request8);
+
+        for(dummyRequest i : requests){
+            LatLng latlng = new LatLng (i.getLat(), i.getLon());
+            Marker my_marker = mMap.addMarker(new MarkerOptions().position(latlng).title(i.getUsername()).snippet(Float.toString(i.getPayment())));
             my_marker.setTag(new LatLng(53.671662, -113.636431));
+
         }
 
 
@@ -255,6 +272,12 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         rlp.setMargins(30,30,30,120);
+
+        // dummy request class will remove later when database ready
+
+        float a = 15.32f;
+
+        // end of request class call, to be removed later
 
         addMarkers();
 
