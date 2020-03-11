@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "598123806929-8qpqj0kv5lespuoupm34n3khclhtk4jv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.CMPUT301W20T24.OnMyWay",
+            "certificate_hash": "9bb83da219939abf0fa066ce469132631730bc4b"
+          }
+        },
+        {
           "client_id": "598123806929-4idohijdu4h160i4039958fqq5nneqs6.apps.googleusercontent.com",
           "client_type": 3
         }
