@@ -6,5 +6,7 @@
     <color name="colorError">#F44336</color>
     <color name="colorSuccess">#4CAF50</color>
     <color name="colorPolyline">#CB00B7FF</color>
+    <color name="colorPolylineDest">#CB1160FF</color>
+
 
 </resources>

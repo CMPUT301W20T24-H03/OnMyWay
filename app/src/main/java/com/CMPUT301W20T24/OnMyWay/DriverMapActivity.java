@@ -110,9 +110,13 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         the_markers.add(new LatLng(53.565421, -113.563956));
         the_markers.add(new LatLng(53.537817, -113.476856));
 
+        MarkerOptions marker = new MarkerOptions().position(new LatLng(53.523089, -113.623933)).title("Potential Rider");
+
         for(LatLng i : the_markers){
-            mMap.addMarker(new MarkerOptions().position(i).title("Potential Rider"));
+            Marker my_marker = mMap.addMarker(new MarkerOptions().position(i).title("Potential Rider"));
+            my_marker.setTag(new LatLng(53.671662, -113.636431));
         }
+
 
     }
 
@@ -137,7 +141,31 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
             @Override
             public void onFailure(Throwable e) {
-                System.out.println("HELLO");
+                System.out.println(e.toString());
+            }
+
+        });
+    }
+
+    private void calculateDirectionsDestination(Marker marker){
+
+        LatLng destination_coordinates = (LatLng) marker.getTag();
+        com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(destination_coordinates.latitude, destination_coordinates.longitude);
+
+        my_geoApi = new GeoApiContext.Builder().apiKey(getString(R.string.google_api_key)).build();
+        DirectionsApiRequest directions = new DirectionsApiRequest(my_geoApi);
+
+        directions.alternatives(true);
+        directions.origin(new com.google.maps.model.LatLng(marker.getPosition().latitude, marker.getPosition().longitude));
+
+        directions.destination(String.valueOf(destination)).setCallback(new com.google.maps.PendingResult.Callback<DirectionsResult>() {
+            @Override
+            public void onResult(DirectionsResult result) {
+                addPolylinesToMapDestination(result);
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
                 System.out.println(e.toString());
             }
 
@@ -146,7 +174,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
     /// YouTube video by CodingWithMitch: Adding Polylines to a Google Map
     /// https://www.youtube.com/watch?v=xl0GwkLNpNI&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=20
-    Polyline polyline;
+    Polyline polyline_rider;
     private void addPolylinesToMap(final DirectionsResult result){
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @SuppressLint("ResourceType")
@@ -162,17 +190,44 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
                     // This loops through all the LatLng coordinates of ONE polyline.
                     for(com.google.maps.model.LatLng latLng: decodedPath){
-
-                        newDecodedPath.add(new LatLng(
-                                latLng.lat,
-                                latLng.lng
-                        ));
+                        newDecodedPath.add(new LatLng(latLng.lat, latLng.lng));
                     }
 
-                    if(polyline!=null){
-                        polyline.remove();
+                    if(polyline_rider!=null){
+                        polyline_rider.remove();
                     }
-                    polyline = mMap.addPolyline(new PolylineOptions().addAll(newDecodedPath).color(getApplicationContext().getResources().getColor(R.color.colorPolyline)).clickable(true).width(10));
+
+                    polyline_rider = mMap.addPolyline(new PolylineOptions().addAll(newDecodedPath).color(getApplicationContext().getResources().getColor(R.color.colorPolyline)).clickable(true).width(10));
+
+                }
+            }
+        });
+    }
+
+    Polyline polyline_destination;
+    private void addPolylinesToMapDestination(final DirectionsResult result){
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @SuppressLint("ResourceType")
+            @Override
+            public void run() {
+                Log.d(TAG, "run: result routes: " + result.routes.length);
+
+                for(DirectionsRoute route: result.routes){
+                    Log.d(TAG, "run: leg: " + route.legs[0].toString());
+                    List<com.google.maps.model.LatLng> decodedPath = PolylineEncoding.decode(route.overviewPolyline.getEncodedPath());
+
+                    List<LatLng> newDecodedPath = new ArrayList<>();
+
+                    // This loops through all the LatLng coordinates of ONE polyline.
+                    for(com.google.maps.model.LatLng latLng: decodedPath){
+                        newDecodedPath.add(new LatLng(latLng.lat, latLng.lng));
+                    }
+
+                    if(polyline_destination!=null){
+                        polyline_destination.remove();
+                    }
+
+                    polyline_destination = mMap.addPolyline(new PolylineOptions().addAll(newDecodedPath).color(getApplicationContext().getResources().getColor(R.color.colorPolylineDest)).clickable(true).width(10));
 
                 }
             }
@@ -205,6 +260,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             @Override
             public boolean onMarkerClick(Marker marker) {
                 calculateDirections(marker);
+                calculateDirectionsDestination(marker);
 
                 BottomSheetDialog dialog = new BottomSheetDialog(DriverMapActivity.this);
                 dialog.setContentView(R.layout.confirm_ride_driver);
