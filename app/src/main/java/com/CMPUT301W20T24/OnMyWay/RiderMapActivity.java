@@ -1,6 +1,5 @@
 package com.CMPUT301W20T24.OnMyWay;
 
-
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 import android.Manifest;
