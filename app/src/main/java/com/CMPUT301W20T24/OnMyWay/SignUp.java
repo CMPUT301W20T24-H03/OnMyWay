@@ -14,11 +14,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,6 +28,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SignUp extends AppCompatActivity {
@@ -36,12 +37,14 @@ public class SignUp extends AppCompatActivity {
     private EditText password;
     private EditText firstName;
     private EditText lastName;
-    private boolean driverStatus = false;
+    private EditText phoneNumber;
+    private Switch driverStatus;
     private FirebaseAuth mAuth;
+    private boolean isdriver = false;
 
     ProgressBar progressBar;
 
-    //instrantiating DBManager()
+    //instantiating DBManager()
     DBManager db = new DBManager();
 
     @Override
@@ -53,7 +56,8 @@ public class SignUp extends AppCompatActivity {
         password = findViewById(R.id.passwordField);
         firstName = findViewById(R.id.firstnameField);
         lastName = findViewById(R.id.lastnameField);
-
+        phoneNumber = findViewById(R.id.phonenumberfield);
+        driverStatus = findViewById(R.id.user_switch);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         // Initialize Firebase Auth
@@ -67,7 +71,7 @@ public class SignUp extends AppCompatActivity {
         String userPassword = password.getText().toString().trim();
         String userfirstName = firstName.getText().toString().trim();
         String userlastName = lastName.getText().toString().trim();
-
+        String userPhoneNumber = phoneNumber.getText().toString().trim();
         if(userEmail.isEmpty()){
             emailID.setError("Email is Required");
             emailID.requestFocus();
@@ -104,7 +108,15 @@ public class SignUp extends AppCompatActivity {
             return;
         }
 
+        if(!isValidPhone(userPhoneNumber)){
+            phoneNumber.setError("Phone Number Invalid");
+            phoneNumber.requestFocus();
+            return;
+        }
 
+        if(driverStatus.isChecked()) {
+            isdriver = true;
+        }
 
         progressBar.setVisibility(View.VISIBLE);
 
@@ -121,7 +133,7 @@ public class SignUp extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             if(user != null){
                                 //get dbmanager to push all the info to firebase
-                                User newUser = new User(user, userfirstName, userlastName, driverStatus,userEmail, "1231231234", 0,0);
+                                User newUser = new User(user.getUid().toString(), userfirstName, userlastName, isdriver,userEmail, "1231231234", 0,0);
                                 db.pushUserInfo(newUser);
                             }
                             startActivity(new Intent(SignUp.this, LoginActivity.class));
@@ -139,6 +151,20 @@ public class SignUp extends AppCompatActivity {
                 });
 
 
+    }
+
+    /// Phone number validation from http://tutorialspots.com/android-how-to-check-a-valid-phone-number-2382.html
+    public boolean isValidPhone(String phone){
+        String expression = "^([0-9\\+]|\\(\\d{1,3}\\))[0-9\\-\\. ]{3,15}$";
+        CharSequence inputString = phone;
+        Pattern pattern = Pattern.compile(expression);
+        Matcher matcher = pattern.matcher(inputString);
+        if (matcher.matches()) {
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
 }

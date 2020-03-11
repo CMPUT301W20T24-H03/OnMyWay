@@ -8,6 +8,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 
@@ -18,6 +22,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private EditText emailField;
     private EditText phoneField;
     private boolean areAllInputsValid;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
 
     @Override
@@ -32,7 +38,7 @@ public class EditProfileActivity extends AppCompatActivity {
         lastNameField = findViewById(R.id.fieldLastName);
         emailField = findViewById(R.id.fieldEmail);
         phoneField = findViewById(R.id.fieldPhone);
-        ImageView profilePhotoImage = findViewById(R.id.imageCurrentProfilePhoto);
+        ImageView profilePhotoImage = findViewById(R.id.imageProfilePhoto);
 
         User currentUser = State.getCurrentUser();
 
@@ -131,7 +137,10 @@ public class EditProfileActivity extends AppCompatActivity {
 
     // Called when save button is pressed. Defined in XML. Not implemented yet
     public void onDeleteAccountPressed(View view) {
+        mAuth = FirebaseAuth.getInstance();
+
         Log.d(TAG, "Delete Account button pressed");
         // TODO: Show prompt here and call deleteAccount in DBManager (probably?)
+
     }
 }
