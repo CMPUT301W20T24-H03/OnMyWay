@@ -35,7 +35,6 @@
         android:layout_marginTop="50dp"
         android:onClick="switchModeActivate"
         android:text="MODE">
-
     </Button>
 
     <Button
@@ -43,6 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/riderMap"
+        android:onClick="confirmRideActivate"
         android:text="REQUEST RIDE"></Button>
 
 </RelativeLayout>

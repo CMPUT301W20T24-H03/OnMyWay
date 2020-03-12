@@ -90,7 +90,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:onClick="openRiderCostActivity"
-        android:text="@string/rider_cost_activity"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"

@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 public class RequestFormFragment extends Fragment {
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_request_form, container, false);
+    public View onCreateView(LayoutInflater layoutInflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = layoutInflater.inflate(R.layout.fragment_request_form, container, false);
+        return view;
     }
 }

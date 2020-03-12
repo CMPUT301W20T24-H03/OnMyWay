@@ -14,6 +14,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
@@ -26,8 +27,12 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
     Button switchModeButton;
     Button confirmRequestButton;
     RiderMode currentMode;
+
     String searchStartLocation;
     String searchEndLocation;
+
+    Marker startLocationMarker;
+    Marker endLocationMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,17 +48,54 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
                 String location = searchView.getQuery().toString();
                 List<Address> addressList;
 
-                if (!location.equals("")) {
+                if (startLocationMarker != null && currentMode == RiderMode.Start) {
+                    startLocationMarker.remove();
                     Geocoder geocoder = new Geocoder(RiderMapActivity.this);
                     try {
                         addressList = geocoder.getFromLocationName(location, 1);
                         Address address = addressList.get(0);
                         LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                        mMap.addMarker(new MarkerOptions().position(latLng).title(location));
+                        startLocationMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(location));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else if (startLocationMarker == null && currentMode == RiderMode.Start) {
+                    try {
+                        Geocoder geocoder = new Geocoder(RiderMapActivity.this);
+                        addressList = geocoder.getFromLocationName(location, 1);
+                        Address address = addressList.get(0);
+                        LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                        startLocationMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(location));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else if (endLocationMarker != null && currentMode == RiderMode.End) {
+                    endLocationMarker.remove();
+                    Geocoder geocoder = new Geocoder(RiderMapActivity.this);
+                    try {
+                        addressList = geocoder.getFromLocationName(location, 1);
+                        Address address = addressList.get(0);
+                        LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                        endLocationMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(location));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else if (endLocationMarker == null && currentMode == RiderMode.End) {
+                    try {
+                        Geocoder geocoder = new Geocoder(RiderMapActivity.this);
+                        addressList = geocoder.getFromLocationName(location, 1);
+                        Address address = addressList.get(0);
+                        LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                        endLocationMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(location));
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
 
                     } catch (IOException e) {
@@ -68,7 +110,6 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
                 return false;
             }
         });
-
         mapFragment.getMapAsync(this);
     }
 
@@ -77,11 +118,16 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
             searchStartLocation = searchView.getQuery().toString();
             currentMode = RiderMode.End;
             searchView.setQuery(searchEndLocation, false);
+
         } else {
             searchEndLocation = searchView.getQuery().toString();
             currentMode = RiderMode.Start;
             searchView.setQuery(searchStartLocation, false);
         }
+    }
+
+    public void confirmRideActivate(View view) {
+
     }
 
     @Override
