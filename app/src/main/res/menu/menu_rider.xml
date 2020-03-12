@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/profile"
+        android:id="@+id/profile_rider"
         android:title="Profile"/>
 
     <item
-        android:id="@+id/current_request"
+        android:id="@+id/current_request_rider"
         android:title="Requests"/>
 
 </menu>

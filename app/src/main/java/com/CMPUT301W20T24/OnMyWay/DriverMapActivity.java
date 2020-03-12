@@ -73,7 +73,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     Toolbar toolbar;
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
-    
+
     private static final int REQUEST_CODE = 101;
     View mapView;
 
@@ -309,6 +309,10 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     }
 
+    public void practice(){
+        Toast.makeText(getApplicationContext(),"working",Toast.LENGTH_SHORT).show();
+    }
+
     public void showDialogue(){
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(DriverMapActivity.this);
         bottomSheetDialog.setContentView(R.layout.confirm_ride_driver);
@@ -351,6 +355,15 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.profile:
+                Toast.makeText(getApplicationContext(), "profile working", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.current_request:
+                Toast.makeText(getApplicationContext(),"requests working",Toast.LENGTH_SHORT).show();
+                break;
+
+        }
         return false;
     }
 }
