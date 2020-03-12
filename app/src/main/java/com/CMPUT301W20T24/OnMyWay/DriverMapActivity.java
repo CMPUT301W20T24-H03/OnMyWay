@@ -63,7 +63,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     private static final String TAG = "OMW/DriverMapActivity";
     private GoogleMap mMap;
     private dummyRequest currentRequest;
-
     /// Android Coding via YouTube, How to Show Current Location On Map in Android Studio
     /// https://www.youtube.com/watch?v=boyyLhXAZAQ&t=22s
     Location currentLocation;
@@ -135,6 +134,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         dummyRequest request6 = new dummyRequest("joan", 53.537817, -113.476856, a);
         dummyRequest request7 = new dummyRequest("alice",53.52328, -113.5264,a);
         dummyRequest request8 = new dummyRequest("martha",53.52328, -113.5264,a);
+        dummyRequest request9 = new dummyRequest("trump",37.77986, -122.42905,a);
 
 
         requests.add(request1);
@@ -145,12 +145,12 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         requests.add(request6);
         requests.add(request7);
         requests.add(request8);
+        requests.add(request9);
 
         for(dummyRequest i : requests){
             LatLng latlng = new LatLng (i.getLat(), i.getLon());
             Marker my_marker = mMap.addMarker(new MarkerOptions().position(latlng).title(i.getUsername()).snippet(Float.toString(i.getPayment())));
-            my_marker.setTag(new LatLng(53.671662, -113.636431));
-
+            my_marker.setTag(new LatLng(53.53522, -113.4765));
         }
 
 
@@ -186,6 +186,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     private void calculateDirectionsDestination(Marker marker){
 
         LatLng destination_coordinates = (LatLng) marker.getTag();
+        // setting current request for sliding menu view
         com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(destination_coordinates.latitude, destination_coordinates.longitude);
 
         my_geoApi = new GeoApiContext.Builder().apiKey(getString(R.string.google_api_key)).build();
@@ -290,12 +291,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         rlp.setMargins(30,30,30,120);
 
-        // dummy request class will remove later when database ready
-
-        float a = 15.32f;
-
-        // end of request class call, to be removed later
-
         addMarkers();
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -308,10 +303,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             }
         });
 
-    }
-
-    public void practice(){
-        Toast.makeText(getApplicationContext(),"working",Toast.LENGTH_SHORT).show();
     }
 
     public void showDialogue(){
@@ -328,6 +319,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                  * TODO:
                  * Implement confirm ride
                  * **/
+                currentRequest = new dummyRequest("joe123",currentLocation.getLatitude(),currentLocation.getLongitude(),15.32f);
                 System.out.println("hello");
             }
         });
@@ -362,10 +354,15 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                 break;
             case R.id.current_request:
                 if(currentRequest != null){
+                    Intent intent = new Intent(this, CurrentRequest.class);
+                    intent.putExtra("REQUEST_LATITUDE", currentRequest.getLat());
+                    intent.putExtra("REQUEST_LONGITUDE",currentRequest.getLon());
+                    intent.putExtra("REQUEST_PAYMENTAMOUNT",currentRequest.getPayment());
+                    startActivity(intent);
                     break;
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), "No active request", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "No active request present", Toast.LENGTH_SHORT).show();
                 }
                 break;
 
