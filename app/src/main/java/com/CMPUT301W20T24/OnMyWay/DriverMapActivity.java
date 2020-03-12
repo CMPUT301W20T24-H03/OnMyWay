@@ -62,6 +62,7 @@ import java.util.List;
 public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "OMW/DriverMapActivity";
     private GoogleMap mMap;
+    private dummyRequest currentRequest;
 
     /// Android Coding via YouTube, How to Show Current Location On Map in Android Studio
     /// https://www.youtube.com/watch?v=boyyLhXAZAQ&t=22s
@@ -360,7 +361,12 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                 Toast.makeText(getApplicationContext(), "profile working", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.current_request:
-                Toast.makeText(getApplicationContext(),"requests working",Toast.LENGTH_SHORT).show();
+                if(currentRequest != null){
+                    break;
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "No active request", Toast.LENGTH_SHORT).show();
+                }
                 break;
 
         }
