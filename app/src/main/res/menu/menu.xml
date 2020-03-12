@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/profile"
+        android:icon="@drawable/ic_person_black_24dp"
+        android:title="Profile"/>
+
+    <item
+        android:id="@+id/current_request"
+        android:icon="@drawable/ic_playlist_add_check_black_24dp"
+        android:title="Active Request"/>
+
+</menu>

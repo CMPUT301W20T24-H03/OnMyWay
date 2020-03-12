@@ -43,6 +43,7 @@
         <activity
             android:name=".DriverMapActivity"
             android:label="@string/title_activity_driver_map"
+            android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait" />
         <activity
             android:name=".RiderMapActivity"
@@ -56,6 +57,16 @@
         <activity
             android:name=".SplashScreenActivity"
             android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RiderCost"
+            android:label="Rider Cost View"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CurrentRequest"
+            android:label="Current Request Driver"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait" />
         <activity

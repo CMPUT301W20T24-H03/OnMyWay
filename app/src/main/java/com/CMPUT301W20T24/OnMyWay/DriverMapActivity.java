@@ -1,8 +1,13 @@
 package com.CMPUT301W20T24.OnMyWay;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -19,9 +24,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -40,6 +47,8 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.navigation.NavigationView;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.internal.PolylineEncoding;
@@ -50,16 +59,20 @@ import com.google.maps.model.DirectionsRoute;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DriverMapActivity extends FragmentActivity implements OnMapReadyCallback {
+public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "OMW/DriverMapActivity";
     private GoogleMap mMap;
-
+    private dummyRequest currentRequest;
     /// Android Coding via YouTube, How to Show Current Location On Map in Android Studio
     /// https://www.youtube.com/watch?v=boyyLhXAZAQ&t=22s
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
     LocationManager locationManager;
     LocationListener locationListener;
+    DrawerLayout drawerLayout;
+    Toolbar toolbar;
+    NavigationView navigationView;
+    ActionBarDrawerToggle toggle;
 
     private static final int REQUEST_CODE = 101;
     View mapView;
@@ -76,6 +89,11 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_map);
+
+        /// Hamburger menu creation reference: https://www.youtube.com/watch?v=ofu1IqiBNCY
+
+        navigationView = findViewById(R.id.navigationView);
+        navigationView.setNavigationItemSelectedListener(this);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
@@ -105,14 +123,36 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
 
     public void addMarkers(){
-        ArrayList<LatLng> the_markers = new ArrayList<>();
-        the_markers.add(new LatLng(53.523089, -113.623933));
-        the_markers.add(new LatLng(53.565421, -113.563956));
-        the_markers.add(new LatLng(53.537817, -113.476856));
+        ArrayList<dummyRequest> requests = new ArrayList<dummyRequest>();
 
-        for(LatLng i : the_markers){
-            mMap.addMarker(new MarkerOptions().position(i).title("Potential Rider"));
+        float a = 15.32f;
+        dummyRequest request1 = new dummyRequest("Bob", 53.54,-113.49, a);
+        dummyRequest request2 = new dummyRequest("jerry",53.46, -113.52, a);
+        dummyRequest request3 = new dummyRequest("bill", 53.9, -113.8, a);
+        dummyRequest request4 = new dummyRequest("ali", 53.523089, -113.623933, a);
+        dummyRequest request5 = new dummyRequest("jane",53.565421, -113.563956, a);
+        dummyRequest request6 = new dummyRequest("joan", 53.537817, -113.476856, a);
+        dummyRequest request7 = new dummyRequest("alice",53.52328, -113.5264,a);
+        dummyRequest request8 = new dummyRequest("martha",53.52328, -113.5264,a);
+        dummyRequest request9 = new dummyRequest("trump",37.77986, -122.42905,a);
+
+
+        requests.add(request1);
+        requests.add(request2);
+        requests.add(request3);
+        requests.add(request4);
+        requests.add(request5);
+        requests.add(request6);
+        requests.add(request7);
+        requests.add(request8);
+        requests.add(request9);
+
+        for(dummyRequest i : requests){
+            LatLng latlng = new LatLng (i.getLat(), i.getLon());
+            Marker my_marker = mMap.addMarker(new MarkerOptions().position(latlng).title(i.getUsername()).snippet(Float.toString(i.getPayment())));
+            my_marker.setTag(new LatLng(53.53522, -113.4765));
         }
+
 
     }
 
@@ -137,7 +177,32 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
             @Override
             public void onFailure(Throwable e) {
-                System.out.println("HELLO");
+                System.out.println(e.toString());
+            }
+
+        });
+    }
+
+    private void calculateDirectionsDestination(Marker marker){
+
+        LatLng destination_coordinates = (LatLng) marker.getTag();
+        // setting current request for sliding menu view
+        com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(destination_coordinates.latitude, destination_coordinates.longitude);
+
+        my_geoApi = new GeoApiContext.Builder().apiKey(getString(R.string.google_api_key)).build();
+        DirectionsApiRequest directions = new DirectionsApiRequest(my_geoApi);
+
+        directions.alternatives(true);
+        directions.origin(new com.google.maps.model.LatLng(marker.getPosition().latitude, marker.getPosition().longitude));
+
+        directions.destination(String.valueOf(destination)).setCallback(new com.google.maps.PendingResult.Callback<DirectionsResult>() {
+            @Override
+            public void onResult(DirectionsResult result) {
+                addPolylinesToMapDestination(result);
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
                 System.out.println(e.toString());
             }
 
@@ -146,7 +211,7 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
     /// YouTube video by CodingWithMitch: Adding Polylines to a Google Map
     /// https://www.youtube.com/watch?v=xl0GwkLNpNI&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=20
-    Polyline polyline;
+    Polyline polyline_rider;
     private void addPolylinesToMap(final DirectionsResult result){
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @SuppressLint("ResourceType")
@@ -162,17 +227,44 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
                     // This loops through all the LatLng coordinates of ONE polyline.
                     for(com.google.maps.model.LatLng latLng: decodedPath){
-
-                        newDecodedPath.add(new LatLng(
-                                latLng.lat,
-                                latLng.lng
-                        ));
+                        newDecodedPath.add(new LatLng(latLng.lat, latLng.lng));
                     }
 
-                    if(polyline!=null){
-                        polyline.remove();
+                    if(polyline_rider!=null){
+                        polyline_rider.remove();
                     }
-                    polyline = mMap.addPolyline(new PolylineOptions().addAll(newDecodedPath).color(getApplicationContext().getResources().getColor(R.color.colorPolyline)).clickable(true).width(10));
+
+                    polyline_rider = mMap.addPolyline(new PolylineOptions().addAll(newDecodedPath).color(getApplicationContext().getResources().getColor(R.color.colorPolyline)).clickable(true).width(10));
+
+                }
+            }
+        });
+    }
+
+    Polyline polyline_destination;
+    private void addPolylinesToMapDestination(final DirectionsResult result){
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @SuppressLint("ResourceType")
+            @Override
+            public void run() {
+                Log.d(TAG, "run: result routes: " + result.routes.length);
+
+                for(DirectionsRoute route: result.routes){
+                    Log.d(TAG, "run: leg: " + route.legs[0].toString());
+                    List<com.google.maps.model.LatLng> decodedPath = PolylineEncoding.decode(route.overviewPolyline.getEncodedPath());
+
+                    List<LatLng> newDecodedPath = new ArrayList<>();
+
+                    // This loops through all the LatLng coordinates of ONE polyline.
+                    for(com.google.maps.model.LatLng latLng: decodedPath){
+                        newDecodedPath.add(new LatLng(latLng.lat, latLng.lng));
+                    }
+
+                    if(polyline_destination!=null){
+                        polyline_destination.remove();
+                    }
+
+                    polyline_destination = mMap.addPolyline(new PolylineOptions().addAll(newDecodedPath).color(getApplicationContext().getResources().getColor(R.color.colorPolylineDest)).clickable(true).width(10));
 
                 }
             }
@@ -205,18 +297,39 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
             @Override
             public boolean onMarkerClick(Marker marker) {
                 calculateDirections(marker);
-
-                BottomSheetDialog dialog = new BottomSheetDialog(DriverMapActivity.this);
-                dialog.setContentView(R.layout.confirm_ride_driver);
-                dialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-                dialog.show();
-
-
+                calculateDirectionsDestination(marker);
+                showDialogue();
                 return false;
             }
-
         });
 
+    }
+
+    public void showDialogue(){
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(DriverMapActivity.this);
+        bottomSheetDialog.setContentView(R.layout.confirm_ride_driver);
+        bottomSheetDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        bottomSheetDialog.show();
+
+        Button acceptButton = bottomSheetDialog.findViewById(R.id.confirm_ride_button);
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /**
+                 * TODO:
+                 * Implement confirm ride
+                 * **/
+                currentRequest = new dummyRequest("joe123",currentLocation.getLatitude(),currentLocation.getLongitude(),15.32f);
+                System.out.println("hello");
+            }
+        });
+        Button denyButton = bottomSheetDialog.findViewById(R.id.deny_ride_button);
+        denyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheetDialog.cancel();
+            }
+        });
     }
 
     public void findRider(View view) {
@@ -233,4 +346,27 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         }
     }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.profile:
+                Toast.makeText(getApplicationContext(), "profile working", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.current_request:
+                if(currentRequest != null){
+                    Intent intent = new Intent(this, CurrentRequest.class);
+                    intent.putExtra("REQUEST_LATITUDE", currentRequest.getLat());
+                    intent.putExtra("REQUEST_LONGITUDE",currentRequest.getLon());
+                    intent.putExtra("REQUEST_PAYMENTAMOUNT",currentRequest.getPayment());
+                    startActivity(intent);
+                    break;
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "No active request present", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+        }
+        return false;
+    }
 }
