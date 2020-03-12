@@ -23,7 +23,13 @@
     <string name="symbol_star">★</string>
     <string name="placeholder_rating">4.8</string>
     <string name="text_delete_account">Delete account</string>
+    <string name="confirm_price">Confirm Price</string>
     <string name="text_save">Save</string>
+    <string name="view_details">View Details</string>
     <string name="text_full_name">Full name</string>
-    <string name="text_edit">Edit</string>
+    <string name="new_price">Edit New Price</string>
+    <string name="ok">ok</string>
+    <string name="text_edit">Text Edit</string>
+    <string name="edit_price">Edit Price</string>
+    <string name="price_estimate">PriceEstimate</string>
 </resources>
