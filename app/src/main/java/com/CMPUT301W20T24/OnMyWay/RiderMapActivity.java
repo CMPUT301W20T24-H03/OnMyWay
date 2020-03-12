@@ -76,6 +76,31 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                } else if (endLocationMarker != null && currentMode == RiderMode.End) {
+                    endLocationMarker.remove();
+                    Geocoder geocoder = new Geocoder(RiderMapActivity.this);
+                    try {
+                        addressList = geocoder.getFromLocationName(location, 1);
+                        Address address = addressList.get(0);
+                        LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                        endLocationMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(location));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else if (endLocationMarker == null && currentMode == RiderMode.End) {
+                    try {
+                        Geocoder geocoder = new Geocoder(RiderMapActivity.this);
+                        addressList = geocoder.getFromLocationName(location, 1);
+                        Address address = addressList.get(0);
+                        LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                        endLocationMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(location));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 return false;
             }
@@ -102,6 +127,7 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
     }
 
     public void confirmRideActivate(View view) {
+
     }
 
     @Override
