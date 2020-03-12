@@ -1,8 +1,13 @@
 package com.CMPUT301W20T24.OnMyWay;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -19,6 +24,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -42,6 +48,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.navigation.NavigationView;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.internal.PolylineEncoding;
@@ -52,9 +59,10 @@ import com.google.maps.model.DirectionsRoute;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DriverMapActivity extends FragmentActivity implements OnMapReadyCallback {
+public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "OMW/DriverMapActivity";
     private GoogleMap mMap;
+    private dummyRequest currentRequest;
 
     /// Android Coding via YouTube, How to Show Current Location On Map in Android Studio
     /// https://www.youtube.com/watch?v=boyyLhXAZAQ&t=22s
@@ -62,6 +70,10 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     FusedLocationProviderClient fusedLocationProviderClient;
     LocationManager locationManager;
     LocationListener locationListener;
+    DrawerLayout drawerLayout;
+    Toolbar toolbar;
+    NavigationView navigationView;
+    ActionBarDrawerToggle toggle;
 
     private static final int REQUEST_CODE = 101;
     View mapView;
@@ -78,6 +90,11 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_map);
+
+        /// Hamburger menu creation reference: https://www.youtube.com/watch?v=ofu1IqiBNCY
+
+        navigationView = findViewById(R.id.navigationView);
+        navigationView.setNavigationItemSelectedListener(this);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
@@ -293,6 +310,10 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
 
     }
 
+    public void practice(){
+        Toast.makeText(getApplicationContext(),"working",Toast.LENGTH_SHORT).show();
+    }
+
     public void showDialogue(){
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(DriverMapActivity.this);
         bottomSheetDialog.setContentView(R.layout.confirm_ride_driver);
@@ -333,4 +354,22 @@ public class DriverMapActivity extends FragmentActivity implements OnMapReadyCal
         }
     }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.profile:
+                Toast.makeText(getApplicationContext(), "profile working", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.current_request:
+                if(currentRequest != null){
+                    break;
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "No active request", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+        }
+        return false;
+    }
 }
