@@ -38,4 +38,6 @@
     <string name="confirm_ride">CONFIRM RIDE</string>
     <string name="edit_price">EDIT PRICE</string>
     <string name="confirm_price">CONFIRM PRICE</string>
+    <string name="drawer_open">drawerOpen</string>
+    <string name="drawer_close">drawerClose</string>
 </resources>

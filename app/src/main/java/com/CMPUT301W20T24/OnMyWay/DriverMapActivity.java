@@ -3,6 +3,7 @@ package com.CMPUT301W20T24.OnMyWay;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
@@ -30,7 +31,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -73,8 +73,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     Toolbar toolbar;
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
-
-
+    
     private static final int REQUEST_CODE = 101;
     View mapView;
 
@@ -91,8 +90,10 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_map);
 
-        drawerLayout = findViewById(R.id.drawer);
+        /// Hamburger menu creation reference: https://www.youtube.com/watch?v=ofu1IqiBNCY
+
         navigationView = findViewById(R.id.navigationView);
+        navigationView.setNavigationItemSelectedListener(this);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
