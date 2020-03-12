@@ -13,7 +13,7 @@ public class CurrentRequest extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rider_map);
+        setContentView(R.layout.currentactiverequest);
 
         double lat = getIntent().getDoubleExtra("REQUEST_LATITUDE",0);
         double lon = getIntent().getDoubleExtra("REQUEST_LONGITUDE",0);
