@@ -18,17 +18,32 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:id="@+id/riderMap"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"></fragment>
 
     <SearchView
         android:id="@+id/locationSearchBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="#FFFFFF"
-        android:elevation="5dp"
+        android:background="@color/cardview_light_background"
         android:iconifiedByDefault="false"
-        android:queryHint="Search" />
+        android:queryHint="Search"></SearchView>
+
+    <Button
+        android:id="@+id/switchModeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:onClick="switchModeActivate"
+        android:text="MODE">
+
+    </Button>
+
+    <Button
+        android:id="@+id/confirmRequestButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/riderMap"
+        android:text="REQUEST RIDE"></Button>
 
 </RelativeLayout>
 

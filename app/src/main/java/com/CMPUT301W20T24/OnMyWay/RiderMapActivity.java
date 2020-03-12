@@ -3,6 +3,8 @@ package com.CMPUT301W20T24.OnMyWay;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.SearchView;
 
 import androidx.fragment.app.FragmentActivity;
@@ -18,19 +20,27 @@ import java.io.IOException;
 import java.util.List;
 
 public class RiderMapActivity extends FragmentActivity implements OnMapReadyCallback {
-    GoogleMap map;
+    GoogleMap mMap;
     SupportMapFragment mapFragment;
     SearchView searchView;
+    Button switchModeButton;
+    Button confirmRequestButton;
+    RiderMode currentMode;
+    String searchStartLocation;
+    String searchEndLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_map);
 
-        searchView = findViewById(R.id.locationSearchBar);
+        currentMode = RiderMode.End;
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.riderMap);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView = findViewById(R.id.locationSearchBar);
+        switchModeButton = findViewById(R.id.switchModeButton);
+        confirmRequestButton = findViewById(R.id.confirmRequestButton);
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
 
@@ -43,8 +53,8 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
                         addressList = geocoder.getFromLocationName(location, 1);
                         Address address = addressList.get(0);
                         LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                        map.addMarker(new MarkerOptions().position(latLng).title(location));
-                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                        mMap.addMarker(new MarkerOptions().position(latLng).title(location));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
 
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -61,8 +71,26 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
 
         mapFragment.getMapAsync(this);
     }
+
+    public void switchModeActivate(View view) {
+        if (currentMode == RiderMode.Start) {
+            searchStartLocation = searchView.getQuery().toString();
+            currentMode = RiderMode.End;
+            searchView.setQuery(searchEndLocation, false);
+        } else {
+            searchEndLocation = searchView.getQuery().toString();
+            currentMode = RiderMode.Start;
+            searchView.setQuery(searchStartLocation, false);
+        }
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        map = googleMap;
+        mMap = googleMap;
+    }
+
+    private enum RiderMode {
+        Start,
+        End
     }
 }
