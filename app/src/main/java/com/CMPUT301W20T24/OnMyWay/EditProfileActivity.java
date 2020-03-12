@@ -1,5 +1,6 @@
 package com.CMPUT301W20T24.OnMyWay;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 
@@ -18,6 +27,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private EditText emailField;
     private EditText phoneField;
     private boolean areAllInputsValid;
+    private FirebaseFirestore db;
 
 
     @Override
@@ -35,6 +45,7 @@ public class EditProfileActivity extends AppCompatActivity {
         ImageView profilePhotoImage = findViewById(R.id.imageCurrentProfilePhoto);
 
         User currentUser = State.getCurrentUser();
+
 
         userIdLabel.setText(currentUser.getUserId());
 
@@ -133,5 +144,37 @@ public class EditProfileActivity extends AppCompatActivity {
     public void onDeleteAccountPressed(View view) {
         Log.d(TAG, "Delete Account button pressed");
         // TODO: Show prompt here and call deleteAccount in DBManager (probably?)
+
+
+        /*
+        db.collection("users").document(id)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error deleting document", e);
+                    }
+                });
+
+
+
+        user.delete()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "User account deleted.");
+                        }
+                    }
+                });
+
+        */
+
     }
 }
