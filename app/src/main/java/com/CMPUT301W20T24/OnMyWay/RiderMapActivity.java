@@ -348,6 +348,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
             startLocationMarker = null;
             endLocationMarker = null;
             Toast.makeText(getApplicationContext(),"Your request has been cancelled",Toast.LENGTH_SHORT).show();
+            confirmRequestButton.setText("REQUEST RIDE");
         }
     }
 
