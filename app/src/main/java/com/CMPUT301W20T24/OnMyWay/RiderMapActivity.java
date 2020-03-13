@@ -139,17 +139,31 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            /**
+             * Logic to search, store and display the START and END locations on the map fragment. Adds marker(s) to represent the locations that have been selected.
+             * WILL LIKELY require this functionality to be split into separate function(s) and re-work some of the logic. But for now, it does execute.
+             * @param query
+             * @return boolean
+             * @author Manpreet Grewal
+             */
             @Override
             public boolean onQueryTextSubmit(String query) {
+                //Grab the user query and store it as a 'location' String and a list of Address(es) i.e. 'addressList'.
                 String location = searchView.getQuery().toString();
                 List<Address> addressList;
 
+                //If the startLocationMarker is NOT null and the user is currently in the mode to search for a START location.
+                //NOTE: Besides the following 'if', 'if else' and 'else' condition(s) that precede this line of code, the internal logic to generate markers is the same. Unless a marker must FIRST be removed.
                 if (startLocationMarker != null && currentMode == RiderMode.Start) {
                     startLocationMarker.remove();
+                    //Geocoder will take an address and return an array of viable addresse(s). These 'addresses' will be stored in the addressList, declared above.
                     Geocoder geocoder = new Geocoder(RiderMapActivity.this);
                     try {
+                        //Return and grab ONLY ONE result from the results 'geocoder' retrieves.
                         addressList = geocoder.getFromLocationName(location, 1);
                         Address address = addressList.get(0);
+
+                        //Create an object of 'latLng' type, and store as an array of coordinates that can be provided to the marker and displayed.
                         LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
                         startLocationMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(location));
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
@@ -157,7 +171,9 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                } else if (startLocationMarker == null && currentMode == RiderMode.Start) {
+                }
+                //If the startLocationMarker is null and the user is currently in the mode to search for an END location.
+                else if (startLocationMarker == null && currentMode == RiderMode.Start) {
                     try {
                         Geocoder geocoder = new Geocoder(RiderMapActivity.this);
                         addressList = geocoder.getFromLocationName(location, 1);
@@ -169,7 +185,10 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                } else if (endLocationMarker != null && currentMode == RiderMode.End) {
+
+                }
+                //If the endLocationMarker is NOT null and the user is currently in the mode to search for an END location.
+                else if (endLocationMarker != null && currentMode == RiderMode.End) {
                     endLocationMarker.remove();
                     Geocoder geocoder = new Geocoder(RiderMapActivity.this);
                     try {
@@ -182,7 +201,9 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                } else if (endLocationMarker == null && currentMode == RiderMode.End) {
+                }
+                //If the endLocationMarker is null and the user is currently in the mode to search for an END location.
+                else if (endLocationMarker == null && currentMode == RiderMode.End) {
                     try {
                         Geocoder geocoder = new Geocoder(RiderMapActivity.this);
                         addressList = geocoder.getFromLocationName(location, 1);
@@ -195,12 +216,12 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                         e.printStackTrace();
                     }
                 }
-                // if an end and a start location has been specified then
-                // draw a lone between the two locations
+                //If an END and START location have been specified then draw a line between the two locations.
                 if (endLocationMarker != null && startLocationMarker!=null) {
                     calculateDirections();
                     calculateDirectionsDestination();
                 }
+                //Return a boolean 'false' as the default Intelli-Sense suggested creating a function that returned boolean.
                 return false;
             }
 
