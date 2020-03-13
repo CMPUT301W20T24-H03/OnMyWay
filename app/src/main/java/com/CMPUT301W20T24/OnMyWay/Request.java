@@ -2,6 +2,11 @@ package com.CMPUT301W20T24.OnMyWay;
 
 import java.util.UUID;
 
+/**
+ * //Request model that holds the blueprint for this object type.
+ * @author Manpreet Grewal, Bard Samimi
+ */
+
 public class Request {
     private String requestId;
     private String riderUserName;
@@ -16,6 +21,14 @@ public class Request {
     private String driverUserName;
     private String status;
 
+    /**
+     * Constructor method required to instantiate an instance of the Request class.
+     * @param startLongitude
+     * @param startLatitude
+     * @param endLongitude
+     * @param endLatitude
+     * @author Bard Samimi, Manpreet Grewal
+     */
     public Request(double startLongitude, double startLatitude, double endLongitude, double endLatitude) {
         this.requestId = generateUUID();
         this.riderUserName = riderUserName;
@@ -28,11 +41,19 @@ public class Request {
         this.status = "INCOMPLETE";
     }
 
+    /**
+     * Logic to generate a unique UUID string that will be used for the requestID value.
+     * @return String
+     * @author Manpreet Grewal
+     */
+    //https://www.baeldung.com/java-uuid
+    //https://towardsdatascience.com/are-uuids-really-unique-57eb80fc2a87
     private String generateUUID() {
         UUID requestUUID = UUID.randomUUID();
         return this.requestId = requestUUID.toString();
     }
-
+    // The remainder of the methods are all 'getter' and 'setter' method(s). Standard, and require no documentation.
+    // Added by Bard Samimi
     public String getRequestId() { return requestId; }
 
     public String getRiderUserName() { return riderUserName; }

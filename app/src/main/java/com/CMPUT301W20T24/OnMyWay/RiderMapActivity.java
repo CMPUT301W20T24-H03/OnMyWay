@@ -52,12 +52,12 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private static final String TAG = "OMW/RiderMapActivity";
     private DBManager dbManager;
 
-    GoogleMap mMap;
-    SupportMapFragment mapFragment;
-    SearchView searchView;
-    Button switchModeButton;
-    Button confirmRequestButton;
-    RiderMode currentMode;
+    private GoogleMap mMap;
+    private SupportMapFragment mapFragment;
+    private SearchView searchView;
+    private Button switchModeButton;
+    private Button confirmRequestButton;
+    private RiderMode currentMode;
 
     double startLocLat;
     double startLocLon;
@@ -65,14 +65,14 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     double endLocLat;
     double endLocLon;
 
-    NavigationView navigationView;
+    private NavigationView navigationView;
     private FragmentManager fm;
 
-    String searchStartLocation;
-    String searchEndLocation;
-    Marker startLocationMarker;
-    Marker endLocationMarker;
-    FirebaseFirestore database;
+    private String searchStartLocation;
+    private String searchEndLocation;
+    private Marker startLocationMarker;
+    private Marker endLocationMarker;
+    private FirebaseFirestore database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

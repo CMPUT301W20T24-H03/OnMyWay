@@ -8,7 +8,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-
 /**
  * A login page for the user. If the login fails the user is not allowed to continue.
  * Otherwise, the user is redirected to either DriverMapActivity or RiderMapActivity
