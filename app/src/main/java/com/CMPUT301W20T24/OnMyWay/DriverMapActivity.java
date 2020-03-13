@@ -9,6 +9,8 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -77,6 +79,8 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     ActionBarDrawerToggle toggle;
     private static final int REQUEST_CODE = 101;
     View mapView;
+    private DBManager dbManager;
+    private FragmentManager fm;
 
     // HACK TO GO BACK TO THE MAIN ACTIVITY WHEN THE BACK BUTTON IS PRESSED. REMOVE LATER
     @Override
@@ -94,6 +98,9 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_map);
+        dbManager = new DBManager();
+        fm = getSupportFragmentManager();
+
 
         /// Hamburger menu creation reference: https://www.youtube.com/watch?v=ofu1IqiBNCY
 
@@ -387,6 +394,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.profile:
+                showDriverTestProfile(this.getCurrentFocus());
                 Toast.makeText(getApplicationContext(), "profile working", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.current_request:
@@ -405,5 +413,19 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
         }
         return false;
+    }
+
+    public void showDriverTestProfile(View view) {
+        // Use the listener we made to listen for when the function finishes
+        dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
+            @Override
+            public void onUserInfoPulled(User fetchedUser) {
+                ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(fetchedUser);
+                showProfileFragment.show(fm);
+            }
+        });
+
+        // Fetch the user info of a test driver user
+        dbManager.fetchUserInfo("dYG5SQAAGVbmglT5k8dUhufAnpq1");
     }
 }
