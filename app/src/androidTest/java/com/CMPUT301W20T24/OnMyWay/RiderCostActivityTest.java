@@ -53,10 +53,10 @@ public class RiderCostActivityTest
         // for now, test with same hardcoded values as used in the Rider Cost activity
         Location startLocation = new Location("startLocation");
         Location endLocation = new Location("endLocation");
-        startLocation.setLatitude(53.523218899999996);
-        startLocation.setLongitude(-113.5263186);
-        endLocation.setLatitude(53.5411916);
-        endLocation.setLongitude(-113.29573549999999);
+        startLocation.setLatitude(53.7265447);
+        startLocation.setLongitude(-113.0817094);
+        endLocation.setLatitude(53.6963182);
+        endLocation.setLongitude(-113.2163764);
         // calculate mock cost
         float distance = startLocation.distanceTo(endLocation)/600 ;
         String cost = String.format("$%.2f", distance);
