@@ -10,4 +10,9 @@
         android:icon="@drawable/ic_playlist_add_check_black_24dp"
         android:title="Requests"/>
 
+    <item
+        android:id = "@+id/see_driver_rating"
+        android:title = "Driver Rating"
+        android:icon = "@drawable/ic_stars_black_24dp"  />
+
 </menu>
