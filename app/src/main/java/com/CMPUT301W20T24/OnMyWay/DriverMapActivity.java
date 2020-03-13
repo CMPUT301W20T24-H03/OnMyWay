@@ -60,11 +60,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
+
+    /**
+     * Global declarations
+     */
     private static final String TAG = "OMW/DriverMapActivity";
     private GoogleMap mMap;
     private dummyRequest currentRequest;
-    /// Android Coding via YouTube, How to Show Current Location On Map in Android Studio
-    /// https://www.youtube.com/watch?v=boyyLhXAZAQ&t=22s
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
     LocationManager locationManager;
@@ -73,7 +75,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     Toolbar toolbar;
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
-
     private static final int REQUEST_CODE = 101;
     View mapView;
 
@@ -85,6 +86,10 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         startActivity(intent);
     }
 
+    /**
+     * onCreate method. Sets the view, and finds/stores the drivers current location
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +107,9 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         Toast.makeText(DriverMapActivity.this, "DriverMapActivity", Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Finds the drivers current location, 'currentLocation'
+     */
     private void fetchLastLocation() {
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
@@ -121,7 +129,9 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         });
     }
 
-
+    /**
+     * Adds temporary markers for testing purposes
+     */
     public void addMarkers(){
         ArrayList<dummyRequest> requests = new ArrayList<dummyRequest>();
 
@@ -135,7 +145,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         dummyRequest request7 = new dummyRequest("alice",53.52328, -113.5264,a);
         dummyRequest request8 = new dummyRequest("martha",53.52328, -113.5264,a);
         dummyRequest request9 = new dummyRequest("trump",37.77986, -122.42905,a);
-
 
         requests.add(request1);
         requests.add(request2);
@@ -153,11 +162,18 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             my_marker.setTag(new LatLng(53.53522, -113.4765));
         }
 
-
     }
 
     /// YouTube video by CodingWithMitch: Calculating Directions with Google Directions API
     /// https://www.youtube.com/watch?v=f47L1SL5S0o&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=19
+
+
+
+    /**
+     * Calculates directions from the driver's current location to a marker (in this case, the rider's location)
+     * Calls addPolylinesToMap(result) to draw the resulting directions as a polyline
+     * @param marker A marker at the rider's current location
+     */
     private GeoApiContext my_geoApi;
     private void calculateDirections(Marker marker){
 
@@ -183,6 +199,12 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         });
     }
 
+    /**
+     * Calculates directions from the marker (riders current position) to the final destination
+     * The location of the final destination is stored as a LatLng object in the marker's tag
+     * Calls addPolylinesToMapDestination(result) to draw the resulting directions as a polyline
+     * @param marker A marker at the rider's current location
+     */
     private void calculateDirectionsDestination(Marker marker){
 
         LatLng destination_coordinates = (LatLng) marker.getTag();
@@ -211,6 +233,9 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     /// YouTube video by CodingWithMitch: Adding Polylines to a Google Map
     /// https://www.youtube.com/watch?v=xl0GwkLNpNI&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=20
+    /**
+     * Adds a polyline on the Driver map showing the route to the rider
+     */
     Polyline polyline_rider;
     private void addPolylinesToMap(final DirectionsResult result){
         new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -241,6 +266,9 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         });
     }
 
+    /**
+     * Adds a polyline on the Driver's map showing the route from the rider to the final destination
+     */
     Polyline polyline_destination;
     private void addPolylinesToMapDestination(final DirectionsResult result){
         new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -271,6 +299,12 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         });
     }
 
+    /**
+     * Invoked when the map is ready:
+     * Enable current location, moves the camera to the driver's location
+     * Shows dialogue when a maker is clicked
+     * @param googleMap
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -305,6 +339,9 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     }
 
+    /**
+     * The dialogue that is created when a marker is clicked
+     */
     public void showDialogue(){
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(DriverMapActivity.this);
         bottomSheetDialog.setContentView(R.layout.confirm_ride_driver);

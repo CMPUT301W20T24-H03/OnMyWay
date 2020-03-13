@@ -3,7 +3,6 @@ package com.CMPUT301W20T24.OnMyWay;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-
 /**
  * Tests for the InputValidator class. The method names here correspond to the ones they are testing
  * @author John
