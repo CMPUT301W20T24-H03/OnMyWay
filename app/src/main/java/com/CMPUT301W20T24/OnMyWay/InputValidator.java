@@ -6,7 +6,11 @@ import java.util.regex.Pattern;
 import static android.telephony.PhoneNumberUtils.formatNumber;
 
 
-// Validate various types of text inputs. Look at ResponseStatus() to see how to call it correctly.
+/**
+ * A static class responsible for validating various types of text inputs.
+ * Look at ResponseStatus() to see how to make sense of the result from methods in this class
+ * @author John
+ */
 public class InputValidator {
     private static final String TAG = "OMW/InputValidator";   // Use this tag for call Log.d()
 
@@ -23,7 +27,6 @@ public class InputValidator {
         }
         return new ResponseStatus(false, "Email address is not valid");
     }
-
 
 
     public static ResponseStatus checkPassword(CharSequence passwordChars) {

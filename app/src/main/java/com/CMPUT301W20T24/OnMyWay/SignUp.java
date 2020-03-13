@@ -1,4 +1,25 @@
 package com.CMPUT301W20T24.OnMyWay;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Patterns;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.Switch;
+import android.widget.Toast;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+
 /**
  * Class is responsible for handling the sign up procedure for any new rider
  * With an option linking to a new activity for driver account creation
@@ -6,32 +27,8 @@ package com.CMPUT301W20T24.OnMyWay;
  * Things left to do:
  *  - Add phone number field
  *  - Add additional intent for driver sign up
- *  
+ *
  */
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.util.Patterns;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.Switch;
-import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseUser;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class SignUp extends AppCompatActivity {
     //User Inputs
     private EditText emailID;

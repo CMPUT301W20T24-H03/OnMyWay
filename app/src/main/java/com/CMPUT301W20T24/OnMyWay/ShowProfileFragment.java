@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import de.hdodenhof.circleimageview.CircleImageView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,10 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 
+/**
+ * A dialog fragment that shows a given user's profile information
+ * @author John
+ */
 /// CodePath, Using DialogFragment
 /// https://guides.codepath.com/android/using-dialogfragment
 public class ShowProfileFragment extends DialogFragment implements View.OnClickListener {

@@ -42,7 +42,8 @@ public class DBManager {
 
     /**
      * Method to set up this listener
-     * @param loginListener A LoginListener. This is the method that will be called
+     * @param loginListener A LoginListener. This is the interface that will be called when a user
+     *                      is either logged in or there is a failure
      * @author John
      */
     public void setLoginListener(LoginListener loginListener) {
@@ -52,7 +53,9 @@ public class DBManager {
 
     /**
      * Method to set up this listener
-     * @param currentUserInfoPulledListener A CurrentUserInfoPulledListener. This is the method that will be called
+     * @param currentUserInfoPulledListener A CurrentUserInfoPulledListener. This is the method
+     *                                      that will be called after info for the current user
+     *                                      is fetched, or there is an error
      * @author John
      */
     public void setCurrentUserInfoPulledListener(CurrentUserInfoPulledListener currentUserInfoPulledListener) {
@@ -62,7 +65,8 @@ public class DBManager {
 
     /**
      * Method to set up this listener
-     * @param userInfoPulledListener A UserInfoPulledListener. This is the method that will be called
+     * @param userInfoPulledListener A UserInfoPulledListener. This is the method that will be
+     *                               called after info for a user is fetched, or there is an error
      * @author John
      */
     public void setUserInfoPulledListener(UserInfoPulledListener userInfoPulledListener) {
@@ -119,13 +123,22 @@ public class DBManager {
     }
 
 
-    // Don't call this directly. Call the method in State to clean up local data also
+    /**
+     * Logs out the current user from Firebase Auth. This shouldn't be called on its own.
+     * Call the logout method in State to clean up local data and log out online as well
+     * @author John
+     */
     public void logoutUser() {
         FirebaseAuth.getInstance().signOut();
     }
 
 
-    // Get additional info for the current user (email, phone, rating, etc.)
+    /**
+     * Gets the info of the currently logged in user and saves it to State (phone, rating, etc).
+     * This should be called after the user is logged in using Firebase Auth to get the user's
+     * profile information
+     * @author John
+     */
     public void fetchCurrentUserInfo() {
         // Use the listener we made to listen for when the function finishes
         setUserInfoPulledListener(new UserInfoPulledListener() {
@@ -147,6 +160,12 @@ public class DBManager {
     }
 
 
+    /**
+     * Gets the info of a user given their userId. onUserInfoPulled() listener is called with a
+     * new User object after the method finishes
+     * @param userId A String. The userId of the user who's profile information we want to fetch
+     * @author John
+     */
     /// Google Firebase, Get data with Cloud Firestore
     /// https://firebase.google.com/docs/firestore/query-data/get-data
     public void fetchUserInfo(String userId) {
@@ -200,6 +219,11 @@ public class DBManager {
     }
 
 
+    /**
+     * Takes a User object and stores it in the Firestore database
+     * @param updatedUser The User we want to push to the database
+     * @author John
+     */
     // Upload the profile of the given user to FireStore. This does not affect Firebase Auth.
 
     /// Google Firebase Docs, Add data to Cloud Firestore
