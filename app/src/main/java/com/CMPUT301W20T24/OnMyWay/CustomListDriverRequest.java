@@ -26,17 +26,20 @@ public class CustomListDriverRequest extends ArrayAdapter<dummyRequest> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
 
+        // check
         if (view == null){
             view = LayoutInflater.from(context).inflate(R.layout.custom_list_content,parent,false);
         }
 
         dummyRequest request = requests.get(position);
 
+        // setting TextView's that will be added to listview
         TextView usernameText = view.findViewById(R.id.riderUser);
         TextView latText = view.findViewById(R.id.riderlat);
         TextView longText = view.findViewById(R.id.riderlong);
         TextView paymentText = view.findViewById(R.id.paymentAmount);
 
+        // setting TextView's
         usernameText.setText(request.getUsername());
         latText.setText(Double.toString(request.getLat()));
         longText.setText(Double.toString(request.getLon()));
