@@ -61,7 +61,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".RiderCost"
-            android:label="Rider Cost View"
+            android:label="RiderCostView"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

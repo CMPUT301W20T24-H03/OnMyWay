@@ -34,6 +34,8 @@ public class RiderCost extends AppCompatActivity {
 
         LinearLayout layout = (LinearLayout) findViewById(R.id.locationSearchBar);
         layout.setVisibility(View.GONE);
+        Button button = (Button) findViewById(R.id.switchModeButton);
+        button.setVisibility(View.GONE);
 
         calculateCost();
         // Set the TextView to the calculated cost
