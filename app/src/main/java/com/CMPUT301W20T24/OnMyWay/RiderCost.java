@@ -107,7 +107,7 @@ public class RiderCost extends AppCompatActivity {
         /// https://firebase.google.com/docs/firestore/query-data/get-data
         Location startLocation = new Location("startLocation");
         Location endLocation = new Location("endLocation");
-        DocumentReference docRef = db.collection("riderRequests").document("PMeRWinHBrH0Ez5i7rZ8");
+        DocumentReference docRef = db.collection("riderRequests").document("CtnTp0ltVK2xx44MwWFZ");
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
