@@ -1,6 +1,10 @@
 package com.CMPUT301W20T24.OnMyWay;
 
-
+/**
+ * To-be implemented
+ * Class is responsible for generating QR codes
+ * @author Mahin
+ */
 public class QRBuck {
     private int QR_Id;
 
