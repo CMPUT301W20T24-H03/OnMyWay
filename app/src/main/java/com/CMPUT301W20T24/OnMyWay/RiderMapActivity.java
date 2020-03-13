@@ -79,6 +79,10 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_map);
 
+        navigationView = findViewById(R.id.navigationView);
+        navigationView.setNavigationItemSelectedListener(this);
+
+
         currentMode = RiderMode.End;
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.riderMap);
         searchView = findViewById(R.id.locationSearchBar);
@@ -92,46 +96,52 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
              * IF request does NOT include valid START and END location marker coordinate(s), user will be re-directed to MainActivity.
              * @param view
              * @return void
-             * @author Manpreet Grewal and Payas Singh
+             * @author Payas Singh, Manpreet Grewal, Bard Samimi
              */
             @Override
             public void onClick(View view) {
-                if (startLocationMarker == null && endLocationMarker == null) {
-                    Log.d(TAG, "Request invalid. START or END location not specified/stored.");
-                    Intent intent = new Intent(RiderMapActivity.this, MainActivity.class);
-                    startActivity(intent);
+                if (confirmRequestButton.getText().equals("REQUEST RIDE")) {
+                    if (startLocationMarker == null || endLocationMarker == null) {
+                        Log.d(TAG, "Request invalid. START or END location not specified/stored.");
+                        Toast.makeText(getApplicationContext(), "Request Invalid. You must specify a start and end location!", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Request riderRequest = new Request(startLocationMarker.getPosition().longitude, startLocationMarker.getPosition().latitude, endLocationMarker.getPosition().longitude,
+                                endLocationMarker.getPosition().latitude);
+
+                        HashMap<String, String> data = new HashMap<>();
+                        data.put("endLatitude", String.valueOf(riderRequest.getEndLatitude()));
+                        data.put("endLongitude", String.valueOf(riderRequest.getEndLongitude()));
+                        data.put("requestID", riderRequest.getRequestId());
+                        data.put("startLatitude", String.valueOf(riderRequest.getStartLatitude()));
+                        data.put("startLongitude", String.valueOf(riderRequest.getStartLongitude()));
+
+                        //Adds a new record the requet to the 'riderRequests' collection.
+                        database.collection("riderRequests")
+                                .add(data)
+                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        Log.d(TAG, "Data addition successful" + documentReference.getId());
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d(TAG, "Data addition failed." + e.toString());
+                                    }
+                                });
+
+                        Toast.makeText(getApplicationContext(), "Woo! Your ride is confirmed, check Active Request on the drawer pull menu by swiping right from the left side of the screen!", Toast.LENGTH_SHORT).show();
+                        confirmRequestButton.setText("CANCEL RIDE");
+                    }
+
                 } else {
-                    //Generate new 'riderRequest'.
-                    Request riderRequest = new Request(startLocationMarker.getPosition().longitude, startLocationMarker.getPosition().latitude, endLocationMarker.getPosition().longitude,
-                            endLocationMarker.getPosition().latitude);
-
-                    //Add data to the project Firebase database.
-                    HashMap<String, String> data = new HashMap<>();
-                    data.put("endLatitude", String.valueOf(riderRequest.getEndLatitude()));
-                    data.put("endLongitude", String.valueOf(riderRequest.getEndLongitude()));
-                    data.put("requestID", riderRequest.getRequestId());
-                    data.put("startLatitude", String.valueOf(riderRequest.getStartLatitude()));
-                    data.put("startLongitude", String.valueOf(riderRequest.getStartLongitude()));
-
-                    //Adds a new record the requet to the 'riderRequests' collection.
-                    database.collection("riderRequests")
-                            .add(data)
-                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                @Override
-                                public void onSuccess(DocumentReference documentReference) {
-                                    Log.d(TAG, "Data addition successful" + documentReference.getId());
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d(TAG, "Data addition failed." + e.toString());
-                                }
-                            });
-
-                    //Remove marker(s) once 'riderRequest' has been added to the database.
-                    startLocationMarker.remove();
-                    endLocationMarker.remove();
+                    mMap.clear();
+                    startLocationMarker = null;
+                    endLocationMarker = null;
+                    Toast.makeText(getApplicationContext(), "Your request has been cancelled", Toast.LENGTH_SHORT).show();
+                    confirmRequestButton.setText("REQUEST RIDE");
                 }
             }
         });
@@ -428,28 +438,6 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         // Fetch the user info of a test driver user
         dbManager.fetchUserInfo("dYG5SQAAGVbmglT5k8dUhufAnpq1");
-    }
-
-    public void confirmRideActivate(View view) {
-        if (confirmRequestButton.getText().equals("REQUEST RIDE")) {
-            if (startLocationMarker != null && endLocationMarker != null) {
-                Toast.makeText(getApplicationContext(), "Woo! Your ride is confirmed, check Active Request on the drawer pull menu by swiping right from the left side of the screen!", Toast.LENGTH_SHORT).show();
-                startLocLat = startLocationMarker.getPosition().latitude;
-                startLocLon = startLocationMarker.getPosition().longitude;
-                endLocLat = endLocationMarker.getPosition().latitude;
-                endLocLon = endLocationMarker.getPosition().longitude;
-                confirmRequestButton.setText("CANCEL RIDE");
-
-            } else {
-                Toast.makeText(getApplicationContext(), "Please make sure there is both a start and end location marker, use mode to toggle between the 2", Toast.LENGTH_LONG).show();
-            }
-        } else {
-            mMap.clear();
-            startLocationMarker = null;
-            endLocationMarker = null;
-            Toast.makeText(getApplicationContext(), "Your request has been cancelled", Toast.LENGTH_SHORT).show();
-            confirmRequestButton.setText("REQUEST RIDE");
-        }
     }
 }
 
