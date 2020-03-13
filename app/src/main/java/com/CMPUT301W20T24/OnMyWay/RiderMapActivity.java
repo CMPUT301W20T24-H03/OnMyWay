@@ -82,6 +82,8 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         navigationView = findViewById(R.id.navigationView);
         navigationView.setNavigationItemSelectedListener(this);
 
+        dbManager = new DBManager();
+        fm = getSupportFragmentManager();
 
         currentMode = RiderMode.End;
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.riderMap);
