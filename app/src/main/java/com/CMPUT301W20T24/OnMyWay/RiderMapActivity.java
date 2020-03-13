@@ -48,6 +48,11 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     Button switchModeButton;
     Button confirmRequestButton;
     RiderMode currentMode;
+    double startLocLat;
+    double startLocLon;
+    double endLocLat;
+    double endLocLon;
+    NavigationView navigationView;
 
     private FragmentManager fm;
     String searchStartLocation;
@@ -63,6 +68,9 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         dbManager = new DBManager();
         fm = getSupportFragmentManager();
+
+        navigationView = findViewById(R.id.navigationView);
+        navigationView.setNavigationItemSelectedListener(this);
 
 
         currentMode = RiderMode.End;
@@ -277,19 +285,23 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                 Toast.makeText(getApplicationContext(), "profile working", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.current_request_rider:
-              /* if(currentRequest != null){
-                    Intent intent = new Intent(this, CurrentRequest.class);
-                    intent.putExtra("REQUEST_LATITUDE", currentRequest.getLat());
-                    intent.putExtra("REQUEST_LONGITUDE",currentRequest.getLon());
-                    intent.putExtra("REQUEST_PAYMENTAMOUNT",currentRequest.getPayment());
-                    startActivity(intent);
-                    break;
+               if(startLocationMarker != null && endLocationMarker != null){
+
+                   Intent intent = new Intent(this, CurrentRequest.class);
+                   intent.putExtra("REQUEST_LATITUDE", startLocLat);
+                   intent.putExtra("REQUEST_LONGITUDE",startLocLon);
+                   intent.putExtra("REQUEST_PAYMENTAMOUNT", 15.32f);
+                   intent.putExtra("REQUEST_LATITUDE_ARRIVAL",endLocLat);
+                   intent.putExtra("REQUEST_LONGITUDE_ARRIVAL",endLocLon);
+
+                   startActivity(intent);
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), "No active request present", Toast.LENGTH_SHORT).show();
-                } */
+                    Toast.makeText(getApplicationContext(), "No ride confirmed", Toast.LENGTH_SHORT).show();
+                }
+                break;
             case R.id.see_driver_rating:
-                showDriverTestProfile(this.getCurrentFocus().getRootView());
+                showDriverTestProfile(this.getCurrentFocus());
                 break;
 
             }
@@ -311,7 +323,14 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
     public void confirmRideActivate(View view) {
+        if(startLocationMarker != null && endLocationMarker != null){
 
+            startLocLat = startLocationMarker.getPosition().latitude;
+            startLocLon = startLocationMarker.getPosition().longitude;
+            endLocLat = endLocationMarker.getPosition().latitude;
+            endLocLon = endLocationMarker.getPosition().longitude;
+
+        }
     }
 
     @Override
