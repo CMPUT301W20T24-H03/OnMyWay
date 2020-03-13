@@ -7,6 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
+/**
+ * Tests for the Utilities class. The method names here correspond to the ones they are testing
+ * @author John
+ */
 public class UtilitiesTests {
     @Test
     void testMd5() {
@@ -14,10 +18,10 @@ public class UtilitiesTests {
         assertEquals("8ebb025d54ef4041d0cd7d010d3fc63d", Utilities.md5("driver@example.com"));
         assertEquals("7043a2172e6454a970ce5c6760bd4a00", Utilities.md5("rider@example.com"));
         assertThrows(IllegalArgumentException.class, () -> {
-            Utilities.md5("");
+            Utilities.md5("");  // Empty string should throw exception
         });
         assertThrows(IllegalArgumentException.class, () -> {
-            Utilities.md5(null);
+            Utilities.md5(null);  // Null string should throw exception
         });
     }
 
@@ -28,10 +32,10 @@ public class UtilitiesTests {
         assertEquals("A", Utilities.capitalize("a"));
         assertEquals("Mr. john", Utilities.capitalize("mr. john"));
         assertThrows(IllegalArgumentException.class, () -> {
-            Utilities.capitalize("");
+            Utilities.capitalize("");  // Empty string should throw exception
         });
         assertThrows(IllegalArgumentException.class, () -> {
-            Utilities.capitalize(null);
+            Utilities.capitalize(null);  // Null string should throw exception
         });
     }
 
@@ -43,7 +47,7 @@ public class UtilitiesTests {
         assertEquals("mr. john", Utilities.checkStringNotNull("mr. john"));
         assertEquals("", Utilities.checkStringNotNull(""));
         assertThrows(NullPointerException.class, () -> {
-            Utilities.checkStringNotNull(null);
+            Utilities.checkStringNotNull(null);  // Null string should throw exception
         });
     }
 
@@ -59,7 +63,7 @@ public class UtilitiesTests {
         assertFalse(Utilities.checkBooleanNotNull(false1));
         assertFalse(Utilities.checkBooleanNotNull(false2));
         assertThrows(NullPointerException.class, () -> {
-            Utilities.checkBooleanNotNull(null);
+            Utilities.checkBooleanNotNull(null);  // Null string should throw exception
         });
     }
 
@@ -73,7 +77,7 @@ public class UtilitiesTests {
         assertEquals(-1000, Utilities.checkLongNotNull(long2));
         assertEquals(99999999, Utilities.checkLongNotNull(long3));
         assertThrows(NullPointerException.class, () -> {
-            Utilities.checkLongNotNull(null);
+            Utilities.checkLongNotNull(null);  // Null string should throw exception
         });
     }
 }
