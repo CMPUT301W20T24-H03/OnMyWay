@@ -11,7 +11,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-// An activity for testing
+/**
+ * An activity for quick testing of activities and fragments. WIll be removed before release
+ * @author John
+ */
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "OMW/MainActivity";   // Use this tag for Log.d()
     private TextView statusTextCurrentUser;
