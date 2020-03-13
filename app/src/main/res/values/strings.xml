@@ -32,4 +32,6 @@
     <string name="text_edit">Text Edit</string>
     <string name="edit_price">Edit Price</string>
     <string name="price_estimate">PriceEstimate</string>
+    <string name="rider_map_activity">Rider Map Activity</string>
+    <string name="rider_cost_activity">Rider Cost Activity</string>
 </resources>
