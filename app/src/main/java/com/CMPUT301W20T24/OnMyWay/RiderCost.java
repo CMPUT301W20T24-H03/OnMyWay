@@ -36,7 +36,6 @@ public class RiderCost extends AppCompatActivity {
         layout.setVisibility(View.GONE);
         Button button = (Button) findViewById(R.id.switchModeButton);
         button.setVisibility(View.GONE);
-
         calculateCost();
         // Set the TextView to the calculated cost
         TextView costText = (TextView) findViewById(R.id.priceEstimate);
