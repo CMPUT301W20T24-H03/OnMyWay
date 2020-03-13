@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,13 +13,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -41,35 +39,39 @@ import com.google.maps.internal.PolylineEncoding;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
 
-import org.w3c.dom.Text;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * A map for the user to create a request and specify the start and end locations.
+ * @author Manpreet Grewal and Payas Singh
+ */
 public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "OMW/RiderMapActivity";
     private DBManager dbManager;
+
     GoogleMap mMap;
     SupportMapFragment mapFragment;
     SearchView searchView;
     Button switchModeButton;
     Button confirmRequestButton;
     RiderMode currentMode;
+
     double startLocLat;
     double startLocLon;
+
     double endLocLat;
     double endLocLon;
-    NavigationView navigationView;
 
+    NavigationView navigationView;
     private FragmentManager fm;
+
     String searchStartLocation;
     String searchEndLocation;
-
     Marker startLocationMarker;
     Marker endLocationMarker;
-
     FirebaseFirestore database;
 
     @Override
@@ -77,62 +79,64 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_map);
 
-        dbManager = new DBManager();
-        fm = getSupportFragmentManager();
-
-        navigationView = findViewById(R.id.navigationView);
-        navigationView.setNavigationItemSelectedListener(this);
-
-
         currentMode = RiderMode.End;
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.riderMap);
         searchView = findViewById(R.id.locationSearchBar);
         switchModeButton = findViewById(R.id.switchModeButton);
         confirmRequestButton = findViewById(R.id.confirmRequestButton);
-
-        confirmRequestButton = findViewById(R.id.confirmRequestButton);
         database = FirebaseFirestore.getInstance();
-//        final CollectionReference collectionReference = database.collection("requests");
 
         confirmRequestButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Generates a request and stores it in the 'riderRequests' collection of the project Firebase database.
+             * IF request does NOT include valid START and END location marker coordinate(s), user will be re-directed to MainActivity.
+             * @param view
+             * @return void
+             * @author Manpreet Grewal and Payas Singh
+             */
             @Override
-            public void onClick(View v) {
-                Request riderRequest = new Request(startLocationMarker.getPosition().longitude, startLocationMarker.getPosition().latitude, endLocationMarker.getPosition().longitude,
-                        endLocationMarker.getPosition().latitude);
+            public void onClick(View view) {
+                if (startLocationMarker == null && endLocationMarker == null) {
+                    Log.d(TAG, "Request invalid. START or END location not specified/stored.");
+                    Intent intent = new Intent(RiderMapActivity.this, MainActivity.class);
+                    startActivity(intent);
+                }
 
-                HashMap<String, String> data = new HashMap<>();
-                data.put("endLatitude", String.valueOf(riderRequest.getEndLatitude()));
-                data.put("endLongitude", String.valueOf(riderRequest.getEndLongitude()));
-                data.put("requestID", riderRequest.getRequestId());
-                data.put("startLatitude",String.valueOf(riderRequest.getStartLatitude()));
-                data.put("startLongitude", String.valueOf(riderRequest.getStartLongitude()));
+                else {
+                    //Generate new 'riderRequest'.
+                    Request riderRequest = new Request(startLocationMarker.getPosition().longitude, startLocationMarker.getPosition().latitude, endLocationMarker.getPosition().longitude,
+                            endLocationMarker.getPosition().latitude);
 
-                database.collection("riderRequests")
-                        .add(data)
-                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                Log.d(TAG, "Data addition successful" + documentReference.getId());
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d(TAG, "Data addition failed." + e.toString());
-                            }
-                        });
-                startLocationMarker.remove();
-                endLocationMarker.remove();
+                    //Add data to the project Firebase database.
+                    HashMap<String, String> data = new HashMap<>();
+                    data.put("endLatitude", String.valueOf(riderRequest.getEndLatitude()));
+                    data.put("endLongitude", String.valueOf(riderRequest.getEndLongitude()));
+                    data.put("requestID", riderRequest.getRequestId());
+                    data.put("startLatitude", String.valueOf(riderRequest.getStartLatitude()));
+                    data.put("startLongitude", String.valueOf(riderRequest.getStartLongitude()));
+
+                    //Adds a new record the requet to the 'riderRequests' collection.
+                    database.collection("riderRequests")
+                            .add(data)
+                            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    Log.d(TAG, "Data addition successful" + documentReference.getId());
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d(TAG, "Data addition failed." + e.toString());
+                                }
+                            });
+
+                    //Remove marker(s) once 'riderRequest' has been added to the database.
+                    startLocationMarker.remove();
+                    endLocationMarker.remove();
+                }
             }
         });
-
-//        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
-//            @Override
-//            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-//
-//            }
-//        });
-
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

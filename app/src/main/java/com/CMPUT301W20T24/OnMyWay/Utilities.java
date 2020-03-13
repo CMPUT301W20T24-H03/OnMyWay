@@ -7,7 +7,6 @@ import java.security.NoSuchAlgorithmException;
 public class Utilities {
     private static final String TAG = "OMW/Utilities";   // Use this tag for call Log.d()
 
-
     /**
      * Generates and returns the MD5 hash of a given string
      * @param string The string we want to get a hash of
