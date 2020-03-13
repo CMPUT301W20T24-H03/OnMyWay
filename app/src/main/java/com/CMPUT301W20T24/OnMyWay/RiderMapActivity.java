@@ -286,7 +286,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
             case R.id.profile_rider:
-                Toast.makeText(getApplicationContext(), "profile working", Toast.LENGTH_SHORT).show();
+                showRiderTestProfile(this.getCurrentFocus());
                 break;
             case R.id.current_request_rider:
                 if(startLocationMarker != null && endLocationMarker != null){
@@ -310,6 +310,20 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         }
         return false;
+    }
+
+    public void showRiderTestProfile(View view) {
+        // Use the listener we made to listen for when the function finishes
+        dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
+            @Override
+            public void onUserInfoPulled(User fetchedUser) {
+                ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(fetchedUser);
+                showProfileFragment.show(fm);
+            }
+        });
+
+        // Fetch the user info of a test rider user
+        dbManager.fetchUserInfo("pcpzIGU4W7XomSe7o6AUXcFGDJy1");
     }
 
     public void showDriverTestProfile(View view) {
