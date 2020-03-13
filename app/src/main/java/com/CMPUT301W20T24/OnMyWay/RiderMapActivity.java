@@ -11,8 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.SearchView;
 
-import androidx.fragment.app.FragmentActivity;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -32,6 +30,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.fragment.app.FragmentActivity;
+
 public class RiderMapActivity extends FragmentActivity implements OnMapReadyCallback {
     private static final String TAG = "OMW/RiderMapActivity";
     GoogleMap mMap;
@@ -46,6 +46,13 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
 
     Marker startLocationMarker;
     Marker endLocationMarker;
+    /// YouTube video by CodingWithMitch: Adding Polylines to a Google Map
+    /// https://www.youtube.com/watch?v=xl0GwkLNpNI&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=20
+    Polyline polyline_rider;
+    Polyline polyline_destination;
+    /// YouTube video by CodingWithMitch: Calculating Directions with Google Directions API
+    /// https://www.youtube.com/watch?v=f47L1SL5S0o&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=19
+    private GeoApiContext my_geoApi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +124,7 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
                 }
                 // if an end and a start location has been specified then
                 // draw a lone between the two locations
-                if (endLocationMarker != null && startLocationMarker!=null) {
+                if (endLocationMarker != null && startLocationMarker != null) {
                     calculateDirections();
                     calculateDirectionsDestination();
                 }
@@ -144,12 +151,10 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
             searchView.setQuery(searchStartLocation, false);
         }
     }
-    /// YouTube video by CodingWithMitch: Calculating Directions with Google Directions API
-    /// https://www.youtube.com/watch?v=f47L1SL5S0o&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=19
-    private GeoApiContext my_geoApi;
-    private void calculateDirections(){
 
-        com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(endLocationMarker.getPosition().latitude,endLocationMarker.getPosition().longitude);
+    private void calculateDirections() {
+
+        com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(endLocationMarker.getPosition().latitude, endLocationMarker.getPosition().longitude);
 
         my_geoApi = new GeoApiContext.Builder().apiKey(getString(R.string.google_api_key)).build();
         DirectionsApiRequest directions = new DirectionsApiRequest(my_geoApi);
@@ -171,7 +176,7 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
         });
     }
 
-    private void calculateDirectionsDestination(){
+    private void calculateDirectionsDestination() {
 
         // setting current request for sliding menu view
         com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(endLocationMarker.getPosition().latitude, endLocationMarker.getPosition().longitude);
@@ -195,28 +200,26 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
 
         });
     }
-    /// YouTube video by CodingWithMitch: Adding Polylines to a Google Map
-    /// https://www.youtube.com/watch?v=xl0GwkLNpNI&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=20
-    Polyline polyline_rider;
-    private void addPolylinesToMap(final DirectionsResult result){
+
+    private void addPolylinesToMap(final DirectionsResult result) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @SuppressLint("ResourceType")
             @Override
             public void run() {
                 Log.d(TAG, "run: result routes: " + result.routes.length);
 
-                for(DirectionsRoute route: result.routes){
+                for (DirectionsRoute route : result.routes) {
                     Log.d(TAG, "run: leg: " + route.legs[0].toString());
                     List<com.google.maps.model.LatLng> decodedPath = PolylineEncoding.decode(route.overviewPolyline.getEncodedPath());
 
                     List<LatLng> newDecodedPath = new ArrayList<>();
 
                     // This loops through all the LatLng coordinates of ONE polyline.
-                    for(com.google.maps.model.LatLng latLng: decodedPath){
+                    for (com.google.maps.model.LatLng latLng : decodedPath) {
                         newDecodedPath.add(new LatLng(latLng.lat, latLng.lng));
                     }
 
-                    if(polyline_rider!=null){
+                    if (polyline_rider != null) {
                         polyline_rider.remove();
                     }
 
@@ -227,26 +230,25 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
         });
     }
 
-    Polyline polyline_destination;
-    private void addPolylinesToMapDestination(final DirectionsResult result){
+    private void addPolylinesToMapDestination(final DirectionsResult result) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @SuppressLint("ResourceType")
             @Override
             public void run() {
                 Log.d(TAG, "run: result routes: " + result.routes.length);
 
-                for(DirectionsRoute route: result.routes){
+                for (DirectionsRoute route : result.routes) {
                     Log.d(TAG, "run: leg: " + route.legs[0].toString());
                     List<com.google.maps.model.LatLng> decodedPath = PolylineEncoding.decode(route.overviewPolyline.getEncodedPath());
 
                     List<LatLng> newDecodedPath = new ArrayList<>();
 
                     // This loops through all the LatLng coordinates of ONE polyline.
-                    for(com.google.maps.model.LatLng latLng: decodedPath){
+                    for (com.google.maps.model.LatLng latLng : decodedPath) {
                         newDecodedPath.add(new LatLng(latLng.lat, latLng.lng));
                     }
 
-                    if(polyline_destination!=null){
+                    if (polyline_destination != null) {
                         polyline_destination.remove();
                     }
 
@@ -256,6 +258,7 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
             }
         });
     }
+
     public void confirmRideActivate(View view) {
 
     }

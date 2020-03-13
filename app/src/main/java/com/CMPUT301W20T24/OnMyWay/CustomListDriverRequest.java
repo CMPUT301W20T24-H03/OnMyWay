@@ -7,18 +7,18 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import java.util.ArrayList;
 
 public class CustomListDriverRequest extends ArrayAdapter<dummyRequest> {
 
     private ArrayList<dummyRequest> requests;
     private Context context;
 
-    public CustomListDriverRequest(Context context, ArrayList<dummyRequest> requests){
-        super(context,0,requests);
+    public CustomListDriverRequest(Context context, ArrayList<dummyRequest> requests) {
+        super(context, 0, requests);
         this.requests = requests;
         this.context = context;
     }
@@ -26,8 +26,8 @@ public class CustomListDriverRequest extends ArrayAdapter<dummyRequest> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = convertView;
 
-        if (view == null){
-            view = LayoutInflater.from(context).inflate(R.layout.custom_list_content,parent,false);
+        if (view == null) {
+            view = LayoutInflater.from(context).inflate(R.layout.custom_list_content, parent, false);
         }
 
         dummyRequest request = requests.get(position);
@@ -44,7 +44,6 @@ public class CustomListDriverRequest extends ArrayAdapter<dummyRequest> {
 
         return view;
     }
-
 
 
 }

@@ -4,12 +4,18 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 
+/**
+ * A static class with various utility functions required for the rest of the app to function
+ *
+ * @author John
+ */
 public class Utilities {
     private static final String TAG = "OMW/Utilities";   // Use this tag for call Log.d()
 
 
     /**
      * Generates and returns the MD5 hash of a given string
+     *
      * @param string The string we want to get a hash of
      * @return An MD5 hash as a string
      * @author John
@@ -20,8 +26,7 @@ public class Utilities {
     public static String md5(String string) {
         if (string == "" || string == null) {
             throw new IllegalArgumentException("Getting the hash of an empty string makes no sense");
-        }
-        else {
+        } else {
             try {
                 // Create MD5 Hash
                 MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
@@ -48,6 +53,7 @@ public class Utilities {
 
     /**
      * Takes a string and capitalizes the first letter of it
+     *
      * @param string The string we want to capitalize
      * @return The capitalized string
      * @author John
@@ -56,8 +62,7 @@ public class Utilities {
     static public String capitalize(String string) {
         if (string == "" || string == null) {
             throw new IllegalArgumentException("The string passed to capitalize is empty");
-        }
-        else {
+        } else {
             return string.substring(0, 1).toUpperCase() + string.substring(1);
         }
     }
@@ -65,6 +70,7 @@ public class Utilities {
 
     /**
      * Check if a string is null, returning it if not. Otherwise a NullPointerException is thrown
+     *
      * @param stringToCheck The string we want to check
      * @return The string that was originally passed to the method
      * @author John
@@ -73,8 +79,7 @@ public class Utilities {
     static public String checkStringNotNull(String stringToCheck) {
         if (stringToCheck == null) {
             throw new NullPointerException("The string fetched from FireStore is null. Make sure data is added for this user");
-        }
-        else {
+        } else {
             return stringToCheck;
         }
     }
@@ -83,6 +88,7 @@ public class Utilities {
     /**
      * Check if a Boolean object is null, returning it's primitive value if not.
      * Otherwise a NullPointerException is thrown
+     *
      * @param booleanToCheck The Boolean object we want to check
      * @return The primitive boolean from the input object
      * @author John
@@ -91,8 +97,7 @@ public class Utilities {
     static public boolean checkBooleanNotNull(Boolean booleanToCheck) {
         if (booleanToCheck == null) {
             throw new NullPointerException("The string fetched from FireStore is null. Make sure data is added for this user");
-        }
-        else {
+        } else {
             return booleanToCheck;    // No unboxing needed. This is cast to a boolean automatically
         }
     }
@@ -101,6 +106,7 @@ public class Utilities {
     /**
      * Check if a Long object is null, returning it's primitive value as an int if not.
      * Otherwise a NullPointerException is thrown
+     *
      * @param longToCheck The Long object we want to check
      * @return The primitive int extracted from the input object
      * @author John
@@ -109,8 +115,7 @@ public class Utilities {
     static public int checkLongNotNull(Long longToCheck) {
         if (longToCheck == null) {
             throw new NullPointerException("The string fetched from FireStore is null. Make sure data is added for this user");
-        }
-        else {
+        } else {
             return longToCheck.intValue();
         }
     }

@@ -7,6 +7,7 @@ package com.CMPUT301W20T24.OnMyWay;
  * current user, current request, etc.). Has methods for updating values in the State.
  * Later this will be modified to either fetch data from the database or offline,
  * depending on whether the user has an internet connection or not
+ *
  * @author John
  */
 public class State {
@@ -18,6 +19,7 @@ public class State {
 
     /**
      * Returns the currently logged in user. This will be null if the user isn't logged in yet
+     *
      * @return A User object of the currently logged in User
      * @author John
      */
@@ -30,6 +32,7 @@ public class State {
 
     /**
      * Sets the current user only if one doesn't exist already
+     *
      * @param newUser The User object we want to change currentUser to
      * @author John
      */
@@ -46,6 +49,7 @@ public class State {
      * Calls DBManager to push user info to FireStore. To modify currentUser,
      * use getCurrentUser() first to get and modify the current User, then call this method to push
      * the changes to the database
+     *
      * @author John
      */
     static public void updateCurrentUser() {
@@ -55,6 +59,7 @@ public class State {
 
     /**
      * Checks if there is a user logged in or not
+     *
      * @return A boolean indicating whether the user is logged in or not
      * @author John
      */
@@ -65,6 +70,7 @@ public class State {
 
     /**
      * A private method to remove currentUser (used to cleanup before logging out, for example)
+     *
      * @author John
      */
     static private void removeCurrentUser() {
@@ -75,6 +81,7 @@ public class State {
     /**
      * Logs out the current user. First removes the current user from State and then calls
      * DBManager to log out the user from Firebase Auth
+     *
      * @author John
      */
     static public void logoutUser() {

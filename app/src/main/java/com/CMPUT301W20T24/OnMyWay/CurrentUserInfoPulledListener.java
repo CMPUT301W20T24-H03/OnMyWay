@@ -3,6 +3,7 @@ package com.CMPUT301W20T24.OnMyWay;
 
 /**
  * Implement this interface and onCurrentUserInfoPulled will be called after the information for the currently logged in user is fetched
+ *
  * @author John
  */
 /// StackOverflow post by Rupesh

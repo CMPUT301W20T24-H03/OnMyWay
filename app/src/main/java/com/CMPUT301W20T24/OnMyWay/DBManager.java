@@ -2,6 +2,7 @@ package com.CMPUT301W20T24.OnMyWay;
 
 import android.app.Activity;
 import android.util.Log;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -12,13 +13,16 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import androidx.annotation.NonNull;
 
 
 /**
  * Manages communication with Firebase Auth and Firestore so other classes don't have to. This should probably be a singleton
+ *
  * @author John
  */
 public class DBManager {
@@ -32,6 +36,7 @@ public class DBManager {
 
     /**
      * Constructor for DBManager. Initializes auth and db which are singletons
+     *
      * @author John
      */
     public DBManager() {
@@ -42,6 +47,7 @@ public class DBManager {
 
     /**
      * Method to set up this listener
+     *
      * @param loginListener A LoginListener. This is the interface that will be called when a user
      *                      is either logged in or there is a failure
      * @author John
@@ -53,6 +59,7 @@ public class DBManager {
 
     /**
      * Method to set up this listener
+     *
      * @param currentUserInfoPulledListener A CurrentUserInfoPulledListener. This is the method
      *                                      that will be called after info for the current user
      *                                      is fetched, or there is an error
@@ -65,6 +72,7 @@ public class DBManager {
 
     /**
      * Method to set up this listener
+     *
      * @param userInfoPulledListener A UserInfoPulledListener. This is the method that will be
      *                               called after info for a user is fetched, or there is an error
      * @author John
@@ -77,8 +85,9 @@ public class DBManager {
     /**
      * Takes an email address, password, and parent activity, and tries to login using Firebase Auth.
      * It calls loginListener.onLoginSuccess() if successful and loginListener.onLoginFailure() otherwise
-     * @param emailAddress A String. This is the email to use for login
-     * @param password A String. This is the password to use for login
+     *
+     * @param emailAddress   A String. This is the email to use for login
+     * @param password       A String. This is the password to use for login
      * @param parentActivity An Activity. This is only required so that auth can attach a callback to it
      * @author John
      */
@@ -101,8 +110,7 @@ public class DBManager {
                             }
 
                             fetchCurrentUserInfo(); // Immediately try to fetch additional user info
-                        }
-                        else if (loginListener != null) {
+                        } else if (loginListener != null) {
                             Log.d(TAG, "Error logging in user");
 
                             loginListener.onLoginFailure(task.getException()); // Call listener if it exists
@@ -115,6 +123,7 @@ public class DBManager {
     /**
      * Returns the current FirebaseUser or null if there is no user logged in.
      * This function is required because we will have a FirebaseUser before we have a User
+     *
      * @return The current FirebaseUser or null if there is no user logged in
      * @author John
      */
@@ -126,6 +135,7 @@ public class DBManager {
     /**
      * Logs out the current user from Firebase Auth. This shouldn't be called on its own.
      * Call the logout method in State to clean up local data and log out online as well
+     *
      * @author John
      */
     public void logoutUser() {
@@ -137,6 +147,7 @@ public class DBManager {
      * Gets the info of the currently logged in user and saves it to State (phone, rating, etc).
      * This should be called after the user is logged in using Firebase Auth to get the user's
      * profile information
+     *
      * @author John
      */
     public void fetchCurrentUserInfo() {
@@ -148,8 +159,7 @@ public class DBManager {
 
                 if (currentUserInfoPulledListener == null) {
                     Log.d(TAG, "No listeners are assigned for currentUserInfoPulledListener");
-                }
-                else {
+                } else {
                     currentUserInfoPulledListener.onCurrentUserInfoPulled();    // Call listener once user data is stored
                 }
             }
@@ -163,6 +173,7 @@ public class DBManager {
     /**
      * Gets the info of a user given their userId. onUserInfoPulled() listener is called with a
      * new User object after the method finishes
+     *
      * @param userId A String. The userId of the user who's profile information we want to fetch
      * @author John
      */
@@ -201,17 +212,14 @@ public class DBManager {
 
                                 if (userInfoPulledListener == null) {
                                     Log.d(TAG, "No listeners are assigned for userInfoPulledListener");
-                                }
-                                else {
+                                } else {
                                     // Call listener when we are finished, if it exists
                                     userInfoPulledListener.onUserInfoPulled(newUser);
                                 }
-                            }
-                            else {
+                            } else {
                                 Log.d(TAG, "User not found in database");
                             }
-                        }
-                        else {
+                        } else {
                             Log.d(TAG, "Get failed with ", task.getException());
                         }
                     }
@@ -221,6 +229,7 @@ public class DBManager {
 
     /**
      * Takes a User object and stores it in the Firestore database
+     *
      * @param updatedUser The User we want to push to the database
      * @author John
      */

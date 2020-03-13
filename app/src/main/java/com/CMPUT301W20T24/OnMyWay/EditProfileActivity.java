@@ -1,6 +1,5 @@
 package com.CMPUT301W20T24.OnMyWay;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,13 +7,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.squareup.picasso.Picasso;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 
 /**
  * An activity that allows the user to edit their profile information.
  * Save must be pressed to validate and save the user's entered information.
  * The user can also delete their account from this page
+ *
  * @author John
  */
 public class EditProfileActivity extends AppCompatActivity {
@@ -129,8 +132,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
             Log.d(TAG, "All inputs are valid. Returning to parent activity");
             this.finish();  // Return to parent activity
-        }
-        else {
+        } else {
             Toast.makeText(EditProfileActivity.this, "Please check your inputs again", Toast.LENGTH_SHORT).show();
         }
     }

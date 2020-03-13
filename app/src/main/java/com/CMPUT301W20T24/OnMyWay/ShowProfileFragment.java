@@ -3,21 +3,24 @@ package com.CMPUT301W20T24.OnMyWay;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
-import de.hdodenhof.circleimageview.CircleImageView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
 import com.squareup.picasso.Picasso;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 /**
  * A dialog fragment that shows a given user's profile information
+ *
  * @author John
  */
 /// CodePath, Using DialogFragment
@@ -38,12 +41,10 @@ public class ShowProfileFragment extends DialogFragment implements View.OnClickL
     public static ShowProfileFragment newInstance(User user) {
         if (user == null) {
             throw new NullPointerException("User can't be null");
-        }
-        else if (user == State.getCurrentUser()) {
+        } else if (user == State.getCurrentUser()) {
             Log.d(TAG, "Creating profile dialog for current user");
             isCurrentUser = true;
-        }
-        else {
+        } else {
             Log.d(TAG, "Creating profile dialog for some user");
             isCurrentUser = false;
         }
@@ -93,12 +94,11 @@ public class ShowProfileFragment extends DialogFragment implements View.OnClickL
         logoutButton.setOnClickListener(this);
 
         if (isCurrentUser) {
-            editButton.setVisibility(view.VISIBLE);
-            logoutButton.setVisibility(view.VISIBLE);
-        }
-        else {
-            editButton.setVisibility(view.INVISIBLE);
-            logoutButton.setVisibility(view.GONE);
+            editButton.setVisibility(View.VISIBLE);
+            logoutButton.setVisibility(View.VISIBLE);
+        } else {
+            editButton.setVisibility(View.INVISIBLE);
+            logoutButton.setVisibility(View.GONE);
         }
 
         return view;
@@ -156,22 +156,19 @@ public class ShowProfileFragment extends DialogFragment implements View.OnClickL
             Log.d(TAG, "Back button pressed");
 
             this.dismiss(); // Close the dialog
-        }
-        else if (viewId == R.id.buttonEditProfile) {
+        } else if (viewId == R.id.buttonEditProfile) {
             Log.d(TAG, "Edit profile button pressed");
 
             Intent intent = new Intent(parentActivity, EditProfileActivity.class);
             startActivity(intent);
-        }
-        else if (viewId == R.id.buttonLogout) {
+        } else if (viewId == R.id.buttonLogout) {
             Log.d(TAG, "Logout button pressed");
 
             State.logoutUser();
             Intent intent = new Intent(parentActivity, SplashScreenActivity.class);
             intent.putExtra("isLoggedOut", true);
             startActivity(intent);
-        }
-        else {
+        } else {
             throw new NullPointerException("No button with the correct ID was found");
         }
     }

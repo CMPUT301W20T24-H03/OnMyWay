@@ -1,17 +1,20 @@
 package com.CMPUT301W20T24.OnMyWay;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+
 import java.util.Date;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 
 /**
  * This is the first screen the user sees. SplashScreenActivity if the user is logged in already.
  * If so, it goes the either RiderMapActivity or DriverMapActivity.
  * Otherwise, it goes to LoginActivity
+ *
  * @author John
  */
 public class SplashScreenActivity extends AppCompatActivity {
@@ -62,8 +65,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                         Log.d(TAG, "Switching to DriverMapActivity");
                         Intent intent = new Intent(SplashScreenActivity.this, DriverMapActivity.class);
                         startActivity(intent);
-                    }
-                    else {
+                    } else {
                         // Go to RiderMapActivity
                         Log.d(TAG, "Switching to RiderMapActivity");
                         Intent intent = new Intent(SplashScreenActivity.this, RiderMapActivity.class);
@@ -73,8 +75,7 @@ public class SplashScreenActivity extends AppCompatActivity {
             });
 
             dbManager.fetchCurrentUserInfo();   // Fetch additional info for the current user
-        }
-        else {
+        } else {
             Log.d(TAG, "Go to login page"); // Go to login page if user is not logged in
             Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
             startActivity(intent);

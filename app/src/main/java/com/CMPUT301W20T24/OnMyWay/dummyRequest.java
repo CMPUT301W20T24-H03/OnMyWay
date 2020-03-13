@@ -2,7 +2,7 @@ package com.CMPUT301W20T24.OnMyWay;
 
 // dummy Request class , will remove after when figure out what final request class will be
 
-public class dummyRequest{
+public class dummyRequest {
     private String username;
     private double lat;
     private double lon;

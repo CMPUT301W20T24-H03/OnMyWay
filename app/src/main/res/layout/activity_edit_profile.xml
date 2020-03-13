@@ -58,13 +58,13 @@
             android:layout_height="0dp"
             android:layout_marginTop="32dp"
             android:layout_marginBottom="8dp"
-            app:civ_border_width="4dp"
             app:civ_border_color="#FFFFFFFF"
+            app:civ_border_width="4dp"
             app:layout_constraintBottom_toTopOf="@+id/labelUserId"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_face_white_24dp"/>
+            app:srcCompat="@drawable/ic_face_white_24dp" />
 
         <TextView
             android:id="@+id/labelUserId"

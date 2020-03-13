@@ -6,15 +6,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 
 /**
  * A login page for the user. If the login fails the user is not allowed to continue.
  * Otherwise, the user is redirected to either DriverMapActivity or RiderMapActivity
+ *
  * @author John
  */
-public class LoginActivity extends AppCompatActivity{
+public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "OMW/LoginActivity";   // Use this tag for call Log.d()
     private EditText emailField;
     private EditText passwordField;
@@ -82,8 +84,7 @@ public class LoginActivity extends AppCompatActivity{
                             Log.d(TAG, "Switching to DriverMapActivity");
                             Intent intent = new Intent(LoginActivity.this, DriverMapActivity.class);
                             startActivity(intent);
-                        }
-                        else {
+                        } else {
                             // Go to RiderMapActivity
                             Log.d(TAG, "Switching to RiderMapActivity");
                             Intent intent = new Intent(LoginActivity.this, RiderMapActivity.class);
@@ -157,13 +158,12 @@ public class LoginActivity extends AppCompatActivity{
 
             // Pass the email address and password to loginUser if inputs are valid
             loginUser(emailAddressChars.toString(), passwordChars.toString());
-        }
-        else {
+        } else {
             Toast.makeText(LoginActivity.this, "Please check your inputs again", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void onSignUpPressed(View view){
+    public void onSignUpPressed(View view) {
         Intent intent = new Intent(this, SignUp.class);
         startActivity(intent);
     }

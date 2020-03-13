@@ -2,13 +2,16 @@ package com.CMPUT301W20T24.OnMyWay;
 
 import android.text.TextUtils;
 import android.util.Log;
+
 import java.util.regex.Pattern;
+
 import static android.telephony.PhoneNumberUtils.formatNumber;
 
 
 /**
  * A static class responsible for validating various types of text inputs.
  * Look at ResponseStatus() to see how to make sense of the result from methods in this class
+ *
  * @author John
  */
 public class InputValidator {
@@ -36,11 +39,9 @@ public class InputValidator {
 
         if (passwordLength < 6) {
             return new ResponseStatus(false, "The password entered is too short");
-        }
-        else if (passwordLength > 40) {
+        } else if (passwordLength > 40) {
             return new ResponseStatus(false, "The password entered is too long");
-        }
-        else if (Pattern.matches("^[a-zA-Z0-9_$&+,:;=?@#|'`<>.^*()%!-~\\[\\]\\{\\}\\\\]+$", passwordChars)) {
+        } else if (Pattern.matches("^[a-zA-Z0-9_$&+,:;=?@#|'`<>.^*()%!-~\\[\\]\\{\\}\\\\]+$", passwordChars)) {
             // Allowed characters:
             // A-Z, 0-9, and _$&+,:;=?@#|'`<>.^*()%!-~[]{}\
             return new ResponseStatus();
@@ -73,11 +74,9 @@ public class InputValidator {
 
         if (nameLength <= 1) {
             return new ResponseStatus(false, "The " + nameType + " name entered is too short");
-        }
-        else if (nameLength > 40) {
+        } else if (nameLength > 40) {
             return new ResponseStatus(false, "The " + nameType + " name entered is too long");
-        }
-        else if (Pattern.matches("[a-zA-Z]+", nameChars)) {
+        } else if (Pattern.matches("[a-zA-Z]+", nameChars)) {
             // Capitalize the name and return it if the email address is formatted correctly
             return new ResponseStatus(true, Utilities.capitalize(nameChars.toString()));
         }
@@ -102,8 +101,7 @@ public class InputValidator {
         if (formattedPhoneNumber != null) {
             // If its a real phone number, return the nicely formatted version
             return new ResponseStatus(true, formattedPhoneNumber);
-        }
-        else {
+        } else {
             return new ResponseStatus(false, "The phone number entered is not valid");
         }
     }

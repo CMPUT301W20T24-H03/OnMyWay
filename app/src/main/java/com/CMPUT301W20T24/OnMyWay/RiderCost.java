@@ -2,7 +2,6 @@ package com.CMPUT301W20T24.OnMyWay;
 
 import android.location.Location;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,18 +11,14 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.api.Distribution;
-
-import java.util.Locale;
-
 // This screen will be displayed after a driver has accepted a request
 // Rider will be shown an estimate of the cost of the ride and
 // will be given the option to edit
 public class RiderCost extends AppCompatActivity {
 
-    private String cost;
     LinearLayout editField;
     EditText newPrice;
+    private String cost;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,14 +27,14 @@ public class RiderCost extends AppCompatActivity {
         editField = findViewById(R.id.field_priceEntry);
         newPrice = findViewById(R.id.editText_price);
 
-        LinearLayout layout = (LinearLayout) findViewById(R.id.locationSearchBar);
+        LinearLayout layout = findViewById(R.id.locationSearchBar);
         layout.setVisibility(View.GONE);
-        Button button = (Button) findViewById(R.id.switchModeButton);
+        Button button = findViewById(R.id.switchModeButton);
         button.setVisibility(View.GONE);
 
         calculateCost();
         // Set the TextView to the calculated cost
-        TextView costText = (TextView) findViewById(R.id.priceEstimate);
+        TextView costText = findViewById(R.id.priceEstimate);
         costText.setText("$" + cost);
 
         // on clicking the edit button, allow the user
@@ -80,7 +75,7 @@ public class RiderCost extends AppCompatActivity {
 
     // this method will calculate the cost based on the
     // distance between the two locations
-    public void calculateCost(){
+    public void calculateCost() {
         // NOTE:  need to incorporate the lat and long later from request
         // right now - Cameron to MacEwan University
         float distance = 0;
@@ -91,7 +86,7 @@ public class RiderCost extends AppCompatActivity {
         Location endLoc = new Location("endLoc");
         endLoc.setLatitude(53.547031);
         endLoc.setLongitude(-113.507143);
-        distance = startLoc.distanceTo(endLoc) / 195 ;
+        distance = startLoc.distanceTo(endLoc) / 195;
         cost = String.format("%.2f", distance);
     }
 }

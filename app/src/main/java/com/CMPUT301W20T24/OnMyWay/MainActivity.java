@@ -1,8 +1,5 @@
 package com.CMPUT301W20T24.OnMyWay;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,9 +7,14 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
+
 
 /**
  * An activity for quick testing of activities and fragments. WIll be removed before release
+ *
  * @author John
  */
 public class MainActivity extends AppCompatActivity {

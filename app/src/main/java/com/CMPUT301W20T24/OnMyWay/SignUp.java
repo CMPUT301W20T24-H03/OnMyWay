@@ -1,7 +1,5 @@
 package com.CMPUT301W20T24.OnMyWay;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -10,26 +8,33 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 
 /**
  * Class is responsible for handling the sign up procedure for any new rider
  * With an option linking to a new activity for driver account creation
- *
+ * <p>
  * Things left to do:
- *  - Add phone number field
- *  - Add additional intent for driver sign up
- *
+ * - Add phone number field
+ * - Add additional intent for driver sign up
  */
 public class SignUp extends AppCompatActivity {
+    ProgressBar progressBar;
+    //instantiating DBManager()
+    DBManager db = new DBManager();
     //User Inputs
     private EditText emailID;
     private EditText password;
@@ -40,10 +45,14 @@ public class SignUp extends AppCompatActivity {
     private boolean driverStatus = false;
     private FirebaseAuth mAuth;
 
-    ProgressBar progressBar;
-
-    //instantiating DBManager()
-    DBManager db = new DBManager();
+    /// phone number validation from http://tutorialspots.com/android-how-to-check-a-valid-phone-number-2382.html
+    public static boolean isValidPhone(String phone) {
+        String expression = "^([0-9\\+]|\\(\\d{1,3}\\))[0-9\\-\\. ]{3,15}$";
+        CharSequence inputString = phone;
+        Pattern pattern = Pattern.compile(expression);
+        Matcher matcher = pattern.matcher(inputString);
+        return matcher.matches();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +65,7 @@ public class SignUp extends AppCompatActivity {
         lastName = findViewById(R.id.lastnameField);
         phoneNumber = findViewById(R.id.phonenumberfield);
         isDriver = findViewById(R.id.user_switch);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progressBar);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -64,60 +73,58 @@ public class SignUp extends AppCompatActivity {
 
     }
 
-    public void onRegisterButtonPressed(View view){
+    public void onRegisterButtonPressed(View view) {
         String userEmail = emailID.getText().toString().trim();
         String userPassword = password.getText().toString().trim();
         String userfirstName = firstName.getText().toString().trim();
         String userlastName = lastName.getText().toString().trim();
         String userPhoneNumber = phoneNumber.getText().toString().trim();
 
-        if(userEmail.isEmpty()){
+        if (userEmail.isEmpty()) {
             emailID.setError("Email is Required");
             emailID.requestFocus();
             return;
         }
 
-        if(!Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()){
+        if (!Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
             emailID.setError("Invalid Email");
             emailID.requestFocus();
             return;
         }
 
-        if(userPassword.isEmpty()){
+        if (userPassword.isEmpty()) {
             password.setError("Enter valid password");
             password.requestFocus();
             return;
         }
 
-        if(userPassword.length() < 6){
+        if (userPassword.length() < 6) {
             password.setError("Minimum length of password should be 6 characters");
             password.requestFocus();
             return;
         }
 
-        if(userfirstName.isEmpty()){
+        if (userfirstName.isEmpty()) {
             firstName.setError("First name is Required");
             firstName.requestFocus();
             return;
         }
 
-        if(userlastName.isEmpty()){
+        if (userlastName.isEmpty()) {
             lastName.setError("Last name is Required");
             lastName.requestFocus();
             return;
         }
 
-        if(!isValidPhone(userPhoneNumber)){
+        if (!isValidPhone(userPhoneNumber)) {
             phoneNumber.setError("Phone number is Invalid");
             phoneNumber.requestFocus();
             return;
         }
 
-        if(isDriver.isChecked()){
+        if (isDriver.isChecked()) {
             driverStatus = true;
         }
-
-
 
 
         progressBar.setVisibility(View.VISIBLE);
@@ -133,13 +140,13 @@ public class SignUp extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             finish();
                             FirebaseUser user = mAuth.getCurrentUser();
-                            if(user != null){
+                            if (user != null) {
                                 // Get dbmanager to push all the info to firebase
-                                User newUser = new User(user.getUid(), userfirstName, userlastName, driverStatus, userEmail, userPhoneNumber, 0,0);                                db.pushUserInfo(newUser);
+                                User newUser = new User(user.getUid(), userfirstName, userlastName, driverStatus, userEmail, userPhoneNumber, 0, 0);
+                                db.pushUserInfo(newUser);
                             }
                             startActivity(new Intent(SignUp.this, LoginActivity.class));
-                        }
-                        else{
+                        } else {
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                                 Toast.makeText(getApplicationContext(), "You are already registered", Toast.LENGTH_SHORT).show();
 
@@ -151,21 +158,5 @@ public class SignUp extends AppCompatActivity {
                     }
                 });
 
-    }
-
-    /// phone number validation from http://tutorialspots.com/android-how-to-check-a-valid-phone-number-2382.html
-    public static boolean isValidPhone(String phone)
-    {
-        String expression = "^([0-9\\+]|\\(\\d{1,3}\\))[0-9\\-\\. ]{3,15}$";
-        CharSequence inputString = phone;
-        Pattern pattern = Pattern.compile(expression);
-        Matcher matcher = pattern.matcher(inputString);
-        if (matcher.matches())
-        {
-            return true;
-        }
-        else{
-            return false;
-        }
     }
 }
