@@ -8,6 +8,12 @@ public class Utilities {
     private static final String TAG = "OMW/Utilities";   // Use this tag for call Log.d()
 
 
+    /**
+     * Generates and returns the MD5 hash of a given string
+     * @param string The string we want to get a hash of
+     * @return An MD5 hash as a string
+     * @author John
+     */
     /// StackOverflow post by Den Delimarsky
     /// Author: https://stackoverflow.com/users/303696/den-delimarsky
     /// Answer: https://stackoverflow.com/questions/4846484/md5-hashing-in-android
@@ -40,6 +46,12 @@ public class Utilities {
     }
 
 
+    /**
+     * Takes a string and capitalizes the first letter of it
+     * @param string The string we want to capitalize
+     * @return The capitalized string
+     * @author John
+     */
     // Capitalize the first letter of a string
     static public String capitalize(String string) {
         if (string == "" || string == null) {
@@ -51,6 +63,12 @@ public class Utilities {
     }
 
 
+    /**
+     * Check if a string is null, returning it if not. Otherwise a NullPointerException is thrown
+     * @param stringToCheck The string we want to check
+     * @return The string that was originally passed to the method
+     * @author John
+     */
     // Check if a string is null and throw an error if so
     static public String checkStringNotNull(String stringToCheck) {
         if (stringToCheck == null) {
@@ -62,6 +80,13 @@ public class Utilities {
     }
 
 
+    /**
+     * Check if a Boolean object is null, returning it's primitive value if not.
+     * Otherwise a NullPointerException is thrown
+     * @param booleanToCheck The Boolean object we want to check
+     * @return The primitive boolean from the input object
+     * @author John
+     */
     // Check if a Boolean object is null and return the value if not
     static public boolean checkBooleanNotNull(Boolean booleanToCheck) {
         if (booleanToCheck == null) {
@@ -73,6 +98,13 @@ public class Utilities {
     }
 
 
+    /**
+     * Check if a Long object is null, returning it's primitive value as an int if not.
+     * Otherwise a NullPointerException is thrown
+     * @param longToCheck The Long object we want to check
+     * @return The primitive int extracted from the input object
+     * @author John
+     */
     // Check if a Long object is null and return the value as an int if not
     static public int checkLongNotNull(Long longToCheck) {
         if (longToCheck == null) {
