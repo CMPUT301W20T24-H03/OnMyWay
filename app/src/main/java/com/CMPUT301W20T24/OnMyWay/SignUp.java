@@ -22,12 +22,7 @@ import java.util.regex.Pattern;
 
 /**
  * Class is responsible for handling the sign up procedure for any new rider
- * With an option linking to a new activity for driver account creation
- *
- * Things left to do:
- *  - Add phone number field
- *  - Add additional intent for driver sign up
- *
+ * @author Mahin
  */
 public class SignUp extends AppCompatActivity {
     //User Inputs
@@ -63,13 +58,15 @@ public class SignUp extends AppCompatActivity {
 
 
     }
-
+    
     public void onRegisterButtonPressed(View view){
         String userEmail = emailID.getText().toString().trim();
         String userPassword = password.getText().toString().trim();
         String userfirstName = firstName.getText().toString().trim();
         String userlastName = lastName.getText().toString().trim();
         String userPhoneNumber = phoneNumber.getText().toString().trim();
+
+        //Error testing for all input fields
 
         if(userEmail.isEmpty()){
             emailID.setError("Email is Required");
@@ -117,11 +114,8 @@ public class SignUp extends AppCompatActivity {
             driverStatus = true;
         }
 
-
-
-
+        //throbber to show creation status
         progressBar.setVisibility(View.VISIBLE);
-
 
         // create new account based on email and password inputted.
         mAuth.createUserWithEmailAndPassword(userEmail, userPassword)
@@ -142,16 +136,20 @@ public class SignUp extends AppCompatActivity {
                         else{
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                                 Toast.makeText(getApplicationContext(), "You are already registered", Toast.LENGTH_SHORT).show();
-
                             } else {
                                 Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
-
                     }
                 });
 
     }
+
+    /**
+     * method is used to valid a user inputted phone number
+     * @param phone
+     * @return boolean value
+     */
 
     /// phone number validation from http://tutorialspots.com/android-how-to-check-a-valid-phone-number-2382.html
     public static boolean isValidPhone(String phone)
