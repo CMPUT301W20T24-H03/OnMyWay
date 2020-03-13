@@ -1,17 +1,23 @@
 package com.CMPUT301W20T24.OnMyWay;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SearchView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,6 +28,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.material.navigation.NavigationView;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.internal.PolylineEncoding;
@@ -32,15 +39,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RiderMapActivity extends FragmentActivity implements OnMapReadyCallback {
+public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "OMW/RiderMapActivity";
+    private DBManager dbManager;
     GoogleMap mMap;
     SupportMapFragment mapFragment;
     SearchView searchView;
     Button switchModeButton;
     Button confirmRequestButton;
     RiderMode currentMode;
+    double startLocLat;
+    double startLocLon;
+    double endLocLat;
+    double endLocLon;
+    NavigationView navigationView;
 
+    private FragmentManager fm;
     String searchStartLocation;
     String searchEndLocation;
 
@@ -51,6 +65,13 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_map);
+
+        dbManager = new DBManager();
+        fm = getSupportFragmentManager();
+
+        navigationView = findViewById(R.id.navigationView);
+        navigationView.setNavigationItemSelectedListener(this);
+
 
         currentMode = RiderMode.End;
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.riderMap);
@@ -256,8 +277,60 @@ public class RiderMapActivity extends FragmentActivity implements OnMapReadyCall
             }
         });
     }
-    public void confirmRideActivate(View view) {
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.profile_rider:
+                Toast.makeText(getApplicationContext(), "profile working", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.current_request_rider:
+               if(startLocationMarker != null && endLocationMarker != null){
+
+                   Intent intent = new Intent(this, CurrentRequest.class);
+                   intent.putExtra("REQUEST_LATITUDE", startLocLat);
+                   intent.putExtra("REQUEST_LONGITUDE",startLocLon);
+                   intent.putExtra("REQUEST_PAYMENTAMOUNT", 15.32f);
+                   intent.putExtra("REQUEST_LATITUDE_ARRIVAL",endLocLat);
+                   intent.putExtra("REQUEST_LONGITUDE_ARRIVAL",endLocLon);
+
+                   startActivity(intent);
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "No ride confirmed", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.see_driver_rating:
+                showDriverTestProfile(this.getCurrentFocus());
+                break;
+
+            }
+        return false;
+    }
+
+   public void showDriverTestProfile(View view) {
+        // Use the listener we made to listen for when the function finishes
+        dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
+            @Override
+            public void onUserInfoPulled(User fetchedUser) {
+                ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(fetchedUser);
+                showProfileFragment.show(fm);
+            }
+        });
+
+        // Fetch the user info of a test driver user
+        dbManager.fetchUserInfo("dYG5SQAAGVbmglT5k8dUhufAnpq1");
+    }
+
+    public void confirmRideActivate(View view) {
+        if(startLocationMarker != null && endLocationMarker != null){
+
+            startLocLat = startLocationMarker.getPosition().latitude;
+            startLocLon = startLocationMarker.getPosition().longitude;
+            endLocLat = endLocationMarker.getPosition().latitude;
+            endLocLon = endLocationMarker.getPosition().longitude;
+
+        }
     }
 
     @Override

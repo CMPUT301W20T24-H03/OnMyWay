@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.w3c.dom.Text;
+
 public class CurrentRequest extends AppCompatActivity {
 
     @Override
@@ -15,14 +17,32 @@ public class CurrentRequest extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.currentactiverequest);
 
-        double lat = getIntent().getDoubleExtra("REQUEST_LATITUDE",0);
-        double lon = getIntent().getDoubleExtra("REQUEST_LONGITUDE",0);
-        float payment = getIntent().getFloatExtra("REQUEST_PAYMENTAMOUNT",0);
-        TextView location = (TextView)findViewById(R.id.start_location);
-        TextView paymentAmount = (TextView) findViewById(R.id.payment_amount);
+        Bundle extras = getIntent().getExtras();
 
-        location.setText(Double.toString(lat) + " " + Double.toString(lon));
-        paymentAmount.setText(Float.toString(payment));
+        if (extras!=null) {
+
+            double lat = extras.getDouble("REQUEST_LATITUDE", 0);
+            double lon = extras.getDouble("REQUEST_LONGITUDE", 0);
+            float payment = extras.getFloat("REQUEST_PAYMENTAMOUNT", 0);
+            double endLat;
+            double endLon;
+
+            TextView location = (TextView) findViewById(R.id.start_location);
+            TextView paymentAmount = (TextView) findViewById(R.id.payment_amount);
+            TextView endLocation = (TextView) findViewById(R.id.end_location);
+
+            location.setText(Double.toString(lat) + " " + Double.toString(lon));
+            paymentAmount.setText(Float.toString(payment));
+
+            if(extras.containsKey("REQUEST_LATITUDE_ARRIVAL") && extras.containsKey("REQUEST_LONGITUDE_ARRIVAL")){
+                endLat = extras.getDouble("REQUEST_LATITUDE_ARRIVAL");
+                endLon = extras.getDouble("REQUEST_LONGITUDE_ARRIVAL");
+                endLocation.setText(Double.toString(endLat) + " " + Double.toString(endLon));
+            }
+
+
+
+        }
 
     }
 
