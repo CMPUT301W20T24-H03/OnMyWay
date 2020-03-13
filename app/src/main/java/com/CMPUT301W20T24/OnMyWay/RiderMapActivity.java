@@ -12,7 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +36,8 @@ import com.google.maps.GeoApiContext;
 import com.google.maps.internal.PolylineEncoding;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -323,13 +327,27 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
     public void confirmRideActivate(View view) {
-        if(startLocationMarker != null && endLocationMarker != null){
+        if(confirmRequestButton.getText().equals("REQUEST RIDE")) {
+            if (startLocationMarker != null && endLocationMarker != null) {
+                Toast.makeText(getApplicationContext(),"Woo! Your ride is confirmed, check Active Request on the drawer pull menu by swiping right from the left side of the screen!",Toast.LENGTH_SHORT).show();
+                startLocLat = startLocationMarker.getPosition().latitude;
+                startLocLon = startLocationMarker.getPosition().longitude;
+                endLocLat = endLocationMarker.getPosition().latitude;
+                endLocLon = endLocationMarker.getPosition().longitude;
+                confirmRequestButton.setText("CANCEL RIDE");
 
-            startLocLat = startLocationMarker.getPosition().latitude;
-            startLocLon = startLocationMarker.getPosition().longitude;
-            endLocLat = endLocationMarker.getPosition().latitude;
-            endLocLon = endLocationMarker.getPosition().longitude;
+            }
 
+            else {
+                Toast.makeText(getApplicationContext(),"Please make sure there is both a start and end location marker, use mode to toggle between the 2",Toast.LENGTH_LONG).show();
+            }
+        }
+
+        else{
+            mMap.clear();
+            startLocationMarker = null;
+            endLocationMarker = null;
+            Toast.makeText(getApplicationContext(),"Your request has been cancelled",Toast.LENGTH_SHORT).show();
         }
     }
 
