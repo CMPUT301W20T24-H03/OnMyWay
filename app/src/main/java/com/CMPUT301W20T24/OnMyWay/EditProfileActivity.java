@@ -20,6 +20,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 
+/**
+ * An activity that allows the user to edit their profile information.
+ * Save must be pressed to validate and save the user's entered information.
+ * The user can also delete their account from this page
+ * @author John
+ */
 public class EditProfileActivity extends AppCompatActivity {
     private static final String TAG = "OMW/EditProfileActivity";  // Use this tag for call Log.d()
     private EditText firstNameField;

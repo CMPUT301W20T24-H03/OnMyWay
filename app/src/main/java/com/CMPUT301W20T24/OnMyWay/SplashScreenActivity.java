@@ -8,9 +8,12 @@ import android.widget.Toast;
 import java.util.Date;
 
 
-// This first screen the user sees. Checks if the user is logged in already.
-// If so, go the either RiderMapActivity or DriverMapActivity
-// Otherwise, go to LoginActivity
+/**
+ * This is the first screen the user sees. SplashScreenActivity if the user is logged in already.
+ * If so, it goes the either RiderMapActivity or DriverMapActivity.
+ * Otherwise, it goes to LoginActivity
+ * @author John
+ */
 public class SplashScreenActivity extends AppCompatActivity {
     // The tag can't be longer than 23 characters so it is cut off
     private static final String TAG = "OMW/SplashScreenActi...";   // Use this tag for call Log.d()

@@ -1,102 +1,69 @@
 package com.CMPUT301W20T24.OnMyWay;
 
-import android.location.Geocoder;
-
-import java.time.LocalTime;
-
+import java.util.UUID;
 
 public class Request {
-    private int requestId;
+    private String requestId;
     private String riderUserName;
-    private float[] startLocation;
-    private float[] endLocation;
-    private float paymentAmount;
+
+    private double startLongitude;
+    private double startLatitude;
+
+    private double endLongitude;
+    private double endLatitude;
+
+    private String paymentAmount;
     private String driverUserName;
     private String status;
-    private LocalTime timeReceived;
-    private LocalTime timeAccepted;
 
-    public Request(int requestId, String riderUserName, float[] startLocation, float[] endLocation, float paymentAmount, String driverUserName, String status, LocalTime timeReceived, LocalTime timeAccepted) {
-        this.requestId = requestId;
+    public Request(double startLongitude, double startLatitude, double endLongitude, double endLatitude) {
+        this.requestId = generateUUID();
         this.riderUserName = riderUserName;
-        this.startLocation = startLocation;
-        this.endLocation = endLocation;
-        this.paymentAmount = paymentAmount;
+        this.startLongitude = startLongitude;
+        this.startLatitude = startLatitude;
+        this.endLongitude = endLongitude;
+        this.endLatitude = endLatitude;
+        this.paymentAmount = "0";
         this.driverUserName = driverUserName;
-        this.status = status;
-        this.timeReceived = timeReceived;
-        this.timeAccepted = timeAccepted;
+        this.status = "INCOMPLETE";
     }
 
-    public int getRequestId() {
-        return requestId;
+    private String generateUUID() {
+        UUID requestUUID = UUID.randomUUID();
+        return this.requestId = requestUUID.toString();
     }
 
-    public void setRequestId(int requestId) {
-        this.requestId = requestId;
-    }
+    public String getRequestId() { return requestId; }
 
-    public String getRiderUserName() {
-        return riderUserName;
-    }
+    public String getRiderUserName() { return riderUserName; }
 
-    public void setRiderUserName(String riderUserName) {
-        this.riderUserName = riderUserName;
-    }
+    public void setRiderUserName(String riderUserName) { this.riderUserName = riderUserName; }
 
-    public float[] getStartLocation() {
-        return startLocation;
-    }
+    public double getStartLongitude() { return startLongitude; }
 
-    public void setStartLocation(float[] startLocation) {
-        this.startLocation = startLocation;
-    }
+    public void setStartLongitude(double startLongitude) { this.startLongitude = startLongitude; }
 
-    public float[] getEndLocation() {
-        return endLocation;
-    }
+    public double getStartLatitude() { return startLatitude; }
 
-    public void setEndLocation(float[] endLocation) {
-        this.endLocation = endLocation;
-    }
+    public void setStartLatitude(double startLatitude) { this.startLatitude = startLatitude; }
 
-    public float getPaymentAmount() {
-        return paymentAmount;
-    }
+    public double getEndLongitude() { return endLongitude; }
 
-    public void setPaymentAmount(float paymentAmount) {
-        this.paymentAmount = paymentAmount;
-    }
+    public void setEndLongitude(double endLongitude) { this.endLongitude = endLongitude; }
 
-    public String getDriverUserName() {
-        return driverUserName;
-    }
+    public double getEndLatitude() { return endLatitude; }
 
-    public void setDriverUserName(String driverUserName) {
-        this.driverUserName = driverUserName;
-    }
+    public void setEndLatitude(double endLatitude) { this.endLatitude = endLatitude; }
 
-    public String getStatus() {
-        return status;
-    }
+    public String getPaymentAmount() { return paymentAmount; }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public String setPaymentAmount(String paymentAmount) { return this.paymentAmount; }
 
-    public LocalTime getTimeReceived() {
-        return timeReceived;
-    }
+    public String getDriverUserName() { return driverUserName; }
 
-    public void setTimeReceived(LocalTime timeReceived) {
-        this.timeReceived = timeReceived;
-    }
+    public void setDriverUserName(String driverUserName) { this.driverUserName = driverUserName; }
 
-    public LocalTime getTimeAccepted() {
-        return timeAccepted;
-    }
+    public String getStatus() { return status; }
 
-    public void setTimeAccepted(LocalTime timeAccepted) {
-        this.timeAccepted = timeAccepted;
-    }
+    public void setStatus(String status) { this.status = status; }
 }

@@ -19,6 +19,10 @@ import java.util.ArrayList;
 
 
 public class DriverViewRequests extends AppCompatActivity {
+    /**
+     * view for requests within 22km for driver to see a list of people within distance , will be
+     * adding their destination next week as we implement request class in database
+     */
 
     ListView requestListView;
 
@@ -37,7 +41,7 @@ public class DriverViewRequests extends AppCompatActivity {
     dummyRequest request7 = new dummyRequest("alice",53.52328, -113.5264,a);
     dummyRequest request8 = new dummyRequest("martha",53.52328, -113.5264,a);
 
-
+    // array adapter for requests
     ArrayAdapter arrayAdapter;
 
     FusedLocationProviderClient fusedLocationProviderClient;
@@ -48,6 +52,7 @@ public class DriverViewRequests extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        // initialization
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_request_view);
 
@@ -63,12 +68,14 @@ public class DriverViewRequests extends AppCompatActivity {
         requestsin.add(request7);
         requestsin.add(request8);
 
+        // getting driver latitude and longitude from DriverMapActivity intent
         double driverLat = getIntent().getDoubleExtra("DRIVER_LAT",0);
         double driverLon = getIntent().getDoubleExtra("DRIVER_LON", 0);
 
         for(int i=0 ;i<requestsin.size();i++){
 
-            // 0.15 in lat long ~ = 11 km, searching within this range for requests
+            /* 0.2 in lat long ~ 22km , checking to see if request within 22km of current location and if true add it to a
+            new request array which will be used for the listview*/
             if (geoDist(driverLat, driverLon,requestsin.get(i).getLat(),requestsin.get(i).getLon())){
                 requests.add(requestsin.get(i));
             }
