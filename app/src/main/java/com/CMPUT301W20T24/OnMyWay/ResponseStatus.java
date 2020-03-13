@@ -6,8 +6,11 @@ public class ResponseStatus {
     private String result;
 
 
-    // A helpful object for returning status (true, false) as well as an error messages or result
-    // from a method call
+    /**
+     * A helpful object for returning status (true, false) as well as either
+     * an error messages or result from a method call
+     * @author John
+     */
     public ResponseStatus(boolean status, String string) {
         if (status) {
             setResult(string);      // If status is true, set the result
