@@ -30,7 +30,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.internal.PolylineEncoding;
@@ -41,6 +45,7 @@ import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
@@ -65,6 +70,8 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     Marker startLocationMarker;
     Marker endLocationMarker;
 
+    FirebaseFirestore database;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +89,50 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         searchView = findViewById(R.id.locationSearchBar);
         switchModeButton = findViewById(R.id.switchModeButton);
         confirmRequestButton = findViewById(R.id.confirmRequestButton);
+
+        confirmRequestButton = findViewById(R.id.confirmRequestButton);
+        database = FirebaseFirestore.getInstance();
+//        final CollectionReference collectionReference = database.collection("requests");
+
+        confirmRequestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Request riderRequest = new Request(startLocationMarker.getPosition().longitude, startLocationMarker.getPosition().latitude, endLocationMarker.getPosition().longitude,
+                        endLocationMarker.getPosition().latitude);
+
+                HashMap<String, String> data = new HashMap<>();
+                data.put("endLatitude", String.valueOf(riderRequest.getEndLatitude()));
+                data.put("endLongitude", String.valueOf(riderRequest.getEndLongitude()));
+                data.put("requestID", riderRequest.getRequestId());
+                data.put("startLatitude",String.valueOf(riderRequest.getStartLatitude()));
+                data.put("startLongitude", String.valueOf(riderRequest.getStartLongitude()));
+
+                database.collection("riderRequests")
+                        .add(data)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                Log.d(TAG, "Data addition successful" + documentReference.getId());
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, "Data addition failed." + e.toString());
+                            }
+                        });
+                startLocationMarker.remove();
+                endLocationMarker.remove();
+            }
+        });
+
+//        collectionReference.addSnapshotListener(new EventListener<QuerySnapshot>() {
+//            @Override
+//            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+//
+//            }
+//        });
+
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
