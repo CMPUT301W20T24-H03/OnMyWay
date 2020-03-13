@@ -9,8 +9,6 @@ package com.CMPUT301W20T24.OnMyWay;
  * depending on whether the user has an internet connection or not
  * @author John
  */
-// Keeps track of the main application state. It holds the current user for now
-// Will modify this to save offline later
 public class State {
     private static final String TAG = "OMW/State";   // Use this tag for call Log.d()
     static private User currentUser;
@@ -79,7 +77,6 @@ public class State {
      * DBManager to log out the user from Firebase Auth
      * @author John
      */
-    // This function works. Don't know if this should be here or in State
     static public void logoutUser() {
         removeCurrentUser();
         dbManager.logoutUser();
