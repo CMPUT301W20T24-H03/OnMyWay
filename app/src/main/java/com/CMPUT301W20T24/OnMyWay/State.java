@@ -47,4 +47,6 @@ public class State {
         removeCurrentUser();
         dbManager.logoutUser();
     }
+
+
 }

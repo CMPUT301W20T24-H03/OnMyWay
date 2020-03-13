@@ -146,35 +146,7 @@ public class EditProfileActivity extends AppCompatActivity {
         // TODO: Show prompt here and call deleteAccount in DBManager (probably?)
 
 
-        /*
-        db.collection("users").document(id)
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error deleting document", e);
-                    }
-                });
 
-
-
-        user.delete()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "User account deleted.");
-                        }
-                    }
-                });
-
-        */
 
     }
 }
