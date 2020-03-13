@@ -42,7 +42,12 @@ public class Utilities {
 
     // Capitalize the first letter of a string
     static public String capitalize(String string) {
-        return string.substring(0, 1).toUpperCase() + string.substring(1);
+        if (string == "" || string == null) {
+            throw new IllegalArgumentException("The string passed to capitalize is empty");
+        }
+        else {
+            return string.substring(0, 1).toUpperCase() + string.substring(1);
+        }
     }
 
 
@@ -68,7 +73,7 @@ public class Utilities {
     }
 
 
-    // CHeck if a Long object is null and return the value as an int if not
+    // Check if a Long object is null and return the value as an int if not
     static public int checkLongNotNull(Long longToCheck) {
         if (longToCheck == null) {
             throw new NullPointerException("The string fetched from FireStore is null. Make sure data is added for this user");
