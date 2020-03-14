@@ -40,22 +40,28 @@ public class User {
     }
 
     public void setFirstName(String newFirstName) {
-        // Don't update if the input is null. We may want to keep the old values
-        if (newFirstName != null) {
+        if (newFirstName == "" || newFirstName == null) {
+            throw new IllegalArgumentException("First name can't be empty or null");
+        }
+        else {
             this.firstName = newFirstName;
         }
     }
 
     public void setLastName(String newLastName) {
-        // Don't update if the input is null. We may want to keep the old values
-        if (newLastName != null) {
+        if (newLastName == "" || newLastName == null) {
+            throw new IllegalArgumentException("Last name can't be empty or null");
+        }
+        else {
             this.lastName = newLastName;
         }
     }
 
     public void setEmail(String newEmail) {
-        // Don't update if the input is null. We may want to keep the old values
-        if (newEmail != null) {
+        if (newEmail == "" || newEmail == null) {
+            throw new IllegalArgumentException("Email address can't be empty or null");
+        }
+        else {
             this.email = newEmail;
 
             // When we get a new email address, also generate a new profile photo url
@@ -64,8 +70,10 @@ public class User {
     }
 
     public void setPhone(String newPhoneNumber) {
-        // Don't update if the input is null. We may want to keep the old values
-        if (newPhoneNumber != null) {
+        if (newPhoneNumber == "" || newPhoneNumber == null) {
+            throw new IllegalArgumentException("Last name can't be empty or null");
+        }
+        else {
             this.phone = newPhoneNumber;
         }
     }
