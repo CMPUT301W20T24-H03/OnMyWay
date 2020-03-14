@@ -14,8 +14,8 @@ An innovative ride-hailing app featuring QR-bucks
 
 
 ## Components for Project Part 3
-1. [Product Backlog](ProjectPart3/Product_Backlog.pdf)
-2. [UI Mockup](ProjectPart3/Mockup_part3.pdf), [Rider Story Board](ProjectPart3/RiderStoryBoard.pdf), [Driver Story Board](ProjectPart3/fDriverStoryBoard.pdf)
+1. [Product Backlog](ProjectPart2/Product_Backlog.pdf)
+2. [UI Mockup](ProjectPart3/Mockup_part3.pdf), [Rider Story Board](ProjectPart3/RiderStoryBoard.pdf), [Driver Story Board](ProjectPart3/DriverStoryBoard.pdf)
 3. [UML Diagram](ProjectPart3/UML.pdf)
 4. [Glossary and Information Sources](../../wiki)
 
