@@ -3,17 +3,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="20dp"
-
-    >
+    android:padding="20dp">
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/foo"
-        >
+        android:id="@+id/foo">
 
         <TextView
             android:id="@+id/textView"
@@ -22,14 +19,13 @@
             android:layout_height="30dp"
             android:textSize="20sp"
             android:text="Accept Ride?"
-            android:textStyle="bold"
-            />
+            android:textStyle="bold" />
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            >
+            android:layout_height="30dp">
+
             <TextView
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
@@ -38,8 +34,8 @@
                 android:gravity="center"
                 android:text="Rider_Name"
                 android:textStyle="bold"
-                android:layout_weight="10"
-                />
+                android:layout_weight="10" />
+
             <TextView
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
@@ -47,8 +43,7 @@
                 android:gravity="center"
                 android:text="Payment"
                 android:textStyle="bold"
-                android:layout_weight="10"
-                />
+                android:layout_weight="10" />
             <TextView
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
@@ -56,24 +51,20 @@
                 android:gravity="center"
                 android:text="Distance"
                 android:textStyle="bold"
-                android:layout_weight="10"
-                />
-
+                android:layout_weight="10" />
         </LinearLayout>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            >
+            android:gravity="center">
             <Button
                 android:id="@+id/confirm_ride_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Confirm Ride"
-                />
+                android:text="Confirm Ride" />
 
             <Button
                 android:id="@+id/deny_ride_button"
@@ -81,14 +72,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="Nah"
-                android:textColor="#ff0000"
-                />
-
+                android:textColor="#ff0000" />
         </LinearLayout>
-
-
-
-
     </LinearLayout>
-
 </RelativeLayout>

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="RIDE REQUEST COMPLETE."
-        android:textAlignment="center"></TextView>
+        android:textAlignment="center"/>
 
     <Button
         android:id="@+id/closeButton"
@@ -19,5 +19,4 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:text="CLOSE" />
-
 </FrameLayout>

@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".SignUp">
 
-
     <ImageView
         android:id="@+id/logo_top"
         android:layout_width="wrap_content"
@@ -15,9 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/ic_launcher"
-        />
-
+        app:srcCompat="@mipmap/ic_launcher" />
 
     <TextView
         android:id="@+id/email"
@@ -76,7 +73,6 @@
         android:layout_marginEnd="28dp"
         android:ems="10"
         android:hint="Email ID"
-
         android:inputType="textEmailAddress"
         android:textSize="16dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -97,7 +93,6 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/firstname"
         app:layout_constraintTop_toBottomOf="@+id/passwordField" />
-
 
     <EditText
         android:id="@+id/passwordField"
@@ -126,8 +121,6 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/firstname"
         app:layout_constraintTop_toBottomOf="@+id/passwordField" />
-
-
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -200,6 +193,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
 
