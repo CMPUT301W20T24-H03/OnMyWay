@@ -30,8 +30,5 @@
             android:layout_marginTop="10dp"
             android:textColor="#fff"
             android:textStyle="bold"/>
-
     </LinearLayout>
-
-
 </LinearLayout>
