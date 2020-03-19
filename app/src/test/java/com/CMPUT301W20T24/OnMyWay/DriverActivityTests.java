@@ -1,10 +1,6 @@
 package com.CMPUT301W20T24.OnMyWay;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import org.junit.jupiter.api.Test;
-
-import java.sql.Driver;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,17 +25,17 @@ public class DriverActivityTests {
         double lon5 = 108.53;
         double lon6 = -113.4;
 
-        DriverViewRequests driverViewRequests = new DriverViewRequests();
+        DriverViewRequestsActivity driverViewRequestsActivity = new DriverViewRequestsActivity();
         // within 22 km trivial case check. lat lon slightly lower
-        assertTrue(driverViewRequests.geoDist(lat1,lon1,lat2,lon2));
+        assertTrue(driverViewRequestsActivity.geoDist(lat1,lon1,lat2,lon2));
         // within 22 km trivial case check. lat lon slightly higher
-        assertTrue(driverViewRequests.geoDist(lat1,lon1,lat6,lon6));
+        assertTrue(driverViewRequestsActivity.geoDist(lat1,lon1,lat6,lon6));
         // if both are negative of original check
-        assertFalse(driverViewRequests.geoDist(lat1,lon1,lat3,lon3));
+        assertFalse(driverViewRequestsActivity.geoDist(lat1,lon1,lat3,lon3));
         // far away but lat lon are of same postitive/negative sign
-        assertFalse(driverViewRequests.geoDist(lat1,lon1,lat4,lon4));
+        assertFalse(driverViewRequestsActivity.geoDist(lat1,lon1,lat4,lon4));
         // far away and opposite sign
-        assertFalse(driverViewRequests.geoDist(lat1,lon1,lat5,lon5));
+        assertFalse(driverViewRequestsActivity.geoDist(lat1,lon1,lat5,lon5));
 
     }
 

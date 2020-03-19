@@ -7,7 +7,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
+import android.view.KeyEvent;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -18,11 +18,30 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.ArrayList;
 
 
-public class DriverViewRequests extends AppCompatActivity {
+public class DriverViewRequestsActivity extends AppCompatActivity {
+    private static final String TAG = "OMW/DriverViewReques...";   // Use this tag for calling Log.d()
     /**
      * view for requests within 22km for driver to see a list of people within distance , will be
      * adding their destination next week as we implement request class in database
      */
+
+
+    // LONGPRESS BACK BUTTON TO GO BACK TO THE MAIN ACTIVITY FOR TESTING. REMOVE THIS LATER
+
+    /// StackOverflow post by oemel09
+    /// Author: https://stackoverflow.com/users/10827064/oemel09
+    /// Answer: https://stackoverflow.com/questions/56913053/android-long-press-system-back-button-listener
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.d(TAG, "Switching to MainActivity");
+            Intent intent = new Intent(DriverViewRequestsActivity.this, MainActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onKeyLongPress(keyCode, event);
+    }
+
 
     ListView requestListView;
 

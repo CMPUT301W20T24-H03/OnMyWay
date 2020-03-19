@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -24,8 +26,9 @@ import java.util.regex.Pattern;
  * Class is responsible for handling the sign up procedure for any new rider
  * @author Mahin
  */
-public class SignUp extends AppCompatActivity {
-    //User Inputs
+public class SignUpActivity extends AppCompatActivity {
+    private static final String TAG = "OMW/SignUpActivity";   // Use this tag for calling Log.d()
+    // User Inputs
     private EditText emailID;
     private EditText password;
     private EditText firstName;
@@ -39,6 +42,24 @@ public class SignUp extends AppCompatActivity {
 
     //instantiating DBManager()
     DBManager db = new DBManager();
+
+
+    // LONGPRESS BACK BUTTON TO GO BACK TO THE MAIN ACTIVITY FOR TESTING. REMOVE THIS LATER
+
+    /// StackOverflow post by oemel09
+    /// Author: https://stackoverflow.com/users/10827064/oemel09
+    /// Answer: https://stackoverflow.com/questions/56913053/android-long-press-system-back-button-listener
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.d(TAG, "Switching to MainActivity");
+            Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onKeyLongPress(keyCode, event);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +76,6 @@ public class SignUp extends AppCompatActivity {
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
-
-
     }
     
     public void onRegisterButtonPressed(View view){
@@ -131,7 +150,7 @@ public class SignUp extends AppCompatActivity {
                                 // Get dbmanager to push all the info to firebase
                                 User newUser = new User(user.getUid(), userfirstName, userlastName, driverStatus, userEmail, userPhoneNumber, 0,0);                                db.pushUserInfo(newUser);
                             }
-                            startActivity(new Intent(SignUp.this, LoginActivity.class));
+                            startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
                         }
                         else{
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
@@ -151,13 +170,13 @@ public class SignUp extends AppCompatActivity {
      * @return boolean value
      */
 
-    /// phone number validation from http://tutorialspots.com/android-how-to-check-a-valid-phone-number-2382.html
-    public static boolean isValidPhone(String phone)
-    {
+    /// Phone number validation from http://tutorialspots.com/android-how-to-check-a-valid-phone-number-2382.html
+    public static boolean isValidPhone(String phone) {
         String expression = "^([0-9\\+]|\\(\\d{1,3}\\))[0-9\\-\\. ]{3,15}$";
         CharSequence inputString = phone;
         Pattern pattern = Pattern.compile(expression);
         Matcher matcher = pattern.matcher(inputString);
+
         if (matcher.matches())
         {
             return true;

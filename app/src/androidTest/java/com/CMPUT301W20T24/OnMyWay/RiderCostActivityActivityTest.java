@@ -6,12 +6,11 @@ import android.app.Activity;
 import android.location.Location;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
-import com.robotium.solo.Solo;
+
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 
@@ -24,12 +23,12 @@ import org.junit.Test;
  * Tests the UI of Rider Cost Activity
  * @author Payas
  */
-public class RiderCostActivityTest
+public class RiderCostActivityActivityTest
 {
     private Solo solo;
 
     @Rule
-    public ActivityTestRule<RiderCost> rule = new ActivityTestRule<>(RiderCost.class, true, true);
+    public ActivityTestRule<RiderCostActivity> rule = new ActivityTestRule<>(RiderCostActivity.class, true, true);
 
     @Before
     public void setUp() throws Exception{
@@ -48,7 +47,7 @@ public class RiderCostActivityTest
      */
     @Test
     public void checkPrice(){
-        solo.assertCurrentActivity("Wrong Activity!", RiderCost.class);
+        solo.assertCurrentActivity("Wrong Activity!", RiderCostActivity.class);
         // check if there is a price estimate given and if it is correct
         // for now, test with same hardcoded values as used in the Rider Cost activity
         Location startLocation = new Location("startLocation");
@@ -72,7 +71,7 @@ public class RiderCostActivityTest
      */
     @Test
     public void checkEditPrice(){
-        solo.assertCurrentActivity("Wrong Activity!", RiderCost.class);
+        solo.assertCurrentActivity("Wrong Activity!", RiderCostActivity.class);
         // check if the edit price button actually edits the text view of price estimate
         solo.sleep(2000);
         Button editButton = (Button) solo.getView(

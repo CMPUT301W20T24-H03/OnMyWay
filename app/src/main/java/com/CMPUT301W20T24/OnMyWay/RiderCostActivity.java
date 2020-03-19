@@ -1,17 +1,15 @@
 package com.CMPUT301W20T24.OnMyWay;
 
-import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
-import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,10 +17,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.api.Distribution;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
 
 /**
  * This screen is displayed after a driver has accepted a request
@@ -32,13 +30,30 @@ import com.google.firebase.firestore.FirebaseFirestore;
 // This screen will be displayed after a driver has accepted a request
 // Rider will be shown an estimate of the cost of the ride and
 // will be given the option to edit
-public class RiderCost extends AppCompatActivity {
-
-    private static final String TAG = "OMW/RiderCost";      // Use this tag for call Log.d()
+public class RiderCostActivity extends AppCompatActivity {
+    private static final String TAG = "OMW/RiderCostActivity";  // Use this tag for calling Log.d()
     private String cost;
     LinearLayout editField;
     EditText newPrice;
     private FirebaseFirestore db;
+
+
+    // LONGPRESS BACK BUTTON TO GO BACK TO THE MAIN ACTIVITY FOR TESTING. REMOVE THIS LATER
+
+    /// StackOverflow post by oemel09
+    /// Author: https://stackoverflow.com/users/10827064/oemel09
+    /// Answer: https://stackoverflow.com/questions/56913053/android-long-press-system-back-button-listener
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.d(TAG, "Switching to MainActivity");
+            Intent intent = new Intent(RiderCostActivity.this, MainActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onKeyLongPress(keyCode, event);
+    }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
