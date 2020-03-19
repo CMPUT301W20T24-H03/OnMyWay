@@ -33,7 +33,7 @@ public class CurrentRequestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.currentactiverequest);
+        setContentView(R.layout.activity_current_request);
 
         Bundle extras = getIntent().getExtras();
 
