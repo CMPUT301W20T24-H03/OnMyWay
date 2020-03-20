@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Called when the user presses a button
     public void openRiderCostActivity(View view) {
-        Intent intent = new Intent(this, RiderCost.class);
+        Intent intent = new Intent(this, RiderCostActivity.class);
         startActivity(intent);
     }
 

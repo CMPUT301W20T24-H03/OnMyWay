@@ -2,8 +2,11 @@ package com.CMPUT301W20T24.OnMyWay;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,6 +37,23 @@ public class EditProfileActivity extends AppCompatActivity {
     private EditText phoneField;
     private boolean areAllInputsValid;
     private FirebaseFirestore db;
+
+
+    // LONGPRESS BACK BUTTON TO GO BACK TO THE MAIN ACTIVITY FOR TESTING. REMOVE THIS LATER
+
+    /// StackOverflow post by oemel09
+    /// Author: https://stackoverflow.com/users/10827064/oemel09
+    /// Answer: https://stackoverflow.com/questions/56913053/android-long-press-system-back-button-listener
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.d(TAG, "Switching to MainActivity");
+            Intent intent = new Intent(EditProfileActivity.this, MainActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onKeyLongPress(keyCode, event);
+    }
 
 
     @Override

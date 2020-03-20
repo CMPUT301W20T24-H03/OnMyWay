@@ -3,6 +3,7 @@ package com.CMPUT301W20T24.OnMyWay;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -14,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
  * @author John
  */
 public class LoginActivity extends AppCompatActivity{
-    private static final String TAG = "OMW/LoginActivity";   // Use this tag for call Log.d()
+    private static final String TAG = "OMW/LoginActivity";   // Use this tag for calling Log.d()
     private EditText emailField;
     private EditText passwordField;
     private DBManager dbManager;
@@ -34,20 +35,28 @@ public class LoginActivity extends AppCompatActivity{
     }
 
 
-    // HACK TO GO BACK TO THE MAIN ACTIVITY WHEN THE BACK BUTTON IS PRESSED. DISABLE BACK BUTTON LATER
+    // Disable back button for this activity
     @Override
     public void onBackPressed() {
-        Log.d(TAG, "Switching to MainActivity");
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(intent);
+        // Literally nothing
     }
 
 
-    // A helper function to display error messages in console and in a toast
-//    private void showInputErrorMsg(String errorMsg) {
-//        Log.w(TAG, errorMsg);
-//        Toast.makeText(LoginActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
-//    }
+    // LONGPRESS BACK BUTTON TO GO BACK TO THE MAIN ACTIVITY FOR TESTING. REMOVE THIS LATER
+
+    /// StackOverflow post by oemel09
+    /// Author: https://stackoverflow.com/users/10827064/oemel09
+    /// Answer: https://stackoverflow.com/questions/56913053/android-long-press-system-back-button-listener
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.d(TAG, "Switching to MainActivity");
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onKeyLongPress(keyCode, event);
+    }
 
 
     // A helper function to display error messages in console and in a toast
@@ -55,7 +64,6 @@ public class LoginActivity extends AppCompatActivity{
         areAllInputsValid = false;
 
         Log.w(TAG, errorMsg);
-//        Toast.makeText(EditProfileActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
 
         if (fieldWithError != null) {
             fieldWithError.setError(errorMsg);
@@ -101,30 +109,6 @@ public class LoginActivity extends AppCompatActivity{
     }
 
 
-    // Called when login button pressed. Defined in XML
-/*    public void onLoginButtonPressed(View view) {
-        CharSequence emailAddressChars = emailField.getText();
-        // Make sure the email address is valid
-        ResponseStatus emailStatus = InputValidator.checkEmail(emailAddressChars);
-
-        if (emailStatus.success()) {
-            CharSequence passwordChars = passwordField.getText();
-            // Make sure password is valid
-            ResponseStatus passwordStatus = InputValidator.checkPassword(passwordChars);
-
-            if (passwordStatus.success()) {
-                // Pass the email address and password to loginUser if inputs are valid
-                loginUser(emailAddressChars.toString(), passwordChars.toString());
-            }
-            else {
-                showInputErrorMsg(passwordStatus.getErrorMsg(), passwordField);
-            }
-        }
-        else {
-            showInputErrorMsg(emailStatus.getErrorMsg(), emailField);
-        }
-    }*/
-
     public void onLoginButtonPressed(View view) {
         Log.d(TAG, "Login button pressed");
 
@@ -163,7 +147,7 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     public void onSignUpPressed(View view){
-        Intent intent = new Intent(this, SignUp.class);
+        Intent intent = new Intent(this, SignUpActivity.class);
         startActivity(intent);
     }
 }
