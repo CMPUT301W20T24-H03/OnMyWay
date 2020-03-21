@@ -28,6 +28,7 @@ public class DBManager {
     private LoginListener loginListener;
     private CurrentUserInfoPulledListener currentUserInfoPulledListener;
     private UserInfoPulledListener userInfoPulledListener;
+    private UserDeletedListener userDeletedListener;
 
 
     /**
@@ -71,6 +72,11 @@ public class DBManager {
      */
     public void setUserInfoPulledListener(UserInfoPulledListener userInfoPulledListener) {
         this.userInfoPulledListener = userInfoPulledListener;
+    }
+
+
+    public void setUserDeletedListener(UserDeletedListener userDeletedListener) {
+        this.userDeletedListener = userDeletedListener;
     }
 
 
@@ -252,6 +258,72 @@ public class DBManager {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w(TAG, "Error updating user profile", e);
+                    }
+                });
+    }
+
+
+    /**
+     * Delete the given user from the Firestore database
+     * @author John
+     */
+    // Upload the profile of the given user to FireStore. This does not affect Firebase Auth.
+
+    /// Google Firebase Docs, Delete data from Cloud Firestore
+    /// https://firebase.google.com/docs/firestore/manage-data/delete-data
+    public void deleteUser() {
+        db.collection("users").document(getFirebaseUser().getUid())
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "User profile deleted successfully");
+
+                        /// Google Firebase Docs, Delete a user
+                        /// https://firebase.google.com/docs/auth/android/manage-users
+                        getFirebaseUser().delete()
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+//                                            State.logoutUser();
+                                            Log.d(TAG, "User account deleted successfully");
+
+                                            if (userDeletedListener == null) {
+                                                Log.d(TAG, "No listeners are assigned for userDeletedListener");
+                                            }
+                                            else {
+                                                // Call listener when we are finished, if it exists
+                                                userDeletedListener.onUserDeleteSuccess();
+                                            }
+                                        }
+                                        else {
+                                            Log.w(TAG, "Error deleting user account");
+
+                                            if (userDeletedListener == null) {
+                                                Log.d(TAG, "No listeners are assigned for userDeletedListener");
+                                            }
+                                            else {
+                                                // Call listener when we are finished, if it exists
+                                                userDeletedListener.onUserDeleteFailure();
+                                            }
+                                        }
+                                    }
+                                });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error deleting user profile", e);
+
+                        if (userDeletedListener == null) {
+                            Log.d(TAG, "No listeners are assigned for userDeletedListener");
+                        }
+                        else {
+                            // Call listener when we are finished, if it exists
+                            userDeletedListener.onUserDeleteFailure();
+                        }
                     }
                 });
     }
