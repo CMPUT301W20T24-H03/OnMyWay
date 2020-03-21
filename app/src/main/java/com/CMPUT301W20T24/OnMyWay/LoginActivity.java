@@ -7,6 +7,11 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -68,7 +73,10 @@ public class LoginActivity extends AppCompatActivity{
 
         Log.w(TAG, errorMsg);
 
-        if (fieldWithError != null) {
+        if (fieldWithError == null) {
+            Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
+        }
+        else {
             fieldWithError.setError(errorMsg);
         }
     }
@@ -106,7 +114,12 @@ public class LoginActivity extends AppCompatActivity{
             public void onLoginFailure(Exception exception) {
                 progressContainer.setVisibility(View.GONE);
 
-                showInputErrorMsg("Authentication failed. Please check your email and password again" + exception.toString(), null);
+                if (exception == null) {
+                    showInputErrorMsg("Authentication failed. Please check your email and password again", null);
+                }
+                else {
+                    showInputErrorMsg(exception.getMessage(), null);
+                }
             }
         });
 
@@ -148,7 +161,7 @@ public class LoginActivity extends AppCompatActivity{
             loginUser(emailAddressChars.toString(), passwordChars.toString());
         }
         else {
-            Toast.makeText(LoginActivity.this, "Please check your inputs again", Toast.LENGTH_SHORT).show();
+            showInputErrorMsg("Authentication failed. Please check your email and password again", null);
         }
     }
 
