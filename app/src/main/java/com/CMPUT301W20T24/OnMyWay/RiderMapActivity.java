@@ -147,23 +147,30 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
             }
         });
 
-        endSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        startSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                String endLocation = endSearchView.getQuery().toString();
-                List<Address> endLocationList;
+                String startLocation = startSearchView.getQuery().toString();
+                List<Address> startLocationList;
 
                 Geocoder geocoder = new Geocoder(RiderMapActivity.this);
                 try {
-                    endLocationList = geocoder.getFromLocationName(endLocation, 1);
-                    if (endLocationList.size() != 0) {
-                        Address endAddress = endLocationList.get(0);
-                        LatLng latLng = new LatLng(endAddress.getLatitude(), endAddress.getLongitude());
-                        endLocationMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(endLocation));
+                    startLocationList = geocoder.getFromLocationName(startLocation, 1);
+                    if (startLocationList.size() != 0) {
+                        Address startAddress = startLocationList.get(0);
+                        LatLng latLng = new LatLng(startAddress.getLatitude(), startAddress.getLongitude());
+                        startLocationMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(startLocation));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                    }
+                    else if (startLocationMarker != null && startLocationList.size() != 0) {
+                        startLocationMarker.remove();
+                        Address startAddress = startLocationList.get(0);
+                        LatLng latLng = new LatLng(startAddress.getLatitude(), startAddress.getLongitude());
+                        startLocationMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(startLocation));
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
                     }
                     else {
-                        Toast.makeText(getApplicationContext(), "Invalid location.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Invalid start location.", Toast.LENGTH_SHORT).show();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -176,6 +183,41 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
             }
         });
 
+        endSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                String endLocation = endSearchView.getQuery().toString();
+                List<Address> endLocationList;
+
+                Geocoder geocoder = new Geocoder(RiderMapActivity.this);
+                try {
+                    endLocationList = geocoder.getFromLocationName(endLocation, 1);
+                    if (endLocationMarker == null && endLocationList.size() != 0) {
+                        Address endAddress = endLocationList.get(0);
+                        LatLng latLng = new LatLng(endAddress.getLatitude(), endAddress.getLongitude());
+                        endLocationMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(endLocation));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                    }
+                    else if (endLocationMarker != null && endLocationList.size() != 0){
+                        endLocationMarker.remove();
+                        Address endAddress = endLocationList.get(0);
+                        LatLng latLng = new LatLng(endAddress.getLatitude(), endAddress.getLongitude());
+                        endLocationMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(endLocation));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "Invalid end location.", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
     }
 
     //Default method introduced by Intelli-Sense.
@@ -187,9 +229,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     /// YouTube video by CodingWithMitch: Calculating Directions with Google Directions API
     /// https://www.youtube.com/watch?v=f47L1SL5S0o&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=19
     private GeoApiContext my_geoApi;
-
-    private void calculateDirections() {
-
+    private void calculateDirections(){
         com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(endLocationMarker.getPosition().latitude, endLocationMarker.getPosition().longitude);
 
         my_geoApi = new GeoApiContext.Builder().apiKey(getString(R.string.google_api_key)).build();
