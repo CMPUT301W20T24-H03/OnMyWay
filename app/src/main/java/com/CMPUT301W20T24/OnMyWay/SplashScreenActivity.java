@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.Toast;
 import java.util.Date;
 
@@ -16,9 +17,33 @@ import java.util.Date;
  */
 public class SplashScreenActivity extends AppCompatActivity {
     // The tag can't be longer than 23 characters so it is cut off
-    private static final String TAG = "OMW/SplashScreenActi...";   // Use this tag for call Log.d()
+    private static final String TAG = "OMW/SplashScreenActi...";   // Use this tag for calling Log.d()
     private Date startTime;
     private DBManager dbManager;
+
+
+    // Disable back button for this activity
+    @Override
+    public void onBackPressed() {
+        // Literally nothing
+    }
+
+
+    // LONGPRESS BACK BUTTON TO GO BACK TO THE MAIN ACTIVITY FOR TESTING. REMOVE THIS LATER
+
+    /// StackOverflow post by oemel09
+    /// Author: https://stackoverflow.com/users/10827064/oemel09
+    /// Answer: https://stackoverflow.com/questions/56913053/android-long-press-system-back-button-listener
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.d(TAG, "Switching to MainActivity");
+            Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onKeyLongPress(keyCode, event);
+    }
 
 
     /// Android Open Source Project, Get Started with Firebase Authentication on Android

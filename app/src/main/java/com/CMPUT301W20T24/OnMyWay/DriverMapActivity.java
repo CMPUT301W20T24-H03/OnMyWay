@@ -5,20 +5,13 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -26,15 +19,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -49,7 +41,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.navigation.NavigationView;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
@@ -82,13 +73,30 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     private DBManager dbManager;
     private FragmentManager fm;
 
-    // HACK TO GO BACK TO THE MAIN ACTIVITY WHEN THE BACK BUTTON IS PRESSED. REMOVE LATER
+
+    // Disable back button for this activity
     @Override
     public void onBackPressed() {
-        Log.d(TAG, "Switching to MainActivity");
-        Intent intent = new Intent(DriverMapActivity.this, MainActivity.class);
-        startActivity(intent);
+        // Literally nothing
     }
+
+
+    // LONGPRESS BACK BUTTON TO GO BACK TO THE MAIN ACTIVITY FOR TESTING. REMOVE THIS LATER
+
+    /// StackOverflow post by oemel09
+    /// Author: https://stackoverflow.com/users/10827064/oemel09
+    /// Answer: https://stackoverflow.com/questions/56913053/android-long-press-system-back-button-listener
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.d(TAG, "Switching to MainActivity");
+            Intent intent = new Intent(DriverMapActivity.this, MainActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onKeyLongPress(keyCode, event);
+    }
+
 
     /**
      * onCreate method. Sets the view, and finds/stores the drivers current location
@@ -378,7 +386,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     public void findRider(View view) {
         if (currentLocation != null) {
-            Intent intent = new Intent(this, DriverViewRequests.class);
+            Intent intent = new Intent(this, DriverViewRequestsActivity.class);
             double lat = currentLocation.getLatitude();
             double lon = currentLocation.getLongitude();
             intent.putExtra("DRIVER_LAT",lat);
@@ -399,7 +407,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                 break;
             case R.id.current_request:
                 if(currentRequest != null){
-                    Intent intent = new Intent(this, CurrentRequest.class);
+                    Intent intent = new Intent(this, CurrentRequestActivity.class);
                     intent.putExtra("REQUEST_LATITUDE", currentRequest.getLat());
                     intent.putExtra("REQUEST_LONGITUDE",currentRequest.getLon());
                     intent.putExtra("REQUEST_PAYMENTAMOUNT",currentRequest.getPayment());

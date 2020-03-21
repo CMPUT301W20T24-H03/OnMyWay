@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Telephony;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -71,6 +72,31 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private Marker startLocationMarker;
     private Marker endLocationMarker;
     private FirebaseFirestore database;
+
+
+    // Disable back button for this activity
+    @Override
+    public void onBackPressed() {
+        // Literally nothing
+    }
+
+
+    // LONGPRESS BACK BUTTON TO GO BACK TO THE MAIN ACTIVITY FOR TESTING. REMOVE THIS LATER
+
+    /// StackOverflow post by oemel09
+    /// Author: https://stackoverflow.com/users/10827064/oemel09
+    /// Answer: https://stackoverflow.com/questions/56913053/android-long-press-system-back-button-listener
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.d(TAG, "Switching to MainActivity");
+            Intent intent = new Intent(RiderMapActivity.this, MainActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onKeyLongPress(keyCode, event);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -359,7 +385,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
             case R.id.current_request_rider:
                 if (startLocationMarker != null && endLocationMarker != null) {
 
-                    Intent intent = new Intent(this, CurrentRequest.class);
+                    Intent intent = new Intent(this, CurrentRequestActivity.class);
                     intent.putExtra("REQUEST_LATITUDE", startLocLat);
                     intent.putExtra("REQUEST_LONGITUDE", startLocLon);
                     intent.putExtra("REQUEST_PAYMENTAMOUNT", 15.32f);
