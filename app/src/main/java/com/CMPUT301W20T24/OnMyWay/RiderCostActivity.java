@@ -64,10 +64,10 @@ public class RiderCostActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         // layout features from RiderMapActivity that are removed
-        LinearLayout layout = (LinearLayout) findViewById(R.id.locationSearchBar);
-        layout.setVisibility(View.GONE);
-        Button button = (Button) findViewById(R.id.switchModeButton);
-        button.setVisibility(View.GONE);
+        //LinearLayout layout = (LinearLayout) findViewById(R.id.locationSearchBar);
+        //layout.setVisibility(View.GONE);
+        //Button button = (Button) findViewById(R.id.switchModeButton);
+        //button.setVisibility(View.GONE);
 
         // first we will have to check if payment amount is null or not - need to implement still
         // if not then calculate, otherwise retrieve from database
