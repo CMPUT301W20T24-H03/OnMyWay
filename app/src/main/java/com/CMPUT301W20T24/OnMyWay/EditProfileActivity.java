@@ -1,8 +1,10 @@
 package com.CMPUT301W20T24.OnMyWay;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,7 +38,6 @@ public class EditProfileActivity extends AppCompatActivity {
     private EditText emailField;
     private EditText phoneField;
     private boolean areAllInputsValid;
-    private FirebaseFirestore db;
 
 
     // LONGPRESS BACK BUTTON TO GO BACK TO THE MAIN ACTIVITY FOR TESTING. REMOVE THIS LATER
@@ -171,8 +172,35 @@ public class EditProfileActivity extends AppCompatActivity {
         Log.d(TAG, "Delete Account button pressed");
         // TODO: Show prompt here and call deleteAccount in DBManager (probably?)
 
+        DBManager dbManager = new DBManager();
 
+        /// StackOverflow post by David Hedlund
+        /// Author: https://stackoverflow.com/users/133802
+        /// Answer: https://stackoverflow.com/questions/2115758/how-do-i-display-an-alert-dialog-on-android
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Account")
+                .setMessage(R.string.delete_account_message)
+                .setPositiveButton(R.string.text_okay, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Continue and delete account
+                        Log.d(TAG, "Okay button pressed");
 
+                        dbManager.setUserDeletedListener(new UserDeletedListener() {
+                            public void onUserDeleteSuccess() {
+                                Intent intent = new Intent(EditProfileActivity.this, SplashScreenActivity.class);
+                                intent.putExtra("toastMessage", "Account deleted successfully");
+                                startActivity(intent);
+                            }
 
+                            public void onUserDeleteFailure() {
+                                Toast.makeText(EditProfileActivity.this, "Account deletion failed", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        dbManager.deleteUser();
+                    }
+                })
+                .setNegativeButton(R.string.text_cancel, null)
+                .show();
     }
 }

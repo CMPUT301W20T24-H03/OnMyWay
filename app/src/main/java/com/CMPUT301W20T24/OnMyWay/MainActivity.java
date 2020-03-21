@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
         State.logoutUser();
         Intent intent = new Intent(this, SplashScreenActivity.class);
-        intent.putExtra("isLoggedOut", true);
+        intent.putExtra("toastMessage", "Logged out successfully");
         startActivity(intent);
 
         Log.w(TAG, msg);
@@ -140,6 +140,4 @@ public class MainActivity extends AppCompatActivity {
         statusTextCurrentUser.setText("None");
         statusTextCurrentUser.setTextColor(ContextCompat.getColor(this, R.color.colorError));
     }
-
-
 }
