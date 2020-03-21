@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 /**
  * A login page for the user. If the login fails the user is not allowed to continue.
@@ -18,6 +19,7 @@ public class LoginActivity extends AppCompatActivity{
     private static final String TAG = "OMW/LoginActivity";   // Use this tag for calling Log.d()
     private EditText emailField;
     private EditText passwordField;
+    private ConstraintLayout progressContainer;
     private DBManager dbManager;
     private boolean areAllInputsValid;
 
@@ -32,6 +34,7 @@ public class LoginActivity extends AppCompatActivity{
         // Get EditTexts
         emailField = findViewById(R.id.emailField);
         passwordField = findViewById(R.id.passwordField);
+        progressContainer = findViewById(R.id.progressContainer);
     }
 
 
@@ -105,12 +108,15 @@ public class LoginActivity extends AppCompatActivity{
             }
         });
 
+        progressContainer.setVisibility(View.VISIBLE);
         dbManager.loginUser(emailAddress, password, this);
     }
 
 
     public void onLoginButtonPressed(View view) {
         Log.d(TAG, "Login button pressed");
+
+
 
         areAllInputsValid = true;   // Assume all the inputs are valid at the start
 
