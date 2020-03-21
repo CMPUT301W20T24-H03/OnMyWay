@@ -36,13 +36,12 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText firstName;
     private EditText lastName;
     private EditText phoneNumber;
+    private ConstraintLayout progressContainer;
     private Switch isDriver;
     private boolean driverStatus = false;
     private FirebaseAuth mAuth;
 
-    ConstraintLayout progressContainer;
-
-    //instantiating DBManager()
+    // Instantiating DBManager()
     DBManager db = new DBManager();
 
 
@@ -156,7 +155,9 @@ public class SignUpActivity extends AppCompatActivity {
                             intent.putExtra("toastMessage", "Account created successfully");
                             startActivity(intent);
                         }
-                        else{
+                        else {
+                            progressContainer.setVisibility(View.GONE);
+
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
                                 Toast.makeText(getApplicationContext(), "You are already registered", Toast.LENGTH_SHORT).show();
                             } else {

@@ -104,6 +104,8 @@ public class LoginActivity extends AppCompatActivity{
             }
 
             public void onLoginFailure(Exception exception) {
+                progressContainer.setVisibility(View.GONE);
+
                 showInputErrorMsg("Authentication failed. Please check your email and password again" + exception.toString(), null);
             }
         });
@@ -115,8 +117,6 @@ public class LoginActivity extends AppCompatActivity{
 
     public void onLoginButtonPressed(View view) {
         Log.d(TAG, "Login button pressed");
-
-
 
         areAllInputsValid = true;   // Assume all the inputs are valid at the start
 

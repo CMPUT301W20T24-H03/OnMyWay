@@ -3,6 +3,7 @@ package com.CMPUT301W20T24.OnMyWay;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,13 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 
@@ -37,6 +31,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private EditText lastNameField;
     private EditText emailField;
     private EditText phoneField;
+    private ConstraintLayout progressContainer;
     private boolean areAllInputsValid;
 
 
@@ -70,6 +65,7 @@ public class EditProfileActivity extends AppCompatActivity {
         emailField = findViewById(R.id.fieldEmail);
         phoneField = findViewById(R.id.fieldPhone);
         ImageView profilePhotoImage = findViewById(R.id.imageCurrentProfilePhoto);
+        progressContainer = findViewById(R.id.progressContainer);
 
         User currentUser = State.getCurrentUser();
 
@@ -170,7 +166,8 @@ public class EditProfileActivity extends AppCompatActivity {
     // Called when save button is pressed. Defined in XML. Not implemented yet
     public void onDeleteAccountPressed(View view) {
         Log.d(TAG, "Delete Account button pressed");
-        // TODO: Show prompt here and call deleteAccount in DBManager (probably?)
+
+        progressContainer.setVisibility(View.VISIBLE);
 
         DBManager dbManager = new DBManager();
 
@@ -193,6 +190,8 @@ public class EditProfileActivity extends AppCompatActivity {
                             }
 
                             public void onUserDeleteFailure() {
+                                progressContainer.setVisibility(View.GONE);
+
                                 Toast.makeText(EditProfileActivity.this, "Account deletion failed", Toast.LENGTH_SHORT).show();
                             }
                         });
