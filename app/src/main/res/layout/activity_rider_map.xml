@@ -14,28 +14,34 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-    <fragment
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:id="@+id/riderMap"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></fragment>
+        <fragment
+            android:id="@+id/riderMap"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="0dp"></fragment>
 
-    <SearchView
-        android:id="@+id/locationSearchBar"
+        <SearchView
+        android:id="@+id/startLocationSearchBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/cardview_light_background"
         android:iconifiedByDefault="false"
-        android:queryHint="Search"></SearchView>
+        android:queryHint="Search START Location"></SearchView>
 
-    <Button
-        android:id="@+id/switchModeButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:onClick="switchModeActivate"
-        android:text="MODE">
-    </Button>
+        <SearchView
+            android:id="@+id/endLocationSearchBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/cardview_light_background"
+            android:iconifiedByDefault="false"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="420dp"
+            android:queryHint="Search END Location">
+        </SearchView>
 
     <Button
         android:id="@+id/confirmRequestButton"
@@ -45,7 +51,7 @@
         android:onClick="confirmRideActivate"
         android:text="REQUEST RIDE"></Button>
 
-</RelativeLayout>
+    </RelativeLayout>
 
 <com.google.android.material.navigation.NavigationView
 android:layout_width="match_parent"

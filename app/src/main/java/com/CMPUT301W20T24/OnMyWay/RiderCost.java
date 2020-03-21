@@ -1,17 +1,13 @@
 package com.CMPUT301W20T24.OnMyWay;
 
-import android.annotation.SuppressLint;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.api.Distribution;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -49,10 +44,10 @@ public class RiderCost extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         // layout features from RiderMapActivity that are removed
-        LinearLayout layout = (LinearLayout) findViewById(R.id.locationSearchBar);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.startLocationSearchBar);
         layout.setVisibility(View.GONE);
-        Button button = (Button) findViewById(R.id.switchModeButton);
-        button.setVisibility(View.GONE);
+        //Button button = (Button) findViewById(R.id.switchModeButton);
+        //button.setVisibility(View.GONE);
 
         // first we will have to check if payment amount is null or not - need to implement still
         // if not then calculate, otherwise retrieve from database
