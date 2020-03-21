@@ -28,7 +28,7 @@
         android:id="@+id/startLocationSearchBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/cardview_light_background"
+        android:background="#90EE90"
         android:iconifiedByDefault="false"
         android:queryHint="Search START Location"></SearchView>
 
@@ -36,7 +36,7 @@
             android:id="@+id/endLocationSearchBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/cardview_light_background"
+            android:background="#FFA07A"
             android:iconifiedByDefault="false"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="420dp"
@@ -48,7 +48,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/riderMap"
-        android:onClick="confirmRideActivate"
         android:text="REQUEST RIDE"></Button>
 
     </RelativeLayout>
