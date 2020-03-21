@@ -95,16 +95,22 @@ public class InputValidator {
     public static ResponseStatus checkPhoneNumber(CharSequence phoneChars) {
         Log.d(TAG, "Checking phone number");
 
-        // Format the phone number nicely, if possible.
-        // Locale is fixed to CA to prevent consistency issues
-        String formattedPhoneNumber = formatNumber(phoneChars.toString(), "CA");
-
-        if (formattedPhoneNumber != null) {
-            // If its a real phone number, return the nicely formatted version
-            return new ResponseStatus(true, formattedPhoneNumber);
+        // Check if there are special characters that are not allowed
+        if (Pattern.compile("[/N,*;#.]+").matcher(phoneChars).find()) {
+            return new ResponseStatus(false, "The phone number entered is not valid");
         }
         else {
-            return new ResponseStatus(false, "The phone number entered is not valid");
+            // Format the phone number nicely, if possible.
+            // Locale is fixed to CA to prevent consistency issues
+            String formattedPhoneNumber = formatNumber(phoneChars.toString(), "CA");
+
+            if (formattedPhoneNumber != null) {
+                // If its a real phone number, return the nicely formatted version
+                return new ResponseStatus(true, formattedPhoneNumber);
+            }
+            else {
+                return new ResponseStatus(false, "The phone number entered is not valid");
+            }
         }
     }
 }
