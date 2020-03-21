@@ -146,11 +146,15 @@ public class SignUpActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             finish();
                             FirebaseUser user = mAuth.getCurrentUser();
-                            if(user != null){
-                                // Get dbmanager to push all the info to firebase
+
+                            if (user != null){
+                                // Get dbManager to push all the info to firebase
                                 User newUser = new User(user.getUid(), userfirstName, userlastName, driverStatus, userEmail, userPhoneNumber, 0,0);                                db.pushUserInfo(newUser);
                             }
-                            startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+
+                            Intent intent = new Intent(SignUpActivity.this, SplashScreenActivity.class);
+                            intent.putExtra("toastMessage", "Account created successfully");
+                            startActivity(intent);
                         }
                         else{
                             if (task.getException() instanceof FirebaseAuthUserCollisionException) {
