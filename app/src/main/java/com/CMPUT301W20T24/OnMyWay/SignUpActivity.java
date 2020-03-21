@@ -2,6 +2,8 @@ package com.CMPUT301W20T24.OnMyWay;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,7 +40,7 @@ public class SignUpActivity extends AppCompatActivity {
     private boolean driverStatus = false;
     private FirebaseAuth mAuth;
 
-    ProgressBar progressBar;
+    ConstraintLayout progressContainer;
 
     //instantiating DBManager()
     DBManager db = new DBManager();
@@ -72,7 +74,7 @@ public class SignUpActivity extends AppCompatActivity {
         lastName = findViewById(R.id.lastnameField);
         phoneNumber = findViewById(R.id.phonenumberfield);
         isDriver = findViewById(R.id.user_switch);
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressContainer = findViewById(R.id.progressContainer);
 
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
@@ -85,8 +87,7 @@ public class SignUpActivity extends AppCompatActivity {
         String userlastName = lastName.getText().toString().trim();
         String userPhoneNumber = phoneNumber.getText().toString().trim();
 
-        //Error testing for all input fields
-
+        // Error testing for all input fields
         if(userEmail.isEmpty()){
             emailID.setError("Email is Required");
             emailID.requestFocus();
@@ -133,15 +134,14 @@ public class SignUpActivity extends AppCompatActivity {
             driverStatus = true;
         }
 
-        //throbber to show creation status
-        progressBar.setVisibility(View.VISIBLE);
+        // Throbber to show creation status
+        progressContainer.setVisibility(View.VISIBLE);
 
         // create new account based on email and password inputted.
         mAuth.createUserWithEmailAndPassword(userEmail, userPassword)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        progressBar.setVisibility(View.GONE);
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             finish();
@@ -165,7 +165,6 @@ public class SignUpActivity extends AppCompatActivity {
                         }
                     }
                 });
-
     }
 
     /**
@@ -181,11 +180,10 @@ public class SignUpActivity extends AppCompatActivity {
         Pattern pattern = Pattern.compile(expression);
         Matcher matcher = pattern.matcher(inputString);
 
-        if (matcher.matches())
-        {
+        if (matcher.matches()) {
             return true;
         }
-        else{
+        else {
             return false;
         }
     }
