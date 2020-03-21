@@ -175,6 +175,10 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+                if (endLocationMarker != null && startLocationMarker != null) {
+                    calculateDirections();
+                    calculateDirectionsDestination();
+                }
                 return false;
             }
             @Override
@@ -210,6 +214,10 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                }
+                if (endLocationMarker != null && startLocationMarker != null) {
+                    calculateDirections();
+                    calculateDirectionsDestination();
                 }
                 return false;
             }
