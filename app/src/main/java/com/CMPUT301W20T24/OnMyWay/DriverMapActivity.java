@@ -42,6 +42,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.internal.PolylineEncoding;
@@ -72,6 +76,8 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     View mapView;
     private DBManager dbManager;
     private FragmentManager fm;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference requests = db.collection("riderRequests");
 
 
     // Disable back button for this activity
@@ -142,6 +148,33 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                 }
             }
         });
+    }
+
+    /// Youtube video by Coding In Flow: Firestore Tutorial Part 8 - ADD AND RETRIEVE MULTIPLE DOCUMENTS - Android Studio Tutorial
+    /// https://www.youtube.com/watch?v=Bh0h_ZhX-Qg&t=349s
+    // load requests from the database
+    public void loadMarkers(){
+        requests.get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (queryDocumentSnapshots.isEmpty()){
+                            Log.d(TAG, "List is Empty");
+                            return;
+                        }else{
+                            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
+                                try {
+                                    LatLng latlng = new LatLng(Double.parseDouble(documentSnapshot.getString("startLatitude")), Double.parseDouble(documentSnapshot.getString("startLongitude")));
+                                    Toast.makeText(getApplicationContext(), documentSnapshot.getString("startLatitude")+","+documentSnapshot.getString("startLongitude"), Toast.LENGTH_LONG).show();
+                                    Marker my_marker = mMap.addMarker(new MarkerOptions().position(latlng).title("DUMMY").snippet("$12"));
+                                    my_marker.setTag(new LatLng(53.53522, -113.4765));
+                                }
+                                catch (NullPointerException e){}
+
+                            }
+                        }
+                    }
+                });
     }
 
     /**
@@ -340,8 +373,9 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         rlp.setMargins(30,30,30,120);
 
-        addMarkers();
+//        addMarkers();
 
+        loadMarkers();
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
