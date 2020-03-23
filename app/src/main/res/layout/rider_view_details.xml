@@ -8,7 +8,6 @@
     <Button
         android:id="@+id/view_details_button"
         android:layout_width="249dp"
-        android:onClick="viewDetails"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
