@@ -99,25 +99,17 @@ public class DriverViewRequestsActivity extends AppCompatActivity {
                 requests.add(requestsin.get(i));
             }
         }
-
-
         arrayAdapter = new CustomListDriverRequest(this, requests);
-
         requestListView.setAdapter(arrayAdapter);
 
     }
-
-
 
     public boolean geoDist(double latDriver, double lonDriver, double latRider, double longRider){
 
         // 0.2 latitude/longitude approximately 22 km, finding rides within this distance
         double dist;
-
         dist = Math.sqrt((Math.pow((latDriver-latRider),2)) + (Math.pow((lonDriver-longRider),2)));
-
         return dist<0.2;
-
     }
 
     @Override

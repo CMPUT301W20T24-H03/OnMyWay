@@ -62,16 +62,19 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     private dummyRequest currentRequest;
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
+
     LocationManager locationManager;
     LocationListener locationListener;
     DrawerLayout drawerLayout;
     Toolbar toolbar;
+
     NavigationView navigationView;
     ActionBarDrawerToggle toggle;
     private static final int REQUEST_CODE = 101;
     View mapView;
     private DBManager dbManager;
     private FragmentManager fm;
+
 
 
     // Disable back button for this activity
@@ -109,7 +112,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         dbManager = new DBManager();
         fm = getSupportFragmentManager();
 
-
         /// Hamburger menu creation reference: https://www.youtube.com/watch?v=ofu1IqiBNCY
 
         navigationView = findViewById(R.id.navigationView);
@@ -118,6 +120,8 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
+
 
         Toast.makeText(DriverMapActivity.this, "DriverMapActivity", Toast.LENGTH_LONG).show();
     }

@@ -139,12 +139,13 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                                 endLocationMarker.getPosition().latitude);
 
                         HashMap<String, String> data = new HashMap<>();
-                        data.put("riderUserName", String.valueOf(State.getCurrentUser()));
+                        data.put("riderUserName", String.valueOf(riderRequest.getRiderUserName()));
                         data.put("endLatitude", String.valueOf(riderRequest.getEndLatitude()));
                         data.put("endLongitude", String.valueOf(riderRequest.getEndLongitude()));
                         data.put("requestID", riderRequest.getRequestId());
                         data.put("startLatitude", String.valueOf(riderRequest.getStartLatitude()));
                         data.put("startLongitude", String.valueOf(riderRequest.getStartLongitude()));
+                        data.put("driverUserName", String.valueOf(riderRequest.getDriverUserName()));
 
                         //Adds a new record the request to the 'riderRequests' collection.
                         database.collection("riderRequests")
