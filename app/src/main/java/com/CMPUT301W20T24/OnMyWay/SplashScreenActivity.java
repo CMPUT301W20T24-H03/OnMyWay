@@ -54,15 +54,15 @@ public class SplashScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash_screen);
 
         // Get intent from parentActivity if it exists
-        boolean isLoggedOut = getIntent().getBooleanExtra("isLoggedOut", false);
-        Log.w(TAG, String.valueOf(isLoggedOut));
+        String toastMessage = getIntent().getStringExtra("toastMessage");
 
-        // If the parent activity says that the user just logged out, display a toast to the user
-        // saying this
-        if (isLoggedOut) {
-            String message = "Logged out successfully";
-            Log.w(TAG, message);
-            Toast.makeText(SplashScreenActivity.this, message, Toast.LENGTH_SHORT).show();
+        // If the parent activity sent a message, display it in a toast to the user
+        if (toastMessage != null && toastMessage != "") {
+            Log.w(TAG, toastMessage);
+            Toast.makeText(SplashScreenActivity.this, toastMessage, Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Log.d(TAG, "No message passed to SplashScreen");
         }
 
         startTime = new Date(); // Record the start time of the activity
@@ -72,9 +72,11 @@ public class SplashScreenActivity extends AppCompatActivity {
 
     @Override
     public void onStart() {
+        Log.d(TAG, "Before");
         super.onStart();
+        Log.d(TAG, "After");
 
-        // If user is logged in, fetch addional user info and go to a map activity
+        // If user is logged in, fetch additional user info and go to a map activity
         if (State.isLoggedIn()) {
             dbManager.setCurrentUserInfoPulledListener(new CurrentUserInfoPulledListener() {
                 // This is called after fetchCurrentUserInfo() finishes
