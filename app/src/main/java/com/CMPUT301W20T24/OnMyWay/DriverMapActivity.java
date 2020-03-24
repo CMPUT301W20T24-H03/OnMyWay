@@ -165,9 +165,9 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                             for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
                                 try {
                                     LatLng latlng = new LatLng(Double.parseDouble(documentSnapshot.getString("startLatitude")), Double.parseDouble(documentSnapshot.getString("startLongitude")));
-                                    Toast.makeText(getApplicationContext(), documentSnapshot.getString("startLatitude")+","+documentSnapshot.getString("startLongitude"), Toast.LENGTH_LONG).show();
+//                                    Toast.makeText(getApplicationContext(), documentSnapshot.getString("startLatitude")+","+documentSnapshot.getString("startLongitude"), Toast.LENGTH_LONG).show();
                                     Marker my_marker = mMap.addMarker(new MarkerOptions().position(latlng).title("DUMMY").snippet("$12"));
-                                    my_marker.setTag(new LatLng(53.53522, -113.4765));
+                                    my_marker.setTag(new LatLng(Double.parseDouble(documentSnapshot.getString("endLatitude")), Double.parseDouble(documentSnapshot.getString("endLongitude"))));
                                 }
                                 catch (NullPointerException e){}
 
