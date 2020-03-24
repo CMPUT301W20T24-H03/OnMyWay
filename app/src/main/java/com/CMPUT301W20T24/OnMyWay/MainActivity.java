@@ -51,13 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     // Called when the user presses a button
-    public void openLoginActivity(View view) {
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
-    }
-
-
-    // Called when the user presses a button
     public void openMainDriverMapActivity(View view) {
         Intent intent = new Intent(this, DriverMapActivity.class);
         startActivity(intent);
@@ -124,22 +117,4 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, RiderCostActivity.class);
         startActivity(intent);
     }
-
-    // Called when the user presses a button
-    public void logout(View view) {
-        String msg = "Logged out";
-
-        State.logoutUser();
-        Intent intent = new Intent(this, SplashScreenActivity.class);
-        intent.putExtra("isLoggedOut", true);
-        startActivity(intent);
-
-        Log.w(TAG, msg);
-        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
-
-        statusTextCurrentUser.setText("None");
-        statusTextCurrentUser.setTextColor(ContextCompat.getColor(this, R.color.colorError));
-    }
-
-
 }

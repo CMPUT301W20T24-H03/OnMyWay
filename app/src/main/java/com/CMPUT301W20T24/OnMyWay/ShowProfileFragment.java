@@ -168,7 +168,7 @@ public class ShowProfileFragment extends DialogFragment implements View.OnClickL
 
             State.logoutUser();
             Intent intent = new Intent(parentActivity, SplashScreenActivity.class);
-            intent.putExtra("isLoggedOut", true);
+            intent.putExtra("toastMessage", "Logged out successfully");
             startActivity(intent);
         }
         else {

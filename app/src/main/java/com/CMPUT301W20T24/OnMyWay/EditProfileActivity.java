@@ -1,8 +1,11 @@
 package com.CMPUT301W20T24.OnMyWay;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,13 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 
@@ -35,8 +31,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private EditText lastNameField;
     private EditText emailField;
     private EditText phoneField;
+    private ConstraintLayout progressContainer;
     private boolean areAllInputsValid;
-    private FirebaseFirestore db;
 
 
     // LONGPRESS BACK BUTTON TO GO BACK TO THE MAIN ACTIVITY FOR TESTING. REMOVE THIS LATER
@@ -69,6 +65,7 @@ public class EditProfileActivity extends AppCompatActivity {
         emailField = findViewById(R.id.fieldEmail);
         phoneField = findViewById(R.id.fieldPhone);
         ImageView profilePhotoImage = findViewById(R.id.imageCurrentProfilePhoto);
+        progressContainer = findViewById(R.id.progressContainer);
 
         User currentUser = State.getCurrentUser();
 
@@ -169,10 +166,40 @@ public class EditProfileActivity extends AppCompatActivity {
     // Called when save button is pressed. Defined in XML. Not implemented yet
     public void onDeleteAccountPressed(View view) {
         Log.d(TAG, "Delete Account button pressed");
-        // TODO: Show prompt here and call deleteAccount in DBManager (probably?)
 
+        progressContainer.setVisibility(View.VISIBLE);
 
+        DBManager dbManager = new DBManager();
 
+        /// StackOverflow post by David Hedlund
+        /// Author: https://stackoverflow.com/users/133802
+        /// Answer: https://stackoverflow.com/questions/2115758/how-do-i-display-an-alert-dialog-on-android
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Account")
+                .setMessage(R.string.delete_account_message)
+                .setPositiveButton(R.string.text_okay, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Continue and delete account
+                        Log.d(TAG, "Okay button pressed");
 
+                        dbManager.setUserDeletedListener(new UserDeletedListener() {
+                            public void onUserDeleteSuccess() {
+                                Intent intent = new Intent(EditProfileActivity.this, SplashScreenActivity.class);
+                                intent.putExtra("toastMessage", "Account deleted successfully");
+                                startActivity(intent);
+                            }
+
+                            public void onUserDeleteFailure() {
+                                progressContainer.setVisibility(View.GONE);
+
+                                Toast.makeText(EditProfileActivity.this, "Account deletion failed", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        dbManager.deleteUser();
+                    }
+                })
+                .setNegativeButton(R.string.text_cancel, null)
+                .show();
     }
 }

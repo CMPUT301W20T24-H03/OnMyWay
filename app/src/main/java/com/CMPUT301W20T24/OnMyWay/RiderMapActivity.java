@@ -133,16 +133,19 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                         Log.d(TAG, "Request invalid. START or END location not specified/stored.");
                         Toast.makeText(getApplicationContext(), "Request Invalid. You must specify a start and end location!", Toast.LENGTH_SHORT).show();
                     }
+
                     else {
                         Request riderRequest = new Request(startLocationMarker.getPosition().longitude, startLocationMarker.getPosition().latitude, endLocationMarker.getPosition().longitude,
                                 endLocationMarker.getPosition().latitude);
 
                         HashMap<String, String> data = new HashMap<>();
+                        data.put("riderUserName", String.valueOf(riderRequest.getRiderUserName()));
                         data.put("endLatitude", String.valueOf(riderRequest.getEndLatitude()));
                         data.put("endLongitude", String.valueOf(riderRequest.getEndLongitude()));
                         data.put("requestID", riderRequest.getRequestId());
                         data.put("startLatitude", String.valueOf(riderRequest.getStartLatitude()));
                         data.put("startLongitude", String.valueOf(riderRequest.getStartLongitude()));
+                        data.put("driverUserName", String.valueOf(riderRequest.getDriverUserName()));
 
                         //Adds a new record the request to the 'riderRequests' collection.
                         database.collection("riderRequests")

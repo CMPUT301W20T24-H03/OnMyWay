@@ -7,7 +7,13 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 /**
  * A login page for the user. If the login fails the user is not allowed to continue.
@@ -18,6 +24,7 @@ public class LoginActivity extends AppCompatActivity{
     private static final String TAG = "OMW/LoginActivity";   // Use this tag for calling Log.d()
     private EditText emailField;
     private EditText passwordField;
+    private ConstraintLayout progressContainer;
     private DBManager dbManager;
     private boolean areAllInputsValid;
 
@@ -32,6 +39,7 @@ public class LoginActivity extends AppCompatActivity{
         // Get EditTexts
         emailField = findViewById(R.id.emailField);
         passwordField = findViewById(R.id.passwordField);
+        progressContainer = findViewById(R.id.progressContainer);
     }
 
 
@@ -65,7 +73,10 @@ public class LoginActivity extends AppCompatActivity{
 
         Log.w(TAG, errorMsg);
 
-        if (fieldWithError != null) {
+        if (fieldWithError == null) {
+            Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
+        }
+        else {
             fieldWithError.setError(errorMsg);
         }
     }
@@ -101,10 +112,18 @@ public class LoginActivity extends AppCompatActivity{
             }
 
             public void onLoginFailure(Exception exception) {
-                showInputErrorMsg("Authentication failed. Please check your email and password again" + exception.toString(), null);
+                progressContainer.setVisibility(View.GONE);
+
+                if (exception == null) {
+                    showInputErrorMsg("Authentication failed. Please check your email and password again", null);
+                }
+                else {
+                    showInputErrorMsg(exception.getMessage(), null);
+                }
             }
         });
 
+        progressContainer.setVisibility(View.VISIBLE);
         dbManager.loginUser(emailAddress, password, this);
     }
 
@@ -142,7 +161,7 @@ public class LoginActivity extends AppCompatActivity{
             loginUser(emailAddressChars.toString(), passwordChars.toString());
         }
         else {
-            Toast.makeText(LoginActivity.this, "Please check your inputs again", Toast.LENGTH_SHORT).show();
+            showInputErrorMsg("Authentication failed. Please check your email and password again", null);
         }
     }
 
