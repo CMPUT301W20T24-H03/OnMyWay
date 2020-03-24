@@ -31,7 +31,7 @@ public class Request {
      */
     public Request(double startLongitude, double startLatitude, double endLongitude, double endLatitude) {
         this.requestId = generateUUID();
-        this.riderUserName = State.getCurrentUser().getUserId().toString();
+        this.riderUserName = UserRequestState.getCurrentUser().getUserId().toString();
         this.startLongitude = startLongitude;
         this.startLatitude = startLatitude;
         this.endLongitude = endLongitude;

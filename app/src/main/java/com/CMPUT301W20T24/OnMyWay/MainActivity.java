@@ -5,10 +5,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 /**
@@ -34,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         fm = getSupportFragmentManager();
 
         statusTextCurrentUser = findViewById(R.id.statusTextCurrentUser);
-        currentUser = State.getCurrentUser();
+        currentUser = UserRequestState.getCurrentUser();
 
         if (currentUser != null) {
             statusTextCurrentUser.setText(currentUser.getUserId());

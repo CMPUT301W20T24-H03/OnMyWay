@@ -8,10 +8,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -95,7 +91,7 @@ public class LoginActivity extends AppCompatActivity{
                         Log.d(TAG, "Info for current user pulled successfully");
 
                         // Check state and either go to rider map or driver map
-                        if (State.getCurrentUser().isDriver()) {
+                        if (UserRequestState.getCurrentUser().isDriver()) {
                             // Go to DriverMapActivity
                             Log.d(TAG, "Switching to DriverMapActivity");
                             Intent intent = new Intent(LoginActivity.this, DriverMapActivity.class);

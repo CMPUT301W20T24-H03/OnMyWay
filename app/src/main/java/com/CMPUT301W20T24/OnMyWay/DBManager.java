@@ -131,7 +131,7 @@ public class DBManager {
 
     /**
      * Logs out the current user from Firebase Auth. This shouldn't be called on its own.
-     * Call the logout method in State to clean up local data and log out online as well
+     * Call the logout method in UserRequestState to clean up local data and log out online as well
      * @author John
      */
     public void logoutUser() {
@@ -140,7 +140,7 @@ public class DBManager {
 
 
     /**
-     * Gets the info of the currently logged in user and saves it to State (phone, rating, etc).
+     * Gets the info of the currently logged in user and saves it to UserRequestState (phone, rating, etc).
      * This should be called after the user is logged in using Firebase Auth to get the user's
      * profile information
      * @author John
@@ -150,7 +150,7 @@ public class DBManager {
         setUserInfoPulledListener(new UserInfoPulledListener() {
             @Override
             public void onUserInfoPulled(User currentUser) {
-                State.setCurrentUser(currentUser);
+                UserRequestState.setCurrentUser(currentUser);
 
                 if (currentUserInfoPulledListener == null) {
                     Log.d(TAG, "No listeners are assigned for currentUserInfoPulledListener");
@@ -286,7 +286,7 @@ public class DBManager {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-//                                            State.logoutUser();
+//                                            UserRequestState.logoutUser();
                                             Log.d(TAG, "User account deleted successfully");
 
                                             if (userDeletedListener == null) {

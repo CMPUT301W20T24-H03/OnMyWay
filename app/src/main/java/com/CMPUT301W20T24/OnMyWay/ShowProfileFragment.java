@@ -39,7 +39,7 @@ public class ShowProfileFragment extends DialogFragment implements View.OnClickL
         if (user == null) {
             throw new NullPointerException("User can't be null");
         }
-        else if (user == State.getCurrentUser()) {
+        else if (user == UserRequestState.getCurrentUser()) {
             Log.d(TAG, "Creating profile dialog for current user");
             isCurrentUser = true;
         }
@@ -166,7 +166,7 @@ public class ShowProfileFragment extends DialogFragment implements View.OnClickL
         else if (viewId == R.id.buttonLogout) {
             Log.d(TAG, "Logout button pressed");
 
-            State.logoutUser();
+            UserRequestState.logoutUser();
             Intent intent = new Intent(parentActivity, SplashScreenActivity.class);
             intent.putExtra("toastMessage", "Logged out successfully");
             startActivity(intent);
