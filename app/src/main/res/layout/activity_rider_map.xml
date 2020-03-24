@@ -39,7 +39,7 @@
             android:background="#FFA07A"
             android:iconifiedByDefault="false"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="420dp"
+            android:layout_above="@+id/confirmRequestButton"
             android:queryHint="Search END Location">
         </SearchView>
 
