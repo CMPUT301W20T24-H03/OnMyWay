@@ -63,6 +63,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     // Called when the user presses a button
+    public void openRiderCostActivity(View view) {
+        Intent intent = new Intent(this, RiderCostActivity.class);
+        startActivity(intent);
+    }
+
+
+    // Called when the user presses a button
     public void openEditProfileActivity(View view) {
         Intent intent = new Intent(this, EditProfileActivity.class);
         startActivity(intent);
@@ -77,7 +84,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     // Called when the user presses a button
-    // TODO: Implement this. Need to rewrite User and DBManager first
     public void showRiderTestProfile(View view) {
         // Use the listener we made to listen for when the function finishes
         dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
@@ -94,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     // Called when the user presses a button
-    // TODO: Implement this. Need to rewrite User and DBManager first
     public void showDriverTestProfile(View view) {
         // Use the listener we made to listen for when the function finishes
         dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
@@ -111,8 +116,31 @@ public class MainActivity extends AppCompatActivity {
 
 
     // Called when the user presses a button
-    public void openRiderCostActivity(View view) {
-        Intent intent = new Intent(this, RiderCostActivity.class);
-        startActivity(intent);
+    // TODO: Implement this. Need to rewrite Request and DBManager first
+    public void showRiderTestRequest(View view) {
+//        // Use the listener we made to listen for when the function finishes
+//        dbManager.setRequestInfoPulledListener(new RequestInfoPulledListener() {
+//            @Override
+//            public void onRequestInfoPulled(Request fetchedRequest) {
+//                ShowRiderRequestFragment showRiderRequestFragment = ShowRiderRequestFragment.newInstance(fetchedRequest);
+//                showRiderRequestFragment.show(fm);
+//            }
+//        });
+//
+//        // Fetch the user info of a test rider user
+//        dbManager.fetchUserInfo("pcpzIGU4W7XomSe7o6AUXcFGDJy1");
+
+        Request testRequest = new Request(
+                "pcpzIGU4W7XomSe7o6AUXcFGDJy1",
+                "dYG5SQAAGVbmglT5k8dUhufAnpq1",
+                "University of Alberta",
+                1,
+                2,
+                "WEM",
+                3,
+                4
+        );
+        ShowRiderRequestFragment showRiderRequestFragment = ShowRiderRequestFragment.newInstance(testRequest);
+        showRiderRequestFragment.show(fm);
     }
 }
