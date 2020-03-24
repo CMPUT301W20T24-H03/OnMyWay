@@ -98,7 +98,7 @@ public class Utilities {
 
 
     /**
-     * Check if a Long object is null, returning it's primitive value as an int if not.
+     * Check if a Long object is null or negative, returning it's primitive value as an int if not.
      * Otherwise a NullPointerException is thrown
      * @param longToCheck The Long object we want to check
      * @return The primitive int extracted from the input object
@@ -106,7 +106,7 @@ public class Utilities {
      */
     // Check if a Long object is null and return the value as an int if not
     static public int checkLongNotNull(Long longToCheck) {
-        if (longToCheck == null) {
+        if (longToCheck == null || longToCheck < 0) {
             throw new NullPointerException("The string fetched from FireStore is null. Make sure data is added for this user");
         }
         else {
