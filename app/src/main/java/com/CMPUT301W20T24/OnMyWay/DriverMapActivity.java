@@ -72,7 +72,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     ActionBarDrawerToggle toggle;
     private static final int REQUEST_CODE = 101;
     View mapView;
-    private DBManager dbManager;
+    private OnlineDBManager onlineDbManager;
     private FragmentManager fm;
 
 
@@ -109,7 +109,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_driver_map);
-        dbManager = new DBManager();
+        onlineDbManager = new OnlineDBManager();
         fm = getSupportFragmentManager();
 
         /// Hamburger menu creation reference: https://www.youtube.com/watch?v=ofu1IqiBNCY
@@ -429,7 +429,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     public void showDriverTestProfile(View view) {
         // Use the listener we made to listen for when the function finishes
-        dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
+        onlineDbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
             @Override
             public void onUserInfoPulled(User fetchedUser) {
                 ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(fetchedUser);
@@ -438,6 +438,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         });
 
         // Fetch the user info of a test driver user
-        dbManager.fetchUserInfo("dYG5SQAAGVbmglT5k8dUhufAnpq1");
+        onlineDbManager.fetchUserInfo("dYG5SQAAGVbmglT5k8dUhufAnpq1");
     }
 }

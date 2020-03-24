@@ -19,7 +19,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     // The tag can't be longer than 23 characters so it is cut off
     private static final String TAG = "OMW/SplashScreenActi...";   // Use this tag for calling Log.d()
     private Date startTime;
-    private DBManager dbManager;
+    private OnlineDBManager onlineDbManager;
 
 
     // Disable back button for this activity
@@ -66,7 +66,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         }
 
         startTime = new Date(); // Record the start time of the activity
-        dbManager = new DBManager();
+        onlineDbManager = new OnlineDBManager();
     }
 
 
@@ -78,7 +78,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         // If user is logged in, fetch additional user info and go to a map activity
         if (State.isLoggedIn()) {
-            dbManager.setCurrentUserInfoPulledListener(new CurrentUserInfoPulledListener() {
+            onlineDbManager.setCurrentUserInfoPulledListener(new CurrentUserInfoPulledListener() {
                 // This is called after fetchCurrentUserInfo() finishes
                 public void onCurrentUserInfoPulled() {
                     Log.d(TAG, "Info for current user pulled successfully");
@@ -99,7 +99,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 }
             });
 
-            dbManager.fetchCurrentUserInfo();   // Fetch additional info for the current user
+            onlineDbManager.fetchCurrentUserInfo();   // Fetch additional info for the current user
         }
         else {
             Log.d(TAG, "Go to login page"); // Go to login page if user is not logged in

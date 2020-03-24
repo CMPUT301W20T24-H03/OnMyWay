@@ -1,6 +1,5 @@
 package com.CMPUT301W20T24.OnMyWay;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -169,7 +168,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         progressContainer.setVisibility(View.VISIBLE);
 
-        DBManager dbManager = new DBManager();
+        OnlineDBManager onlineDbManager = new OnlineDBManager();
 
         /// StackOverflow post by David Hedlund
         /// Author: https://stackoverflow.com/users/133802
@@ -182,7 +181,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         // Continue and delete account
                         Log.d(TAG, "Okay button pressed");
 
-                        dbManager.setUserDeletedListener(new UserDeletedListener() {
+                        onlineDbManager.setUserDeletedListener(new UserDeletedListener() {
                             public void onUserDeleteSuccess() {
                                 Intent intent = new Intent(EditProfileActivity.this, SplashScreenActivity.class);
                                 intent.putExtra("toastMessage", "Account deleted successfully");
@@ -196,7 +195,7 @@ public class EditProfileActivity extends AppCompatActivity {
                             }
                         });
 
-                        dbManager.deleteUser();
+                        onlineDbManager.deleteUser();
                     }
                 })
                 .setNegativeButton(R.string.text_cancel, null)

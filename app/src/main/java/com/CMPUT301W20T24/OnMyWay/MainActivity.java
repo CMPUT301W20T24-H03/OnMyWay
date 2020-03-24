@@ -5,10 +5,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 /**
@@ -19,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "OMW/MainActivity";   // Use this tag for Log.d()
     private TextView statusTextCurrentUser;
     private User currentUser;
-    private DBManager dbManager;
+    private OnlineDBManager onlineDbManager;
     private FragmentManager fm;
     private ShowProfileFragment showProfileFragment;
 
@@ -30,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         this.setTitle("Test Activity");
 
-        dbManager = new DBManager();
+        onlineDbManager = new OnlineDBManager();
         fm = getSupportFragmentManager();
 
         statusTextCurrentUser = findViewById(R.id.statusTextCurrentUser);
@@ -79,10 +77,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     // Called when the user presses a button
-    // TODO: Implement this. Need to rewrite User and DBManager first
+    // TODO: Implement this. Need to rewrite User and OnlineDBManager first
     public void showRiderTestProfile(View view) {
         // Use the listener we made to listen for when the function finishes
-        dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
+        onlineDbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
             @Override
             public void onUserInfoPulled(User fetchedUser) {
                 ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(fetchedUser);
@@ -91,15 +89,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Fetch the user info of a test rider user
-        dbManager.fetchUserInfo("pcpzIGU4W7XomSe7o6AUXcFGDJy1");
+        onlineDbManager.fetchUserInfo("pcpzIGU4W7XomSe7o6AUXcFGDJy1");
     }
 
 
     // Called when the user presses a button
-    // TODO: Implement this. Need to rewrite User and DBManager first
+    // TODO: Implement this. Need to rewrite User and OnlineDBManager first
     public void showDriverTestProfile(View view) {
         // Use the listener we made to listen for when the function finishes
-        dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
+        onlineDbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
             @Override
             public void onUserInfoPulled(User fetchedUser) {
                 ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(fetchedUser);
@@ -108,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Fetch the user info of a test driver user
-        dbManager.fetchUserInfo("dYG5SQAAGVbmglT5k8dUhufAnpq1");
+        onlineDbManager.fetchUserInfo("dYG5SQAAGVbmglT5k8dUhufAnpq1");
     }
 
 

@@ -8,10 +8,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -25,7 +21,7 @@ public class LoginActivity extends AppCompatActivity{
     private EditText emailField;
     private EditText passwordField;
     private ConstraintLayout progressContainer;
-    private DBManager dbManager;
+    private OnlineDBManager onlineDbManager;
     private boolean areAllInputsValid;
 
 
@@ -34,7 +30,7 @@ public class LoginActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        dbManager = new DBManager();
+        onlineDbManager = new OnlineDBManager();
 
         // Get EditTexts
         emailField = findViewById(R.id.emailField);
@@ -82,15 +78,15 @@ public class LoginActivity extends AppCompatActivity{
     }
 
 
-    // Handle logging in user using DBManager
+    // Handle logging in user using OnlineDBManager
     private void loginUser(String emailAddress, String password) {
-        dbManager.setLoginListener(new LoginListener() {
+        onlineDbManager.setLoginListener(new LoginListener() {
             public void onLoginSuccess() {
                 Log.d(TAG, "Authentication successful");
 
                 // Honestly not 100% sure how this works since onLoginSuccess() is never called
                 // Maybe this can be moved outside to the method root?
-                dbManager.setCurrentUserInfoPulledListener(new CurrentUserInfoPulledListener() {
+                onlineDbManager.setCurrentUserInfoPulledListener(new CurrentUserInfoPulledListener() {
                     public void onCurrentUserInfoPulled() {
                         Log.d(TAG, "Info for current user pulled successfully");
 
@@ -124,7 +120,7 @@ public class LoginActivity extends AppCompatActivity{
         });
 
         progressContainer.setVisibility(View.VISIBLE);
-        dbManager.loginUser(emailAddress, password, this);
+        onlineDbManager.loginUser(emailAddress, password, this);
     }
 
 

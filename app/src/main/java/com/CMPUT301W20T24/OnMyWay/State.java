@@ -12,8 +12,8 @@ package com.CMPUT301W20T24.OnMyWay;
 public class State {
     private static final String TAG = "OMW/State";   // Use this tag for call Log.d()
     static private User currentUser;
-    // Make a DBManager so we can interact with the database
-    static private DBManager dbManager = new DBManager();
+    // Make a OnlineDBManager so we can interact with the database
+    static private OnlineDBManager onlineDbManager = new OnlineDBManager();
 
 
     /**
@@ -43,13 +43,13 @@ public class State {
 
 
     /**
-     * Calls DBManager to push user info to FireStore. To modify currentUser,
+     * Calls OnlineDBManager to push user info to FireStore. To modify currentUser,
      * use getCurrentUser() first to get and modify the current User, then call this method to push
      * the changes to the database
      * @author John
      */
     static public void updateCurrentUser() {
-        dbManager.pushUserInfo(getCurrentUser());
+        onlineDbManager.pushUserInfo(getCurrentUser());
     }
 
 
@@ -59,7 +59,7 @@ public class State {
      * @author John
      */
     static public boolean isLoggedIn() {
-        return dbManager.getFirebaseUser() != null;
+        return onlineDbManager.getFirebaseUser() != null;
     }
 
 
@@ -74,11 +74,11 @@ public class State {
 
     /**
      * Logs out the current user. First removes the current user from State and then calls
-     * DBManager to log out the user from Firebase Auth
+     * OnlineDBManager to log out the user from Firebase Auth
      * @author John
      */
     static public void logoutUser() {
         removeCurrentUser();
-        dbManager.logoutUser();
+        onlineDbManager.logoutUser();
     }
 }

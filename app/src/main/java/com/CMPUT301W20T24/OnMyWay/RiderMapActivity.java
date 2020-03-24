@@ -7,7 +7,6 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.Telephony;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -52,7 +51,7 @@ import java.util.List;
  */
 public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "OMW/RiderMapActivity";
-    private DBManager dbManager;
+    private OnlineDBManager onlineDbManager;
 
     private GoogleMap mMap;
     private SupportMapFragment mapFragment;
@@ -106,7 +105,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         navigationView = findViewById(R.id.navigationView);
         navigationView.setNavigationItemSelectedListener(this);
 
-        dbManager = new DBManager();
+        onlineDbManager = new OnlineDBManager();
         fm = getSupportFragmentManager();
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.riderMap);
@@ -410,7 +409,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
  	public void showRiderTestProfile(View view) {
         // Use the listener we made to listen for when the function finishes
-        dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
+        onlineDbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
             @Override
             public void onUserInfoPulled(User fetchedUser) {
                 ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(fetchedUser);
@@ -419,12 +418,12 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         });
 
         // Fetch the user info of a test rider user
-        dbManager.fetchUserInfo("pcpzIGU4W7XomSe7o6AUXcFGDJy1");
+        onlineDbManager.fetchUserInfo("pcpzIGU4W7XomSe7o6AUXcFGDJy1");
     }
 
     public void showDriverTestProfile(View view) {
         // Use the listener we made to listen for when the function finishes
-        dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
+        onlineDbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
             @Override
             public void onUserInfoPulled(User fetchedUser) {
                 ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(fetchedUser);
@@ -433,7 +432,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         });
 
         // Fetch the user info of a test driver user
-        dbManager.fetchUserInfo("dYG5SQAAGVbmglT5k8dUhufAnpq1");
+        onlineDbManager.fetchUserInfo("dYG5SQAAGVbmglT5k8dUhufAnpq1");
     }
 }
 

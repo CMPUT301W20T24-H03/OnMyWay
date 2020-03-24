@@ -3,24 +3,6 @@ package com.CMPUT301W20T24.OnMyWay;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.squareup.picasso.Picasso;
-
-import java.util.HashMap;
-import java.util.Map;
-
 
 
 /**
@@ -30,8 +12,8 @@ import java.util.Map;
 
 /// Keval Patel via Medium, How to make the perfect Singleton?
 /// https://medium.com/@kevalpatel2106/how-to-make-the-perfect-singleton-de6b951dfdb0
-public class OfflineManager {
-    private static volatile OfflineManager instance;
+public class OfflineDBManager {
+    private static volatile OfflineDBManager instance;
     private Activity activity;    // Application activity so we can use SharedPrefs
     private String appId;
 
@@ -41,7 +23,7 @@ public class OfflineManager {
 
 
     // Private constructor
-    private OfflineManager(Activity activity) {
+    private OfflineDBManager(Activity activity) {
         if (instance != null) {
             throw new RuntimeException("Use getInstance() method to get the single instance of this class.");
         }
@@ -53,13 +35,13 @@ public class OfflineManager {
     }
 
 
-    public static OfflineManager getInstance(Activity activity) {
+    public static OfflineDBManager getInstance(Activity activity) {
         if (instance == null) {
             // If there is no instance available, create new one
-            synchronized (OfflineManager.class) {
+            synchronized (OfflineDBManager.class) {
                 // Check for the second time. If there is no instance available, create new one
                 if (instance == null) {
-                    instance = new OfflineManager(activity);
+                    instance = new OfflineDBManager(activity);
                 }
             }
         }

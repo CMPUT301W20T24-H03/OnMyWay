@@ -11,7 +11,6 @@ import android.util.Patterns;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,8 +40,8 @@ public class SignUpActivity extends AppCompatActivity {
     private boolean driverStatus = false;
     private FirebaseAuth mAuth;
 
-    // Instantiating DBManager()
-    DBManager db = new DBManager();
+    // Instantiating OnlineDBManager()
+    OnlineDBManager db = new OnlineDBManager();
 
 
     // LONGPRESS BACK BUTTON TO GO BACK TO THE MAIN ACTIVITY FOR TESTING. REMOVE THIS LATER
