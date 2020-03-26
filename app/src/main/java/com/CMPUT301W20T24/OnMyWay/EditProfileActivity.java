@@ -1,6 +1,5 @@
 package com.CMPUT301W20T24.OnMyWay;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -67,7 +66,7 @@ public class EditProfileActivity extends AppCompatActivity {
         ImageView profilePhotoImage = findViewById(R.id.imageCurrentProfilePhoto);
         progressContainer = findViewById(R.id.progressContainer);
 
-        User currentUser = State.getCurrentUser();
+        User currentUser = UserRequestState.getCurrentUser();
 
 
         userIdLabel.setText(currentUser.getUserId());
@@ -146,14 +145,14 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         if (areAllInputsValid) {
-            User currentUser = State.getCurrentUser();  // Grab the current user from State
+            User currentUser = UserRequestState.getCurrentUser();  // Grab the current user from UserRequestState
 
             // If all the inputs are valid, update the current user with new values
             currentUser.setFirstName(firstNameStatus.getResult());
             currentUser.setLastName(lastNameStatus.getResult());
             currentUser.setEmail(emailAddressStatus.getResult());
             currentUser.setPhone(phoneStatus.getResult());
-            State.updateCurrentUser();  // Tell State we want to push user changes to FireStore
+            UserRequestState.updateCurrentUser();  // Tell UserRequestState we want to push user changes to FireStore
 
             Log.d(TAG, "All inputs are valid. Returning to parent activity");
             this.finish();  // Return to parent activity

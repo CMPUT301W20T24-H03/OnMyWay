@@ -50,6 +50,7 @@
         <activity
             android:name=".RiderMapActivity"
             android:label="@string/title_activity_rider_map"
+            android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait" />
         <activity
             android:name=".LoginActivity"

@@ -224,14 +224,24 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                     if (startLocationList.size() != 0) {
                         Address startAddress = startLocationList.get(0);
                         LatLng latLng = new LatLng(startAddress.getLatitude(), startAddress.getLongitude());
-                        startLocationMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(startLocation).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                        startLocationMarker = mMap.addMarker(
+                                new MarkerOptions()
+                                        .position(latLng)
+                                        .title(startLocation)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_location_marker))
+                        );
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
                     }
                     else if (startLocationMarker != null && startLocationList.size() != 0) {
                         startLocationMarker.remove();
                         Address startAddress = startLocationList.get(0);
                         LatLng latLng = new LatLng(startAddress.getLatitude(), startAddress.getLongitude());
-                        startLocationMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(startLocation));
+                        startLocationMarker = mMap.addMarker(
+                                new MarkerOptions()
+                                        .position(latLng)
+                                        .title(startLocation)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_location_marker))
+                        );
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
                     }
                     else {
@@ -264,14 +274,24 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                     if (endLocationMarker == null && endLocationList.size() != 0) {
                         Address endAddress = endLocationList.get(0);
                         LatLng latLng = new LatLng(endAddress.getLatitude(), endAddress.getLongitude());
-                        endLocationMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(endLocation));
+                        endLocationMarker = mMap.addMarker(
+                                new MarkerOptions()
+                                        .position(latLng)
+                                        .title(endLocation)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_location_marker))
+                        );
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
                     }
                     else if (endLocationMarker != null && endLocationList.size() != 0){
                         endLocationMarker.remove();
                         Address endAddress = endLocationList.get(0);
                         LatLng latLng = new LatLng(endAddress.getLatitude(), endAddress.getLongitude());
-                        endLocationMarker = mMap.addMarker(new MarkerOptions().position(latLng).title(endLocation));
+                        endLocationMarker = mMap.addMarker(
+                                new MarkerOptions()
+                                        .position(latLng)
+                                        .title(endLocation)
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_location_marker))
+                        );
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
                     }
                     else {

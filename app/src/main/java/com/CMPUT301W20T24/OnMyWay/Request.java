@@ -11,9 +11,11 @@ public class Request {
     private String requestId;
     private String riderUserName;
 
+    private String startLocationName;
     private double startLongitude;
     private double startLatitude;
 
+    private String endLocationName;
     private double endLongitude;
     private double endLatitude;
 
@@ -31,13 +33,52 @@ public class Request {
      */
     public Request(double startLongitude, double startLatitude, double endLongitude, double endLatitude) {
         this.requestId = generateUUID();
-        this.riderUserName = State.getCurrentUser().getUserId().toString();
+        this.riderUserName = UserRequestState.getCurrentUser().getUserId();
         this.startLongitude = startLongitude;
         this.startLatitude = startLatitude;
         this.endLongitude = endLongitude;
         this.endLatitude = endLatitude;
         this.paymentAmount = "0";
         this.driverUserName = "NONE";
+        this.status = "INCOMPLETE";
+    }
+
+    // TODO: THIS IS A CONSTRUCTOR FOR TESTING. SHOULD ADD LOCATION NAMES TO THE ORIGINAL CONSTRUCTOR SO WE CAN SHOW THEM TO THE USER
+    /**
+     * Constructor method required to instantiate an instance of the Request class.
+     * @param startLocationName
+     * @param startLongitude
+     * @param startLatitude
+     * @param endLocationName
+     * @param endLongitude
+     * @param endLatitude
+     * @author Bard Samimi, Manpreet Grewal, John
+     */
+    public Request(
+            String riderId,
+            String driverId,
+            String startLocationName,
+            double startLongitude,
+            double startLatitude,
+            String endLocationName,
+            double endLongitude,
+            double endLatitude
+    ) {
+        this.requestId = generateUUID();
+        this.riderUserName = riderId;
+        this.driverUserName = driverId;
+
+        setStartLocationName(startLocationName);
+        this.startLocationName = startLocationName;
+        this.startLongitude = startLongitude;
+        this.startLatitude = startLatitude;
+
+        setEndLocationName(endLocationName);
+        this.endLocationName = endLocationName;
+        this.endLongitude = endLongitude;
+        this.endLatitude = endLatitude;
+
+        this.paymentAmount = "0";
         this.status = "INCOMPLETE";
     }
 
@@ -52,6 +93,7 @@ public class Request {
         UUID requestUUID = UUID.randomUUID();
         return this.requestId = requestUUID.toString();
     }
+
     // The remainder of the methods are all 'getter' and 'setter' method(s). Standard, and require no documentation.
     // Added by Bard Samimi
     public String getRequestId() { return requestId; }
@@ -60,6 +102,12 @@ public class Request {
 
     public void setRiderUserName(String riderUserName) { this.riderUserName = riderUserName; }
 
+    public String getStartLocationName() { return startLocationName; }
+
+    private void setStartLocationName(String startLocationName) {
+        this.startLocationName = startLocationName;
+    }
+
     public double getStartLongitude() { return startLongitude; }
 
     public void setStartLongitude(double startLongitude) { this.startLongitude = startLongitude; }
@@ -67,6 +115,12 @@ public class Request {
     public double getStartLatitude() { return startLatitude; }
 
     public void setStartLatitude(double startLatitude) { this.startLatitude = startLatitude; }
+
+    public String getEndLocationName() { return endLocationName; }
+
+    private void setEndLocationName(String endLocationName) {
+        this.endLocationName = endLocationName;
+    }
 
     public double getEndLongitude() { return endLongitude; }
 
