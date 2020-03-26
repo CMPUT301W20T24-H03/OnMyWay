@@ -45,4 +45,5 @@
     <string name="label_start_location">"Start Location: "</string>
     <string name="label_end_location">"End Location: "</string>
     <string name="placeholder_none">None</string>
+    <string name="text_request_ride">Request Ride</string>
 </resources>

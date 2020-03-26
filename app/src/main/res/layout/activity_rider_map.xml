@@ -9,59 +9,82 @@
     android:layout_height="match_parent"
     tools:context=".RiderMapActivity">
 
-    <RelativeLayout
+    <com.google.android.material.navigation.NavigationView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:id="@+id/navigationView"
+        app:menu="@menu/menu_rider"
+        app:headerLayout="@layout/hamburger_header"
+        android:background="@color/colorAccent"
+        android:layout_gravity="start"
+        app:itemTextColor="@android:color/white" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#C12929">
 
         <fragment
             android:id="@+id/riderMap"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="0dp"
-            android:layout_marginBottom="0dp"></fragment>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <SearchView
-        android:id="@+id/startLocationSearchBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#90EE90"
-        android:iconifiedByDefault="false"
-        android:queryHint="Search START Location"></SearchView>
+        <!--        <include
+            android:id="@+id/include"
+            layout="@layout/fragment_profile_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />-->
 
-        <SearchView
-            android:id="@+id/endLocationSearchBar"
+        <fragment
+            android:id="@+id/profileButtonFragment"
+            android:name="com.CMPUT301W20T24.OnMyWay.ProfileButtonFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@+id/riderMap"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#FFA07A"
-            android:iconifiedByDefault="false"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="420dp"
-            android:queryHint="Search END Location">
-        </SearchView>
+            android:background="@android:color/white"
+            android:elevation="24dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@+id/riderMap"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-    <Button
-        android:id="@+id/confirmRequestButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/riderMap"
-        android:text="REQUEST RIDE"></Button>
+            <SearchView
+                android:id="@+id/startLocationSearchBar"
+                style="@android:style/Widget.Material.Light.SearchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:iconifiedByDefault="false"
+                android:queryHint="Search start location"
+                android:searchIcon="@drawable/location_start_label" />
 
-    </RelativeLayout>
+            <SearchView
+                android:id="@+id/endLocationSearchBar"
+                style="@android:style/Widget.Material.Light.SearchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:iconifiedByDefault="false"
+                android:queryHint="Search end location"
+                android:searchIcon="@drawable/location_end_label" />
 
-<com.google.android.material.navigation.NavigationView
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:id="@+id/navigationView"
-app:menu="@menu/menu_rider"
-app:headerLayout="@layout/hamburger_header"
-android:background="@color/colorAccent"
-android:layout_gravity="start"
-app:itemTextColor="#fff"/>
+            <Button
+                android:id="@+id/confirmRequestButton"
+                style="@android:style/Widget.DeviceDefault.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/text_request_ride" />
+        </LinearLayout>
 
-
-
-    </androidx.drawerlayout.widget.DrawerLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.drawerlayout.widget.DrawerLayout>
