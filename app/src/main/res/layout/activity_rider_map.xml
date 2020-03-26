@@ -86,5 +86,55 @@
                 android:text="@string/text_request_ride" />
         </LinearLayout>
 
+				<LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/price_dialogue"
+            android:background="#F5F5F5"
+            android:layout_alignParentBottom="true"
+            android:visibility="invisible">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:textSize="20sp"
+                android:text="@string/price_estimate"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/priceEstimate"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_margin="4dp"
+                android:text="@string/Price_in_"
+                android:gravity="center"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/editPrice"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_margin="4dp"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:inputType="number" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <Button
+                    android:id="@+id/confirm_price_button"
+                    android:layout_width="130dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/confirm_price" />
+            </LinearLayout>
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.drawerlayout.widget.DrawerLayout>

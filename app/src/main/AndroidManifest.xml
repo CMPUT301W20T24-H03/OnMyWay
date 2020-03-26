@@ -69,11 +69,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RiderCostActivity"
-            android:label="RiderCostView"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait"/>
-        <activity
             android:name=".CurrentRequestActivity"
             android:label="Current Request Driver"
             android:theme="@style/AppTheme.NoActionBar"
