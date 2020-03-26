@@ -33,7 +33,7 @@
     <string name="text_cancel">Cancel</string>
     <string name="text_edit">Edit</string>
     <string name="edit_price">Edit Price</string>
-    <string name="price_estimate">PriceEstimate</string>
+    <string name="price_estimate">Price Estimate</string>
     <string name="rider_map_activity">Rider Map Activity</string>
     <string name="rider_cost_activity">Rider Cost Activity</string>
     <string name="delete_account_message">Are you sure you want to delete your account permanently?\n\nThis is serious business!</string>
