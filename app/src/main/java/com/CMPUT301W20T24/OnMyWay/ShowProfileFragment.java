@@ -37,10 +37,8 @@ public class ShowProfileFragment extends DialogFragment implements View.OnClickL
 
     public static ShowProfileFragment newInstance(User user) {
         if (user == null) {
-            throw new NullPointerException("User can't be null");
-        }
-        else if (user == UserRequestState.getCurrentUser()) {
             Log.d(TAG, "Creating profile dialog for current user");
+            user = UserRequestState.getCurrentUser();
             isCurrentUser = true;
         }
         else {
