@@ -144,9 +144,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                     if (startLocationMarker == null || endLocationMarker == null) {
                         Log.d(TAG, "Request invalid. START or END location not specified/stored.");
                         Toast.makeText(getApplicationContext(), "Request Invalid. You must specify a start and end location!", Toast.LENGTH_SHORT).show();
-                    }
-
-                    else {
+                    } else {
                         Request riderRequest = new Request(
                                 startLocationMarker.getPosition().longitude,
                                 startLocationMarker.getPosition().latitude,
@@ -239,8 +237,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_location_marker))
                         );
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
-                    }
-                    else if (startLocationMarker != null && startLocationList.size() != 0) {
+                    } else if (startLocationMarker != null && startLocationList.size() != 0) {
                         startLocationMarker.remove();
                         Address startAddress = startLocationList.get(0);
                         LatLng latLng = new LatLng(startAddress.getLatitude(), startAddress.getLongitude());
@@ -251,8 +248,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_location_marker))
                         );
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
-                    }
-                    else {
+                    } else {
                         Toast.makeText(getApplicationContext(), "Invalid start location.", Toast.LENGTH_SHORT).show();
                     }
                 } catch (IOException e) {
@@ -264,6 +260,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                 }
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String newText) {
                 return false;
@@ -289,8 +286,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_location_marker))
                         );
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
-                    }
-                    else if (endLocationMarker != null && endLocationList.size() != 0){
+                    } else if (endLocationMarker != null && endLocationList.size() != 0) {
                         endLocationMarker.remove();
                         Address endAddress = endLocationList.get(0);
                         LatLng latLng = new LatLng(endAddress.getLatitude(), endAddress.getLongitude());
@@ -301,8 +297,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_location_marker))
                         );
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
-                    }
-                    else {
+                    } else {
                         Toast.makeText(getApplicationContext(), "Invalid end location.", Toast.LENGTH_SHORT).show();
                     }
                 } catch (IOException e) {
@@ -314,6 +309,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                 }
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String newText) {
                 return false;
@@ -330,7 +326,8 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     /// YouTube video by CodingWithMitch: Calculating Directions with Google Directions API
     /// https://www.youtube.com/watch?v=f47L1SL5S0o&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=19
     private GeoApiContext my_geoApi;
-    private void calculateDirections(){
+
+    private void calculateDirections() {
         com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(endLocationMarker.getPosition().latitude, endLocationMarker.getPosition().longitude);
 
         my_geoApi = new GeoApiContext.Builder().apiKey(getString(R.string.google_api_key)).build();
@@ -515,7 +512,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
     // this method calculates a price estimate for the rider depending on the distance
     // between the start and end locations
-    public String calculatePrice(Double startLong, Double startLat, Double endLong, Double endLat){
+    public String calculatePrice(Double startLong, Double startLat, Double endLong, Double endLat) {
         // define the start and end locations
         Location startLocation = new Location("startLocation");
         startLocation.setLatitude(startLat);
@@ -527,10 +524,11 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         // calculate the price estimate
         double distanceInKms;
-        distanceInKms = startLocation.distanceTo(endLocation)/1000 ;
-        if (distanceInKms <= 10){
+        distanceInKms = startLocation.distanceTo(endLocation) / 1000;
+        if (distanceInKms <= 10) {
             distanceInKms = 7.99;
         }
         String price = String.format("%.2f", distanceInKms);
         return price;
     }
+}
