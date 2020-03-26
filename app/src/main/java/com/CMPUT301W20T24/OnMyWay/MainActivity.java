@@ -111,10 +111,4 @@ public class MainActivity extends AppCompatActivity {
         dbManager.fetchUserInfo("dYG5SQAAGVbmglT5k8dUhufAnpq1");
     }
 
-
-    // Called when the user presses a button
-    public void openRiderCostActivity(View view) {
-        Intent intent = new Intent(this, RiderCostActivity.class);
-        startActivity(intent);
-    }
 }

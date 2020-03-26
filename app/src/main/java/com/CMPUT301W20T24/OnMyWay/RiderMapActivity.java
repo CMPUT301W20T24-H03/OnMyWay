@@ -4,16 +4,22 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Telephony;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,6 +38,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -45,6 +52,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import io.grpc.ClientStreamTracer;
 
 /**
  * A map for the user to create a request and specify the start and end locations.
@@ -72,6 +81,8 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private Marker startLocationMarker;
     private Marker endLocationMarker;
     private FirebaseFirestore database;
+
+    private String newCost;
 
 
     // Disable back button for this activity
@@ -138,33 +149,57 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                         Request riderRequest = new Request(startLocationMarker.getPosition().longitude, startLocationMarker.getPosition().latitude, endLocationMarker.getPosition().longitude,
                                 endLocationMarker.getPosition().latitude);
 
-                        HashMap<String, String> data = new HashMap<>();
-                        data.put("riderUserName", String.valueOf(riderRequest.getRiderUserName()));
-                        data.put("endLatitude", String.valueOf(riderRequest.getEndLatitude()));
-                        data.put("endLongitude", String.valueOf(riderRequest.getEndLongitude()));
-                        data.put("requestID", riderRequest.getRequestId());
-                        data.put("startLatitude", String.valueOf(riderRequest.getStartLatitude()));
-                        data.put("startLongitude", String.valueOf(riderRequest.getStartLongitude()));
-                        data.put("driverUserName", String.valueOf(riderRequest.getDriverUserName()));
+                        // calculate a price estimate for the ride depending on the start and end locations
+                        String priceEstimate = calculatePrice(startLocationMarker.getPosition().longitude, startLocationMarker.getPosition().latitude, endLocationMarker.getPosition().longitude,
+                                endLocationMarker.getPosition().latitude);
+                        // once "request ride" button is clicked, create a dialogue which shows the rider a price estimate and
+                        // give the rider the option to edit the price
+                        confirmRequestButton.setVisibility(View.INVISIBLE);
+                        LinearLayout priceDialogue = findViewById(R.id.price_dialogue);
+                        priceDialogue.setVisibility(View.VISIBLE);
+                        EditText editPrice = (EditText) findViewById(R.id.editPrice);
+                        editPrice.setText(priceEstimate);
+                        // when "confirm" button is clicked, store the new price in firestore
+                        final Button confirmButton = findViewById(R.id.confirm_price_button);
+                        confirmButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                newCost = editPrice.getText().toString();
+                                priceDialogue.setVisibility(View.INVISIBLE);
+                                confirmRequestButton.setVisibility(View.VISIBLE);
 
-                        //Adds a new record the request to the 'riderRequests' collection.
-                        database.collection("riderRequests")
-                                .add(data)
-                                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                    @Override
-                                    public void onSuccess(DocumentReference documentReference) {
-                                        Log.d(TAG, "Data addition successful" + documentReference.getId());
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.d(TAG, "Data addition failed." + e.toString());
-                                    }
-                                });
+                                // store all values in the database
+                                HashMap<String, String> data = new HashMap<>();
+                                data.put("riderUserName", String.valueOf(riderRequest.getRiderUserName()));
+                                data.put("endLatitude", String.valueOf(riderRequest.getEndLatitude()));
+                                data.put("endLongitude", String.valueOf(riderRequest.getEndLongitude()));
+                                data.put("requestID", riderRequest.getRequestId());
+                                data.put("startLatitude", String.valueOf(riderRequest.getStartLatitude()));
+                                data.put("startLongitude", String.valueOf(riderRequest.getStartLongitude()));
+                                data.put("driverUserName", String.valueOf(riderRequest.getDriverUserName()));
+                                data.put("paymentAmount", newCost);
 
-                        Toast.makeText(getApplicationContext(), "Woo! Your ride is confirmed, check Active Request on the drawer pull menu by swiping right from the left side of the screen!", Toast.LENGTH_SHORT).show();
-                        confirmRequestButton.setText("CANCEL RIDE");
+                                //Adds a new record the request to the 'riderRequests' collection.
+                                database.collection("riderRequests")
+                                        .add(data)
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                            @Override
+                                            public void onSuccess(DocumentReference documentReference) {
+                                                Log.d(TAG, "Data addition successful" + documentReference.getId());
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.d(TAG, "Data addition failed." + e.toString());
+                                            }
+                                        });
+
+                                Toast.makeText(getApplicationContext(), "Woo! Your ride is confirmed, check Active Request on the drawer pull menu by swiping right from the left side of the screen!", Toast.LENGTH_SHORT).show();
+                                confirmRequestButton.setText("CANCEL RIDE");
+                            }
+                        });
+
                     }
 
                 } else {
@@ -371,7 +406,6 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                     if (polyline_destination != null) {
                         polyline_destination.remove();
                     }
-
                     polyline_destination = mMap.addPolyline(new PolylineOptions().addAll(newDecodedPath).color(getApplicationContext().getResources().getColor(R.color.colorPolylineDest)).clickable(true).width(10));
 
                 }
@@ -435,5 +469,29 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         // Fetch the user info of a test driver user
         dbManager.fetchUserInfo("dYG5SQAAGVbmglT5k8dUhufAnpq1");
     }
+
+    // this method calculates a price estimate for the rider depending on the distance
+    // between the start and end locations
+    public String calculatePrice(Double startLong, Double startLat, Double endLong, Double endLat){
+        // define the start and end locations
+        Location startLocation = new Location("startLocation");
+        startLocation.setLatitude(startLat);
+        startLocation.setLongitude(startLong);
+
+        Location endLocation = new Location("endLocation");
+        endLocation.setLatitude(endLat);
+        endLocation.setLongitude(endLong);
+
+        // calculate the price estimate
+        double distanceInKms;
+        distanceInKms = startLocation.distanceTo(endLocation)/1000 ;
+        if (distanceInKms <= 10){
+            distanceInKms = 7.99;
+        }
+        String price = String.format("%.2f", distanceInKms);
+        return price;
+    }
+
+
 }
 

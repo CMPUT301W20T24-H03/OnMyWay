@@ -38,4 +38,6 @@
     <string name="rider_cost_activity">Rider Cost Activity</string>
 
     <string name="delete_account_message">Are you sure you want to delete your account permanently?\n\nThis is serious business!</string>
+    <string name="Price_in_">Price in $</string>
+
 </resources>
