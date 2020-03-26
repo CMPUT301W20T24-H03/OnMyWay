@@ -139,125 +139,95 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
              */
             @Override
             public void onClick(View view) {
+                String requestRideText = getString(R.string.text_request_ride);
+
                 // Check if the button shows "Request Ride" or "Cancel Ride"
-                if (confirmRequestButton.getText().equals(getString(R.string.text_request_ride))) {
+                if (confirmRequestButton.getText().equals(requestRideText)) {
                     if (startLocationMarker == null || endLocationMarker == null) {
-                        Log.d(TAG, "Request invalid. START or END location not specified/stored.");
-                        Toast.makeText(getApplicationContext(), "Request Invalid. You must specify a start and end location!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Request riderRequest = new Request(
-                                startLocationMarker.getPosition().longitude,
-                                startLocationMarker.getPosition().latitude,
-                                endLocationMarker.getPosition().longitude,
-                                endLocationMarker.getPosition().latitude
-                        );
-
-                        // calculate a price estimate for the ride depending on the start and end locations
-                        String priceEstimate = calculatePrice(startLocationMarker.getPosition().longitude,
-                                startLocationMarker.getPosition().latitude,
-                                endLocationMarker.getPosition().longitude,
-                                endLocationMarker.getPosition().latitude
-                        );
-                        // once "request ride" button is clicked, create a dialogue which shows the rider a price estimate and
-                        // give the rider the option to edit the price
-                        confirmRequestButton.setVisibility(View.INVISIBLE);
-                        LinearLayout priceDialogue = findViewById(R.id.price_dialogue);
-                        priceDialogue.setVisibility(View.VISIBLE);
-                        EditText editPrice = (EditText) findViewById(R.id.editPrice);
-                        editPrice.setText(priceEstimate);
-                        // when "confirm" button is clicked, store the new price in firestore
-                        final Button confirmButton = findViewById(R.id.confirm_price_button);
-                        confirmButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                newCost = editPrice.getText().toString();
-                                priceDialogue.setVisibility(View.INVISIBLE);
-                                confirmRequestButton.setVisibility(View.VISIBLE);
-
-                                // store all values in the database
-                                HashMap<String, String> data = new HashMap<>();
-                                data.put("riderUserName", String.valueOf(riderRequest.getRiderUserName()));
-                                data.put("endLatitude", String.valueOf(riderRequest.getEndLatitude()));
-                                data.put("endLongitude", String.valueOf(riderRequest.getEndLongitude()));
-                                data.put("requestID", riderRequest.getRequestId());
-                                data.put("startLatitude", String.valueOf(riderRequest.getStartLatitude()));
-                                data.put("startLongitude", String.valueOf(riderRequest.getStartLongitude()));
-                                data.put("driverUserName", String.valueOf(riderRequest.getDriverUserName()));
-                                data.put("paymentAmount", newCost);
-
-                                //Adds a new record the request to the 'riderRequests' collection.
-                                database.collection("riderRequests")
-                                        .add(data)
-                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                            @Override
-                                            public void onSuccess(DocumentReference documentReference) {
-                                                Log.d(TAG, "Data addition successful" + documentReference.getId());
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.d(TAG, "Data addition failed." + e.toString());
-                                            }
-                                        });
-
-                                Toast.makeText(getApplicationContext(), "Woo! Your ride is confirmed, check Active Request on the drawer pull menu by swiping right from the left side of the screen!", Toast.LENGTH_SHORT).show();
-                                confirmRequestButton.setText("CANCEL RIDE");
-                            }
-                        });
-
+                        if (setStartPinPosition() && setEndPinPosition()) { }
+                        else {
+                            Log.d(TAG, "Request invalid. START or END location not specified/stored.");
+                            Toast.makeText(getApplicationContext(), "Request Invalid. You must specify a start and end location!", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                     }
+                    Request riderRequest = new Request(
+                            startLocationMarker.getPosition().longitude,
+                            startLocationMarker.getPosition().latitude,
+                            endLocationMarker.getPosition().longitude,
+                            endLocationMarker.getPosition().latitude
+                    );
 
+                    // calculate a price estimate for the ride depending on the start and end locations
+                    String priceEstimate = calculatePrice(startLocationMarker.getPosition().longitude,
+                            startLocationMarker.getPosition().latitude,
+                            endLocationMarker.getPosition().longitude,
+                            endLocationMarker.getPosition().latitude
+                    );
+                    // once "request ride" button is clicked, create a dialogue which shows the rider a price estimate and
+                    // give the rider the option to edit the price
+                    confirmRequestButton.setVisibility(View.INVISIBLE);
+                    LinearLayout priceDialogue = findViewById(R.id.price_dialogue);
+                    priceDialogue.setVisibility(View.VISIBLE);
+                    EditText editPrice = (EditText) findViewById(R.id.editPrice);
+                    editPrice.setText(priceEstimate);
+                    // when "confirm" button is clicked, store the new price in firestore
+                    final Button confirmButton = findViewById(R.id.confirm_price_button);
+                    confirmButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            newCost = editPrice.getText().toString();
+                            priceDialogue.setVisibility(View.INVISIBLE);
+                            confirmRequestButton.setVisibility(View.VISIBLE);
+
+                            // store all values in the database
+                            HashMap<String, String> data = new HashMap<>();
+                            data.put("riderUserName", String.valueOf(riderRequest.getRiderUserName()));
+                            data.put("endLatitude", String.valueOf(riderRequest.getEndLatitude()));
+                            data.put("endLongitude", String.valueOf(riderRequest.getEndLongitude()));
+                            data.put("requestID", riderRequest.getRequestId());
+                            data.put("startLatitude", String.valueOf(riderRequest.getStartLatitude()));
+                            data.put("startLongitude", String.valueOf(riderRequest.getStartLongitude()));
+                            data.put("driverUserName", String.valueOf(riderRequest.getDriverUserName()));
+                            data.put("paymentAmount", newCost);
+
+                            //Adds a new record the request to the 'riderRequests' collection.
+                            database.collection("riderRequests")
+                                    .add(data)
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+                                            Log.d(TAG, "Data addition successful" + documentReference.getId());
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.d(TAG, "Data addition failed." + e.toString());
+                                        }
+                                    });
+
+                            Toast.makeText(getApplicationContext(), "Woo! Your ride is confirmed, check Active Request on the drawer pull menu by swiping right from the left side of the screen!", Toast.LENGTH_SHORT).show();
+                            confirmRequestButton.setText("CANCEL RIDE");
+                        }
+                    });
                 } else {
                     mMap.clear();
                     startLocationMarker = null;
                     endLocationMarker = null;
                     Toast.makeText(getApplicationContext(), "Your request has been cancelled", Toast.LENGTH_SHORT).show();
-                    confirmRequestButton.setText("REQUEST RIDE");
+                    confirmRequestButton.setText(requestRideText);
                 }
             }
         });
 
+
         startSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                String startLocation = startSearchView.getQuery().toString();
-                List<Address> startLocationList;
+                setStartPinPosition();
+                endSearchView.requestFocus();
 
-                Geocoder geocoder = new Geocoder(RiderMapActivity.this);
-                try {
-                    startLocationList = geocoder.getFromLocationName(startLocation, 1);
-                    if (startLocationList.size() != 0) {
-                        Address startAddress = startLocationList.get(0);
-                        LatLng latLng = new LatLng(startAddress.getLatitude(), startAddress.getLongitude());
-                        startLocationMarker = mMap.addMarker(
-                                new MarkerOptions()
-                                        .position(latLng)
-                                        .title(startLocation)
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_location_marker))
-                        );
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
-                    } else if (startLocationMarker != null && startLocationList.size() != 0) {
-                        startLocationMarker.remove();
-                        Address startAddress = startLocationList.get(0);
-                        LatLng latLng = new LatLng(startAddress.getLatitude(), startAddress.getLongitude());
-                        startLocationMarker = mMap.addMarker(
-                                new MarkerOptions()
-                                        .position(latLng)
-                                        .title(startLocation)
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_location_marker))
-                        );
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Invalid start location.", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (endLocationMarker != null && startLocationMarker != null) {
-                    calculateDirections();
-                    calculateDirectionsDestination();
-                }
                 return false;
             }
 
@@ -270,43 +240,9 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         endSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                String endLocation = endSearchView.getQuery().toString();
-                List<Address> endLocationList;
+                setEndPinPosition();
+                confirmRequestButton.requestFocus();
 
-                Geocoder geocoder = new Geocoder(RiderMapActivity.this);
-                try {
-                    endLocationList = geocoder.getFromLocationName(endLocation, 1);
-                    if (endLocationMarker == null && endLocationList.size() != 0) {
-                        Address endAddress = endLocationList.get(0);
-                        LatLng latLng = new LatLng(endAddress.getLatitude(), endAddress.getLongitude());
-                        endLocationMarker = mMap.addMarker(
-                                new MarkerOptions()
-                                        .position(latLng)
-                                        .title(endLocation)
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_location_marker))
-                        );
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
-                    } else if (endLocationMarker != null && endLocationList.size() != 0) {
-                        endLocationMarker.remove();
-                        Address endAddress = endLocationList.get(0);
-                        LatLng latLng = new LatLng(endAddress.getLatitude(), endAddress.getLongitude());
-                        endLocationMarker = mMap.addMarker(
-                                new MarkerOptions()
-                                        .position(latLng)
-                                        .title(endLocation)
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_location_marker))
-                        );
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Invalid end location.", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (endLocationMarker != null && startLocationMarker != null) {
-                    calculateDirections();
-                    calculateDirectionsDestination();
-                }
                 return false;
             }
 
@@ -316,6 +252,95 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
             }
         });
     }
+
+
+    // Get text from EditText and find the location on a map
+    private boolean setStartPinPosition() {
+        String startLocation = startSearchView.getQuery().toString();
+        List<Address> startLocationList;
+
+        Geocoder geocoder = new Geocoder(RiderMapActivity.this);
+        try {
+            startLocationList = geocoder.getFromLocationName(startLocation, 1);
+            if (startLocationList.size() != 0) {
+                Address startAddress = startLocationList.get(0);
+                LatLng latLng = new LatLng(startAddress.getLatitude(), startAddress.getLongitude());
+                startLocationMarker = mMap.addMarker(
+                        new MarkerOptions()
+                                .position(latLng)
+                                .title(startLocation)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_location_marker))
+                );
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+            } else if (startLocationMarker != null && startLocationList.size() != 0) {
+                startLocationMarker.remove();
+                Address startAddress = startLocationList.get(0);
+                LatLng latLng = new LatLng(startAddress.getLatitude(), startAddress.getLongitude());
+                startLocationMarker = mMap.addMarker(
+                        new MarkerOptions()
+                                .position(latLng)
+                                .title(startLocation)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_location_marker))
+                );
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+            } else {
+                Toast.makeText(getApplicationContext(), "Invalid start location.", Toast.LENGTH_SHORT).show();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (endLocationMarker != null && startLocationMarker != null) {
+            calculateDirections();
+            calculateDirectionsDestination();
+        }
+
+        return startLocationMarker != null;   // Return true if startLocationMarker exists now
+    }
+
+
+    // Get text from EditText and find the location on a map
+    private boolean setEndPinPosition() {
+        String endLocation = endSearchView.getQuery().toString();
+        List<Address> endLocationList;
+
+        Geocoder geocoder = new Geocoder(RiderMapActivity.this);
+        try {
+            endLocationList = geocoder.getFromLocationName(endLocation, 1);
+            if (endLocationMarker == null && endLocationList.size() != 0) {
+                Address endAddress = endLocationList.get(0);
+                LatLng latLng = new LatLng(endAddress.getLatitude(), endAddress.getLongitude());
+                endLocationMarker = mMap.addMarker(
+                        new MarkerOptions()
+                                .position(latLng)
+                                .title(endLocation)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_location_marker))
+                );
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+            } else if (endLocationMarker != null && endLocationList.size() != 0) {
+                endLocationMarker.remove();
+                Address endAddress = endLocationList.get(0);
+                LatLng latLng = new LatLng(endAddress.getLatitude(), endAddress.getLongitude());
+                endLocationMarker = mMap.addMarker(
+                        new MarkerOptions()
+                                .position(latLng)
+                                .title(endLocation)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_location_marker))
+                );
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+            } else {
+                Toast.makeText(getApplicationContext(), "Invalid end location.", Toast.LENGTH_SHORT).show();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (endLocationMarker != null && startLocationMarker != null) {
+            calculateDirections();
+            calculateDirectionsDestination();
+        }
+
+        return endLocationMarker != null;   // Return true if endLocationMarker exists now
+    }
+
 
     //Default method introduced by Intelli-Sense.
     @Override
@@ -351,8 +376,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
     private void calculateDirectionsDestination() {
-
-        // setting current request for sliding menu view
+        // Setting current request for sliding menu view
         com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(endLocationMarker.getPosition().latitude, endLocationMarker.getPosition().longitude);
 
         my_geoApi = new GeoApiContext.Builder().apiKey(getString(R.string.google_api_key)).build();
