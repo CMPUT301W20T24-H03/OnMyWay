@@ -78,6 +78,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="@string/placeholder_none"
+        android:textColor="@color/colorAccent"
         android:textSize="16sp"
         app:layout_constraintStart_toEndOf="@+id/labelDriver"
         app:layout_constraintTop_toBottomOf="@+id/upperConstraintLayout" />

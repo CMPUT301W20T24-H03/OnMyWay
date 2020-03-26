@@ -3,6 +3,8 @@ package com.CMPUT301W20T24.OnMyWay;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +29,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /// https://guides.codepath.com/android/using-dialogfragment
 public class ShowRiderRequestFragment extends DialogFragment implements View.OnClickListener {
     private static final String TAG = "OMW/ShowRiderRequest...";  // Use this tag for call Log.d()
+    FragmentManager fm;
     private Button cancelRideButton;
 
 
@@ -36,38 +39,19 @@ public class ShowRiderRequestFragment extends DialogFragment implements View.OnC
     }
 
 
-    public static ShowRiderRequestFragment newInstance(Request request) {
+    public static ShowRiderRequestFragment newInstance(String driverName, Request request) {
         DBManager dbManager = new DBManager();
+        ShowRiderRequestFragment fragment = new ShowRiderRequestFragment();
+        Bundle args = new Bundle();
 
-        // Use the listener we made to listen for when the function finishes
-        dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
-            @Override
-            public void onUserInfoPulled(User currentUser) {
-                ShowRiderRequestFragment fragment = new ShowRiderRequestFragment();
-                Bundle args = new Bundle();
+        args.putString("driverId", request.getDriverUserName());
+        args.putString("driverName", driverName);
+        args.putString("startLocationName", request.getStartLocationName());
+        args.putString("endLocationName", request.getEndLocationName());
 
-                args.putString("driverName", currentUser.getFullName());
-                args.putString("startLocationName", request.getStartLocationName());
-                args.putString("endLocationName", request.getEndLocationName());
+        fragment.setArguments(args);
 
-                fragment.setArguments(args);
-
-                return fragment;
-            }
-        });
-
-        // Fetch the user info of the current user. Should not be null because we checked this before
-        dbManager.fetchUserInfo(request.getDriverUserName());
-
-
-
-//        args.putString("driverId", request.getDriverUserName());
-//        args.putString("startLocationName", request.getStartLocationName());
-//        args.putString("endLocationName", request.getEndLocationName());
-//
-//        fragment.setArguments(args);
-//
-//        return fragment;
+        return fragment;
     }
 
 
@@ -110,18 +94,45 @@ public class ShowRiderRequestFragment extends DialogFragment implements View.OnC
 
         // Fetch arguments from bundle and set title
         Bundle bundle = getArguments();
-        String driver = bundle.getString("driverId", "None");
+        String driverId = bundle.getString("driverId", null);
+        String driverName = bundle.getString("driverName", "None");
         String startLocation = bundle.getString("startLocationName", "None");
         String endLocation = bundle.getString("endLocationName", "None");
 
-        textDriver.setText(driver);
         textStartLocation.setText(startLocation);
         textEndLocation.setText(endLocation);
+
+        /// https://stackoverflow.com/questions/11820526/format-textview-to-look-like-link
+
+        /// StackOverflow post by yugidroid
+        /// Author: https://stackoverflow.com/users/828728/yugidroid
+        /// Answer: https://stackoverflow.com/questions/11820526/format-textview-to-look-like-link
+        SpannableString string = new SpannableString(driverName);
+        string.setSpan(new UnderlineSpan(), 0, string.length(), 0);
+        textDriver.setText(string);
+        textDriver.setClickable(true);
+
+        textDriver.setOnClickListener((View v) -> {
+            DBManager dbManager = new DBManager();
+
+            // Use the listener we made to listen for when the function finishes
+            dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
+                @Override
+                public void onUserInfoPulled(User fetchedUser) {
+                    ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(fetchedUser);
+                    showProfileFragment.show(fm);
+                }
+            });
+
+            // Fetch the user info of a test driver user
+            dbManager.fetchUserInfo(driverId);
+        });
     }
 
 
     // An easier function call to use since we don't need the tag
     public void show(FragmentManager fragmentManager) {
+        this.fm = fragmentManager;
         this.show(fragmentManager, "show_rider_request_fragment");
     }
 
