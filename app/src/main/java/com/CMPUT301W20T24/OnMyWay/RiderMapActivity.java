@@ -534,4 +534,3 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         String price = String.format("%.2f", distanceInKms);
         return price;
     }
-}
