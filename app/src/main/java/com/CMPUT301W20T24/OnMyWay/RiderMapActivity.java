@@ -139,19 +139,27 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
              */
             @Override
             public void onClick(View view) {
-                if (confirmRequestButton.getText().equals("REQUEST RIDE")) {
+                // Check if the button shows "Request Ride" or "Cancel Ride"
+                if (confirmRequestButton.getText().equals(getString(R.string.text_request_ride))) {
                     if (startLocationMarker == null || endLocationMarker == null) {
                         Log.d(TAG, "Request invalid. START or END location not specified/stored.");
                         Toast.makeText(getApplicationContext(), "Request Invalid. You must specify a start and end location!", Toast.LENGTH_SHORT).show();
                     }
 
                     else {
-                        Request riderRequest = new Request(startLocationMarker.getPosition().longitude, startLocationMarker.getPosition().latitude, endLocationMarker.getPosition().longitude,
-                                endLocationMarker.getPosition().latitude);
+                        Request riderRequest = new Request(
+                                startLocationMarker.getPosition().longitude,
+                                startLocationMarker.getPosition().latitude,
+                                endLocationMarker.getPosition().longitude,
+                                endLocationMarker.getPosition().latitude
+                        );
 
                         // calculate a price estimate for the ride depending on the start and end locations
-                        String priceEstimate = calculatePrice(startLocationMarker.getPosition().longitude, startLocationMarker.getPosition().latitude, endLocationMarker.getPosition().longitude,
-                                endLocationMarker.getPosition().latitude);
+                        String priceEstimate = calculatePrice(startLocationMarker.getPosition().longitude,
+                                startLocationMarker.getPosition().latitude,
+                                endLocationMarker.getPosition().longitude,
+                                endLocationMarker.getPosition().latitude
+                        );
                         // once "request ride" button is clicked, create a dialogue which shows the rider a price estimate and
                         // give the rider the option to edit the price
                         confirmRequestButton.setVisibility(View.INVISIBLE);
@@ -396,7 +404,15 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                         polyline_rider.remove();
                     }
 
-                    polyline_rider = mMap.addPolyline(new PolylineOptions().addAll(newDecodedPath).color(getApplicationContext().getResources().getColor(R.color.colorPolyline)).clickable(true).width(10));
+                    polyline_rider = mMap.addPolyline(
+                            new PolylineOptions()
+                                    .addAll(newDecodedPath)
+                                    .color(getApplicationContext()
+                                            .getResources()
+                                            .getColor(R.color.colorPolyline)
+                                    )
+                                    .clickable(true)
+                                    .width(10));
 
                 }
             }
@@ -426,8 +442,15 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                     if (polyline_destination != null) {
                         polyline_destination.remove();
                     }
-                    polyline_destination = mMap.addPolyline(new PolylineOptions().addAll(newDecodedPath).color(getApplicationContext().getResources().getColor(R.color.colorPolylineDest)).clickable(true).width(10));
-
+                    polyline_destination = mMap.addPolyline(
+                            new PolylineOptions()
+                                    .addAll(newDecodedPath)
+                                    .color(getApplicationContext()
+                                            .getResources()
+                                            .getColor(R.color.colorPolylineDest)
+                                    )
+                                    .clickable(true)
+                                    .width(10));
                 }
             }
         });
@@ -437,7 +460,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.profile_rider:
-		showRiderTestProfile(this.getCurrentFocus());
+                showRiderTestProfile(this.getCurrentFocus());
                 break;
             case R.id.current_request_rider:
                 if (startLocationMarker != null && endLocationMarker != null) {
@@ -462,7 +485,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         return false;
     }
 
- 	public void showRiderTestProfile(View view) {
+    public void showRiderTestProfile(View view) {
         // Use the listener we made to listen for when the function finishes
         dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
             @Override
@@ -511,7 +534,4 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         String price = String.format("%.2f", distanceInKms);
         return price;
     }
-
-
 }
-
