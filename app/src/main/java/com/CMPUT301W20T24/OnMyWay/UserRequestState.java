@@ -15,6 +15,7 @@ public class UserRequestState {
     // Make a DBManager so we can interact with the database
     static private DBManager dbManager = new DBManager();
 
+    static private Request currentRequest;
 
     /**
      * Returns the currently logged in user. This will be null if the user isn't logged in yet
@@ -81,6 +82,5 @@ public class UserRequestState {
         removeCurrentUser();
         dbManager.logoutUser();
     }
-
 
 }

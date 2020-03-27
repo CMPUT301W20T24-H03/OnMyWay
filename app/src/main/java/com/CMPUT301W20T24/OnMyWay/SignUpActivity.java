@@ -148,7 +148,8 @@ public class SignUpActivity extends AppCompatActivity {
 
                             if (user != null){
                                 // Get dbManager to push all the info to firebase
-                                User newUser = new User(user.getUid(), userfirstName, userlastName, driverStatus, userEmail, userPhoneNumber, 0,0);                                db.pushUserInfo(newUser);
+                                User newUser = new User(user.getUid(), userfirstName, userlastName, driverStatus, userEmail, userPhoneNumber, 0,0);
+                                db.pushUserInfo(newUser);
                             }
 
                             Intent intent = new Intent(SignUpActivity.this, SplashScreenActivity.class);

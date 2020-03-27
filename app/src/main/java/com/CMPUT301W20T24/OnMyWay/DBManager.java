@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
@@ -324,6 +325,35 @@ public class DBManager {
                             // Call listener when we are finished, if it exists
                             userDeletedListener.onUserDeleteFailure();
                         }
+                    }
+                });
+    }
+
+    public void pushRequestInfo(Request riderRequest, String paymentAmount){
+        // store all values in the database
+        HashMap<String, String> data = new HashMap<>();
+        data.put("riderUserName", String.valueOf(riderRequest.getRiderUserName()));
+        data.put("endLatitude", String.valueOf(riderRequest.getEndLatitude()));
+        data.put("endLongitude", String.valueOf(riderRequest.getEndLongitude()));
+        data.put("requestID", riderRequest.getRequestId());
+        data.put("startLatitude", String.valueOf(riderRequest.getStartLatitude()));
+        data.put("startLongitude", String.valueOf(riderRequest.getStartLongitude()));
+        data.put("driverUserName", String.valueOf(riderRequest.getDriverUserName()));
+        data.put("paymentAmount", paymentAmount);
+
+        //Adds a new record the request to the 'riderRequests' collection.
+        db.collection("riderRequests")
+                .add(data)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "Data addition successful" + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "Data addition failed." + e.toString());
                     }
                 });
     }
