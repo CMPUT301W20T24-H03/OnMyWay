@@ -81,6 +81,8 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private Marker startLocationMarker;
     private Marker endLocationMarker;
     private FirebaseFirestore database;
+    // Instantiating DBManager()
+    DBManager db = new DBManager();
 
     private String newCost;
 
@@ -180,32 +182,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                             priceDialogue.setVisibility(View.INVISIBLE);
                             confirmRequestButton.setVisibility(View.VISIBLE);
 
-                            // store all values in the database
-                            HashMap<String, String> data = new HashMap<>();
-                            data.put("riderUserName", String.valueOf(riderRequest.getRiderUserName()));
-                            data.put("endLatitude", String.valueOf(riderRequest.getEndLatitude()));
-                            data.put("endLongitude", String.valueOf(riderRequest.getEndLongitude()));
-                            data.put("requestID", riderRequest.getRequestId());
-                            data.put("startLatitude", String.valueOf(riderRequest.getStartLatitude()));
-                            data.put("startLongitude", String.valueOf(riderRequest.getStartLongitude()));
-                            data.put("driverUserName", String.valueOf(riderRequest.getDriverUserName()));
-                            data.put("paymentAmount", newCost);
-
-                            //Adds a new record the request to the 'riderRequests' collection.
-                            database.collection("riderRequests")
-                                    .add(data)
-                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                        @Override
-                                        public void onSuccess(DocumentReference documentReference) {
-                                            Log.d(TAG, "Data addition successful" + documentReference.getId());
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.d(TAG, "Data addition failed." + e.toString());
-                                        }
-                                    });
+                            db.pushRequestInfo(riderRequest, newCost);
 
                             Toast.makeText(getApplicationContext(), "Woo! Your ride is confirmed, check Active Request on the drawer pull menu by swiping right from the left side of the screen!", Toast.LENGTH_SHORT).show();
                             confirmRequestButton.setText("CANCEL RIDE");
