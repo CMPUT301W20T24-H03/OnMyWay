@@ -43,7 +43,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
-            android:id="@+id/linearLayout"
+            android:id="@+id/searchLocationLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
@@ -52,7 +52,8 @@
             android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="@+id/riderMap"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="invisible">
 
             <SearchView
                 android:id="@+id/startLocationSearchBar"
@@ -81,10 +82,9 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/price_dialogue"
+            android:id="@+id/editPriceLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:background="@android:color/white"
             android:elevation="24dp"
             android:orientation="vertical"
@@ -119,17 +119,40 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:hint="@string/Price_in_"
+                android:importantForAutofill="no"
                 android:inputType="numberDecimal"
                 android:textSize="20sp" />
 
             <Button
-                android:id="@+id/confirm_price_button"
+                android:id="@+id/confirmPriceButton"
                 style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/confirm_price" />
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/viewCurrentRequestLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:elevation="24dp"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <Button
+                android:id="@+id/viewCurrentRequestButton"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/text_view_current_request" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.drawerlayout.widget.DrawerLayout>

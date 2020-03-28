@@ -47,4 +47,5 @@
     <string name="text_request_ride">Request Ride</string>
     <string name="Price_in_">Price in $</string>
     <string name="text_find_nearby_riders">Find Nearby Riders</string>
+    <string name="text_view_current_request">View Current Request</string>
 </resources>

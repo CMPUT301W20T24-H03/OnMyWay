@@ -1,6 +1,7 @@
 package com.CMPUT301W20T24.OnMyWay;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -29,7 +30,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /// https://guides.codepath.com/android/using-dialogfragment
 public class ShowRiderRequestFragment extends DialogFragment implements View.OnClickListener {
     private static final String TAG = "OMW/ShowRiderRequest...";  // Use this tag for call Log.d()
-    FragmentManager fm;
+    private CancelRideButtonListener cancelRideButtonListener;
+    private FragmentManager fm;
     private Button cancelRideButton;
 
 
@@ -52,6 +54,21 @@ public class ShowRiderRequestFragment extends DialogFragment implements View.OnC
         fragment.setArguments(args);
 
         return fragment;
+    }
+
+
+    /// StackOverflow post by Marco RS
+    /// Author: https://stackoverflow.com/users/683658/marco-rs
+    /// Answer: https://stackoverflow.com/questions/12659747/call-an-activity-method-from-a-fragment
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            cancelRideButtonListener = (CancelRideButtonListener) context;
+        } catch (ClassCastException castException) {
+            // The activity does not implement the listener.
+        }
     }
 
 
@@ -152,6 +169,13 @@ public class ShowRiderRequestFragment extends DialogFragment implements View.OnC
             Log.d(TAG, "Cancel Ride button pressed");
 
             // TODO: Implement cancelling of rides here
+            // Call the listener implemented in the parent activity
+            if (cancelRideButtonListener == null) {
+                Log.d(TAG, "No cancelRideButtonListener implemented");
+            }
+            else {
+                cancelRideButtonListener.onCancelClick();
+            }
         }
         else {
             throw new NullPointerException("No button with the correct ID was found");
