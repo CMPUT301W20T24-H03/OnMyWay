@@ -51,10 +51,14 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private static final String TAG = "OMW/RiderMapActivity";
 
     private GoogleMap mMap;
+    private GeoApiContext geoApi;
+
+    private LinearLayout searchLocationLayout;
+    private LinearLayout editPriceLayout;
+    private LinearLayout viewCurrentRequestLayout;
 
     private SearchView startSearchView;
     private SearchView endSearchView;
-    private Button confirmRequestButton;
 
     private FragmentManager fm;
     ShowRiderRequestFragment showRiderRequestFragment;
@@ -64,6 +68,8 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
     private Marker startLocationMarker;
     private Marker endLocationMarker;
+    private Polyline polyline_rider;
+    private Polyline polyline_destination;
 
     // Instantiating DBManager()
     private DBManager dbManager;
@@ -111,10 +117,12 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         startSearchView = findViewById(R.id.startLocationSearchBar);
         endSearchView = findViewById(R.id.endLocationSearchBar);
 
-        Button viewCurrentRequestButton = findViewById(R.id.viewCurrentRequestButton);
+        searchLocationLayout = findViewById(R.id.searchLocationLayout);
+        editPriceLayout = findViewById(R.id.editPriceLayout);
+        viewCurrentRequestLayout = findViewById(R.id.viewCurrentRequestLayout);
 
-        LinearLayout searchLocationLayout = findViewById(R.id.searchLocationLayout);
-        confirmRequestButton = findViewById(R.id.confirmRequestButton);
+        Button viewCurrentRequestButton = findViewById(R.id.viewCurrentRequestButton);
+        Button confirmRequestButton = findViewById(R.id.confirmRequestButton);
 
         confirmRequestButton.setOnClickListener(new View.OnClickListener() {
             /**
@@ -157,9 +165,8 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
                 // Once "request ride" button is clicked, create a dialogue which shows the
                 // rider a price estimate and gives the rider the option to edit the price
-                searchLocationLayout.setVisibility(View.GONE);
-                LinearLayout editPriceLayout = findViewById(R.id.editPriceLayout);
-                editPriceLayout.setVisibility(View.VISIBLE);
+                showEditPriceLayout();
+
                 EditText editPrice = findViewById(R.id.editPrice);
                 editPrice.setText(priceEstimate);
 
@@ -168,24 +175,17 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                 confirmButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        LinearLayout viewCurrentRequestLayout = findViewById(R.id.viewCurrentRequestLayout);
-
-                        editPriceLayout.setVisibility(View.GONE);
-
                         newCost = editPrice.getText().toString();
 
                         dbManager.pushRequestInfo(riderRequest, newCost);
 
                         Toast.makeText(getApplicationContext(), "Woo! Your ride is confirmed", Toast.LENGTH_SHORT).show();
-                        confirmRequestButton.setText(getString(R.string.text_cancel_ride));
 
-                        viewCurrentRequestLayout.setVisibility(View.VISIBLE);
-                        editPriceLayout.setVisibility(View.GONE);
+                        showCurrentRequestLayout();
                     }
                 });
             }
         });
-
 
         startSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -240,31 +240,44 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
 
-    @Override
-    public void onCancelClick(){
-        Log.d(TAG, "Cancel event received from fragment");
-
+    public void cancelRide() {
         mMap.clear();
         startLocationMarker = null;
         endLocationMarker = null;
+
+        // TODO: UPDATE STATE HERE
+        // TODO: PUSH CHANGES TO FIREBASE
+
         Toast.makeText(getApplicationContext(), "Your request has been cancelled", Toast.LENGTH_SHORT).show();
-        showRiderRequestFragment.dismiss();
         Log.d(TAG, "Request cancelled");
     }
 
 
-    private void showCurrentRequestLayout() {
+    @Override
+    public void onCancelClick(){
+        Log.d(TAG, "Cancel event received from fragment");
 
+        cancelRide();
+        showSearchLocationLayout(); // Modify UI so user can start another ride
     }
 
 
     private void showEditPriceLayout() {
+        editPriceLayout.setVisibility(View.VISIBLE);
+        searchLocationLayout.setVisibility(View.GONE);
+    }
 
+
+    private void showCurrentRequestLayout() {
+        viewCurrentRequestLayout.setVisibility(View.VISIBLE);
+        editPriceLayout.setVisibility(View.GONE);
     }
 
 
     private void showSearchLocationLayout() {
-
+        showRiderRequestFragment.dismiss(); // Dismiss dialog fragment
+        searchLocationLayout.setVisibility(View.VISIBLE);
+        viewCurrentRequestLayout.setVisibility(View.GONE);
     }
 
 
@@ -303,6 +316,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         if (endLocationMarker != null && startLocationMarker != null) {
             calculateDirections();
             calculateDirectionsDestination();
@@ -347,6 +361,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         if (endLocationMarker != null && startLocationMarker != null) {
             calculateDirections();
             calculateDirectionsDestination();
@@ -356,16 +371,15 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
 
-    //Default method introduced by Intelli-Sense.
+    // Default method introduced by Intelli-Sense.
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
     }
 
+
     /// YouTube video by CodingWithMitch: Calculating Directions with Google Directions API
     /// https://www.youtube.com/watch?v=f47L1SL5S0o&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=19
-    private GeoApiContext geoApi;
-
     private void calculateDirections() {
         com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(endLocationMarker.getPosition().latitude, endLocationMarker.getPosition().longitude);
 
@@ -383,11 +397,11 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
             @Override
             public void onFailure(Throwable e) {
-                System.out.println(e.toString());
+                Log.e(TAG, e.toString());
             }
-
         });
     }
+
 
     private void calculateDirectionsDestination() {
         // Setting current request for sliding menu view
@@ -412,10 +426,9 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         });
     }
 
+
     /// YouTube video by CodingWithMitch: Adding Polylines to a Google Map
     /// https://www.youtube.com/watch?v=xl0GwkLNpNI&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=20
-    Polyline polyline_rider;
-
     private void addPolylinesToMap(final DirectionsResult result) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @SuppressLint("ResourceType")
@@ -453,7 +466,6 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         });
     }
 
-    Polyline polyline_destination;
 
     private void addPolylinesToMapDestination(final DirectionsResult result) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -490,36 +502,8 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         });
     }
 
-/*    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.profile_rider:
-                showRiderTestProfile(this.getCurrentFocus());
-                break;
-            case R.id.current_request_rider:
-                if (startLocationMarker != null && endLocationMarker != null) {
 
-                    Intent intent = new Intent(this, CurrentRequestActivity.class);
-                    intent.putExtra("REQUEST_LATITUDE", startLocLat);
-                    intent.putExtra("REQUEST_LONGITUDE", startLocLon);
-                    intent.putExtra("REQUEST_PAYMENTAMOUNT", 15.32f);
-                    intent.putExtra("REQUEST_LATITUDE_ARRIVAL", endLocLat);
-                    intent.putExtra("REQUEST_LONGITUDE_ARRIVAL", endLocLon);
-
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(getApplicationContext(), "No ride confirmed", Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case R.id.see_driver_rating:
-                showDriverTestProfile(this.getCurrentFocus());
-                break;
-
-        }
-        return false;
-    }*/
-
-    // this method calculates a price estimate for the rider depending on the distance
+    // This method calculates a price estimate for the rider depending on the distance
     // between the start and end locations
     public String calculatePrice(Double startLong, Double startLat, Double endLong, Double endLat) {
         // define the start and end locations
@@ -534,10 +518,11 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         // calculate the price estimate
         double distanceInKms;
         distanceInKms = startLocation.distanceTo(endLocation) / 1000;
+
         if (distanceInKms <= 10) {
             distanceInKms = 7.99;
         }
-        String price = String.format("%.2f", distanceInKms);
-        return price;
+
+        return String.format("%.2f", distanceInKms);
     }
 }
