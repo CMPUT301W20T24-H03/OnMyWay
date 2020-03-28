@@ -46,12 +46,14 @@ public class Request {
     // TODO: THIS IS A CONSTRUCTOR FOR TESTING. SHOULD ADD LOCATION NAMES TO THE ORIGINAL CONSTRUCTOR SO WE CAN SHOW THEM TO THE USER
     /**
      * Constructor method required to instantiate an instance of the Request class.
-     * @param startLocationName
-     * @param startLongitude
-     * @param startLatitude
-     * @param endLocationName
-     * @param endLongitude
-     * @param endLatitude
+     * @param riderId TODO
+     * @param driverId TODO
+     * @param startLocationName TODO
+     * @param startLongitude TODO
+     * @param startLatitude TODO
+     * @param endLocationName TODO
+     * @param endLongitude TODO
+     * @param endLatitude TODO
      * @author Bard Samimi, Manpreet Grewal, John
      */
     public Request(

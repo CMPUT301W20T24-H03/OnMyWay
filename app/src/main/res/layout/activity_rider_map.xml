@@ -1,135 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    tools:openDrawer="end"
-    android:id="@+id/drawer"
     android:layout_height="match_parent"
     tools:context=".RiderMapActivity">
 
-    <com.google.android.material.navigation.NavigationView
+    <fragment
+        android:id="@+id/riderMap"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/navigationView"
-        app:menu="@menu/menu_rider"
-        app:headerLayout="@layout/hamburger_header"
-        android:background="@color/colorAccent"
-        android:layout_gravity="start"
-        app:itemTextColor="@android:color/white" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <fragment
+        android:id="@+id/profileButtonFragment"
+        android:name="com.CMPUT301W20T24.OnMyWay.ProfileButtonFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/searchLocationLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#C12929">
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:elevation="24dp"
+        android:orientation="vertical"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/riderMap"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="invisible">
 
-        <fragment
-            android:id="@+id/riderMap"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
+        <SearchView
+            android:id="@+id/startLocationSearchBar"
+            style="@android:style/Widget.Material.Light.SearchView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="wrap_content"
+            android:iconifiedByDefault="false"
+            android:queryHint="Search start location"
+            android:searchIcon="@drawable/location_start_label" />
 
-        <fragment
-            android:id="@+id/profileButtonFragment"
-            android:name="com.CMPUT301W20T24.OnMyWay.ProfileButtonFragment"
+        <SearchView
+            android:id="@+id/endLocationSearchBar"
+            style="@android:style/Widget.Material.Light.SearchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:iconifiedByDefault="false"
+            android:queryHint="Search end location"
+            android:searchIcon="@drawable/location_end_label" />
+
+        <Button
+            android:id="@+id/confirmRequestButton"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/text_request_ride" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/editPriceLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:elevation="24dp"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/riderMap"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/textView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="30dp"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_margin="8dp"
+            android:text="@string/price_estimate"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
+        <TextView
+            android:id="@+id/priceEstimate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:elevation="24dp"
-            android:orientation="vertical"
-            android:padding="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/riderMap"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            android:gravity="center"
+            android:text="@string/Price_in_"
+            android:textSize="20sp" />
 
-            <SearchView
-                android:id="@+id/startLocationSearchBar"
-                style="@android:style/Widget.Material.Light.SearchView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:iconifiedByDefault="false"
-                android:queryHint="Search start location"
-                android:searchIcon="@drawable/location_start_label" />
-
-            <SearchView
-                android:id="@+id/endLocationSearchBar"
-                style="@android:style/Widget.Material.Light.SearchView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:iconifiedByDefault="false"
-                android:queryHint="Search end location"
-                android:searchIcon="@drawable/location_end_label" />
-
-            <Button
-                android:id="@+id/confirmRequestButton"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/text_request_ride" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/price_dialogue"
+        <EditText
+            android:id="@+id/editPrice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@android:color/white"
-            android:elevation="24dp"
-            android:orientation="vertical"
-            android:padding="8dp"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="@+id/riderMap"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            android:gravity="center"
+            android:hint="@string/Price_in_"
+            android:importantForAutofill="no"
+            android:inputType="numberDecimal"
+            android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_gravity="center_horizontal|center_vertical"
-                android:layout_margin="8dp"
-                android:text="@string/price_estimate"
-                android:textAlignment="center"
-                android:textColor="@android:color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+        <Button
+            android:id="@+id/confirmPriceButton"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/confirm_price" />
 
-            <TextView
-                android:id="@+id/priceEstimate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/Price_in_"
-                android:textSize="20sp" />
+    </LinearLayout>
 
-            <EditText
-                android:id="@+id/editPrice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:inputType="numberDecimal"
-                android:textSize="20sp" />
+    <LinearLayout
+        android:id="@+id/viewCurrentRequestLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:elevation="24dp"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-            <Button
-                android:id="@+id/confirm_price_button"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/confirm_price" />
-
-        </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.drawerlayout.widget.DrawerLayout>
+        <Button
+            android:id="@+id/viewCurrentRequestButton"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/text_view_current_request" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
