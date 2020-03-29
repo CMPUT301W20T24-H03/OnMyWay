@@ -58,10 +58,10 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private SearchView endSearchView;
 
     private FragmentManager fm;
-    ShowRiderRequestFragment showRiderRequestFragment;
+    private ShowRiderRequestFragment showRiderRequestFragment;
 
-    String startLocationName;
-    String endLocationName;
+    private String startLocationName;
+    private String endLocationName;
 
     private Marker startLocationMarker;
     private Marker endLocationMarker;
@@ -73,7 +73,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
     private String newCost;
 
-    Request riderRequest;
+    private Request riderRequest;
 
 
     // Disable back button for this activity
@@ -143,7 +143,8 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
                 riderRequest = new Request(
                         UserRequestState.getCurrentUser().getUserId(),
-                        "dYG5SQAAGVbmglT5k8dUhufAnpq1", // TODO: HARDCODED DRIVER ID FOR NOW
+                        // TODO: NULL INITIALLY. MUST BE UPDATED WITH ACTUAL DRIVER ID WHEN A DRIVER ACCEPTS THE REQUEST
+                        null,
                         startLocationName,
                         startLocationMarker.getPosition().longitude,
                         startLocationMarker.getPosition().latitude,
@@ -220,18 +221,9 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
             public void onClick(View view) {
                 Log.d(TAG, "Fetching driver info");
 
-                dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
-                    @Override
-                    public void onUserInfoPulled(User driverUser) {
-                        Log.d(TAG, "Opening ShowRiderRequestFragment");
-                        showRiderRequestFragment = ShowRiderRequestFragment
-                                .newInstance(driverUser.getFullName(), riderRequest);
-                        showRiderRequestFragment.show(fm);
-                    }
-                });
-
-                // Fetch the user info of the driver
-                dbManager.fetchUserInfo(riderRequest.getDriverUserName());
+                Log.d(TAG, "Opening ShowRiderRequestFragment");
+                showRiderRequestFragment = ShowRiderRequestFragment.newInstance(riderRequest);
+                showRiderRequestFragment.show(fm);
             }
         });
     }
@@ -513,8 +505,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         endLocation.setLongitude(endLong);
 
         // calculate the price estimate
-        double distanceInKms;
-        distanceInKms = startLocation.distanceTo(endLocation) / 1000;
+        double distanceInKms = startLocation.distanceTo(endLocation) / 1000;
 
         if (distanceInKms <= 10) {
             distanceInKms = 7.99;
