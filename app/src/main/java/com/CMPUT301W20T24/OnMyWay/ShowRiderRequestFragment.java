@@ -29,7 +29,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /// CodePath, Using DialogFragment
 /// https://guides.codepath.com/android/using-dialogfragment
 public class ShowRiderRequestFragment extends DialogFragment implements View.OnClickListener {
-    private static final String TAG = "OMW/ShowRiderRequest...";  // Use this tag for call Log.d()
+    private static final String TAG = "OMW/ShowRiderRequest...";  // Use this tag for calling Log.d()
     private CancelRideButtonListener cancelRideButtonListener;
     private FragmentManager fm;
 

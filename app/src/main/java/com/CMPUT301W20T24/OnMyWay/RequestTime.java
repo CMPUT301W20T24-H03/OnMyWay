@@ -16,8 +16,8 @@ public class RequestTime {
     }
 
     // Get absolute value of the difference between 2 times, formatted like mm:ss
-    public String getTimeDifference(RequestTime otherTime) {
-        long timeDiffSeconds = abs(secondsSinceEpoch - otherTime.toLong());
+    public String getTimeElapsed() {
+        long timeDiffSeconds = new RequestTime().toLong() - secondsSinceEpoch;
         long minutes = timeDiffSeconds / 60;
         long seconds = timeDiffSeconds % 60;
 

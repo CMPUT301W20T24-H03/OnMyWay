@@ -154,6 +154,9 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                         endLocationMarker.getPosition().latitude
                 );
 
+                // TODO: REMOVE THIS. JUST FOR TESTING. THIS IS WHAT YOU DO WHEN A DRIVER ACCEPTS A REQUEST
+                riderRequest.setDriverUserName("dYG5SQAAGVbmglT5k8dUhufAnpq1");
+
                 // Calculate a price estimate for the ride depending on the start and end locations
                 String priceEstimate = calculatePrice(
                         riderRequest.getStartLongitude(),
