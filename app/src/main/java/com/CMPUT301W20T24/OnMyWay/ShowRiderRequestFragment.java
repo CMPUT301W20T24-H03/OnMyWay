@@ -1,8 +1,7 @@
 package com.CMPUT301W20T24.OnMyWay;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.SpannableString;
@@ -18,12 +17,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
-
-import de.hdodenhof.circleimageview.CircleImageView;
-
 
 /**
  * A dialog fragment that shows the information for a given request to a rider
@@ -37,9 +30,12 @@ public class ShowRiderRequestFragment extends DialogFragment implements View.OnC
     private FragmentManager fm;
     private TextView textElapsedTime;
 
-    // Runs without a timer by reposting this handler at the end of the runnable
-    Handler timerHandler = new Handler();
-    Runnable timerRunnable = new Runnable() {
+
+    /// StackOverflow post by Dave.B
+    /// Author: https://stackoverflow.com/users/303256/dave-b
+    /// Answer: https://stackoverflow.com/questions/4597690/how-to-set-timer-in-android
+    private Handler timerHandler = new Handler();
+    private Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
             textElapsedTime.setText(UserRequestState.getCurrentRequest().getElapsedTime());
