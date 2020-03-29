@@ -42,14 +42,14 @@ public class Request {
      * @param endLatitude
      * @author Bard Samimi, Manpreet Grewal
      */
-    public Request(double startLongitude, double startLatitude, double endLongitude, double endLatitude) {
+    public Request(double startLongitude, double startLatitude, double endLongitude, double endLatitude, String paymentAmount) {
         this.requestId = generateUUID();
         this.riderUserName = UserRequestState.getCurrentUser().getUserId();
         this.startLongitude = startLongitude;
         this.startLatitude = startLatitude;
         this.endLongitude = endLongitude;
         this.endLatitude = endLatitude;
-        this.paymentAmount = "0";
+        this.paymentAmount = paymentAmount;
         this.driverUserName = "NONE";
         this.status = "INCOMPLETE";
     }
@@ -65,6 +65,7 @@ public class Request {
      * @param endLocationName TODO
      * @param endLongitude TODO
      * @param endLatitude TODO
+     * @param paymentAmount TODO
      * @author Bard Samimi, Manpreet Grewal, John
      */
     public Request(
@@ -75,7 +76,8 @@ public class Request {
             double startLatitude,
             String endLocationName,
             double endLongitude,
-            double endLatitude
+            double endLatitude,
+            String paymentAmount
     ) {
         this.requestId = generateUUID();
         this.riderUserName = riderId;
@@ -91,7 +93,7 @@ public class Request {
         this.endLongitude = endLongitude;
         this.endLatitude = endLatitude;
 
-        this.paymentAmount = "0";
+        this.paymentAmount = paymentAmount;
         this.status = "INCOMPLETE";
 
         setCreationTime();
@@ -204,7 +206,7 @@ public class Request {
 
     public String getPaymentAmount() { return paymentAmount; }
 
-    public String setPaymentAmount(String paymentAmount) { return this.paymentAmount; }
+    public void setPaymentAmount(String paymentAmount) { this.paymentAmount = paymentAmount; }
 
     public String getDriverUserName() { return driverUserName; }
 

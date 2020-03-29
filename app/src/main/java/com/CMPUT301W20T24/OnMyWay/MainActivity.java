@@ -76,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     // Called when the user presses a button
     // TODO: Implement this. Need to rewrite Request and DBManager first
     public void showRiderTestRequest(View view) {

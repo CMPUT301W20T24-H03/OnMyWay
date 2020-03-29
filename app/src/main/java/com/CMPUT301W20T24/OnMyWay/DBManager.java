@@ -329,7 +329,7 @@ public class DBManager {
                 });
     }
 
-    public void pushRequestInfo(Request riderRequest, String paymentAmount){
+    public void pushRequestInfo(Request riderRequest){
         // store all values in the database
         HashMap<String, String> data = new HashMap<>();
         data.put("riderUserName", String.valueOf(riderRequest.getRiderUserName()));
@@ -339,7 +339,7 @@ public class DBManager {
         data.put("startLatitude", String.valueOf(riderRequest.getStartLatitude()));
         data.put("startLongitude", String.valueOf(riderRequest.getStartLongitude()));
         data.put("driverUserName", String.valueOf(riderRequest.getDriverUserName()));
-        data.put("paymentAmount", paymentAmount);
+        data.put("paymentAmount", riderRequest.getPaymentAmount());
 
         //Adds a new record the request to the 'riderRequests' collection.
         db.collection("riderRequests")
