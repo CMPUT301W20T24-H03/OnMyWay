@@ -141,23 +141,13 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                     }
                 }
 
-                riderRequest = new Request(
-                        UserRequestState.getCurrentUser().getUserId(),
-                        "dYG5SQAAGVbmglT5k8dUhufAnpq1", // TODO: HARDCODED DRIVER ID FOR NOW
-                        startLocationName,
-                        startLocationMarker.getPosition().longitude,
-                        startLocationMarker.getPosition().latitude,
-                        endLocationName,
-                        endLocationMarker.getPosition().longitude,
-                        endLocationMarker.getPosition().latitude
-                );
 
                 // Calculate a price estimate for the ride depending on the start and end locations
                 String priceEstimate = calculatePrice(
-                        riderRequest.getStartLongitude(),
-                        riderRequest.getStartLatitude(),
-                        riderRequest.getEndLongitude(),
-                        riderRequest.getEndLatitude()
+                        startLocationMarker.getPosition().longitude,
+                        startLocationMarker.getPosition().latitude,
+                        endLocationMarker.getPosition().longitude,
+                        endLocationMarker.getPosition().latitude
                 );
 
                 // Once "request ride" button is clicked, create a dialogue which shows the
@@ -173,8 +163,18 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                     @Override
                     public void onClick(View v) {
                         newCost = editPrice.getText().toString();
-
-                        dbManager.pushRequestInfo(riderRequest, newCost);
+                        riderRequest = new Request(
+                                UserRequestState.getCurrentUser().getUserId(),
+                                "dYG5SQAAGVbmglT5k8dUhufAnpq1", // TODO: HARDCODED DRIVER ID FOR NOW
+                                startLocationName,
+                                startLocationMarker.getPosition().longitude,
+                                startLocationMarker.getPosition().latitude,
+                                endLocationName,
+                                endLocationMarker.getPosition().longitude,
+                                endLocationMarker.getPosition().latitude,
+                                newCost
+                        );
+                        dbManager.pushRequestInfo(riderRequest);
 
                         Toast.makeText(getApplicationContext(), "Woo! Your ride is confirmed", Toast.LENGTH_SHORT).show();
 
