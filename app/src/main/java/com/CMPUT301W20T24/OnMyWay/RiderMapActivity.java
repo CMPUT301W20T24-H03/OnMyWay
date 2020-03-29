@@ -24,6 +24,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -58,10 +59,10 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private SearchView endSearchView;
 
     private FragmentManager fm;
-    ShowRiderRequestFragment showRiderRequestFragment;
+    private ShowRiderRequestFragment showRiderRequestFragment;
 
-    String startLocationName;
-    String endLocationName;
+    private String startLocationName;
+    private String endLocationName;
 
     private Marker startLocationMarker;
     private Marker endLocationMarker;
@@ -73,7 +74,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
     private String newCost;
 
-    Request riderRequest;
+    private Request riderRequest;
 
 
     // Disable back button for this activity
@@ -141,7 +142,6 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                     }
                 }
 
-
                 // Calculate a price estimate for the ride depending on the start and end locations
                 String priceEstimate = calculatePrice(
                         startLocationMarker.getPosition().longitude,
@@ -174,6 +174,10 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                                 endLocationMarker.getPosition().latitude,
                                 newCost
                         );
+                      
+                        // TODO: REMOVE THIS. JUST FOR TESTING. THIS IS WHAT YOU DO WHEN A DRIVER ACCEPTS A REQUEST
+                        riderRequest.setDriverUserName("dYG5SQAAGVbmglT5k8dUhufAnpq1");
+                      
                         dbManager.pushRequestInfo(riderRequest);
 
                         Toast.makeText(getApplicationContext(), "Woo! Your ride is confirmed", Toast.LENGTH_SHORT).show();
@@ -220,18 +224,9 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
             public void onClick(View view) {
                 Log.d(TAG, "Fetching driver info");
 
-                dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
-                    @Override
-                    public void onUserInfoPulled(User driverUser) {
-                        Log.d(TAG, "Opening ShowRiderRequestFragment");
-                        showRiderRequestFragment = ShowRiderRequestFragment
-                                .newInstance(driverUser.getFullName(), riderRequest);
-                        showRiderRequestFragment.show(fm);
-                    }
-                });
-
-                // Fetch the user info of the driver
-                dbManager.fetchUserInfo(riderRequest.getDriverUserName());
+                Log.d(TAG, "Opening ShowRiderRequestFragment");
+                showRiderRequestFragment = ShowRiderRequestFragment.newInstance(riderRequest);
+                showRiderRequestFragment.show(fm);
             }
         });
     }
@@ -282,8 +277,10 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private boolean setStartPinPosition() {
         startLocationName = startSearchView.getQuery().toString();
         List<Address> startLocationList;
-
         Geocoder geocoder = new Geocoder(RiderMapActivity.this);
+        BitmapDescriptor startLocationIcon = BitmapDescriptorFactory
+                .fromResource(R.drawable.ic_start_location_marker);
+
         try {
             startLocationList = geocoder.getFromLocationName(startLocationName, 1);
             if (startLocationList.size() != 0) {
@@ -293,7 +290,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                         new MarkerOptions()
                                 .position(latLng)
                                 .title(startLocationName)
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_location_marker))
+                                .icon(startLocationIcon)
                 );
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
             } else if (startLocationMarker != null && startLocationList.size() != 0) {
@@ -304,8 +301,9 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                         new MarkerOptions()
                                 .position(latLng)
                                 .title(startLocationName)
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_location_marker))
+                                .icon(startLocationIcon)
                 );
+
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
             } else {
                 Toast.makeText(getApplicationContext(), "Invalid start location.", Toast.LENGTH_SHORT).show();
@@ -327,6 +325,8 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private boolean setEndPinPosition() {
         endLocationName = endSearchView.getQuery().toString();
         List<Address> endLocationList;
+        BitmapDescriptor endLocationIcon = BitmapDescriptorFactory
+                .fromResource(R.drawable.ic_end_location_marker);
 
         Geocoder geocoder = new Geocoder(RiderMapActivity.this);
         try {
@@ -338,7 +338,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                         new MarkerOptions()
                                 .position(latLng)
                                 .title(endLocationName)
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_location_marker))
+                                .icon(endLocationIcon)
                 );
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
             } else if (endLocationMarker != null && endLocationList.size() != 0) {
@@ -349,8 +349,9 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                         new MarkerOptions()
                                 .position(latLng)
                                 .title(endLocationName)
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_location_marker))
+                                .icon(endLocationIcon)
                 );
+
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
             } else {
                 Toast.makeText(getApplicationContext(), "Invalid end location.", Toast.LENGTH_SHORT).show();
@@ -513,8 +514,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         endLocation.setLongitude(endLong);
 
         // calculate the price estimate
-        double distanceInKms;
-        distanceInKms = startLocation.distanceTo(endLocation) / 1000;
+        double distanceInKms = startLocation.distanceTo(endLocation) / 1000;
 
         if (distanceInKms <= 10) {
             distanceInKms = 7.99;

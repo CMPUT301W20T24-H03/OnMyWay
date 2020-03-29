@@ -1,5 +1,9 @@
 package com.CMPUT301W20T24.OnMyWay;
 
+import android.util.Log;
+
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -8,6 +12,8 @@ import java.util.UUID;
  */
 
 public class Request {
+    private static final String TAG = "OMW/Request";  // Use this tag for calling Log.d()
+
     private String requestId;
     private String riderUserName;
 
@@ -23,6 +29,11 @@ public class Request {
     private String driverUserName;
     private String status;
 
+    private RequestTime creationTime;  // The time when the request was created by a rider
+    private RequestTime acceptedTime;  // The time when the request was accepted by a driver
+
+
+    // TODO: REMOVE THIS OLD CONSTRUCTOR
     /**
      * Constructor method required to instantiate an instance of the Request class.
      * @param startLongitude
@@ -43,7 +54,7 @@ public class Request {
         this.status = "INCOMPLETE";
     }
 
-    // TODO: THIS IS A CONSTRUCTOR FOR TESTING. SHOULD ADD LOCATION NAMES TO THE ORIGINAL CONSTRUCTOR SO WE CAN SHOW THEM TO THE USER
+
     /**
      * Constructor method required to instantiate an instance of the Request class.
      * @param riderId TODO
@@ -84,6 +95,43 @@ public class Request {
 
         this.paymentAmount = paymentAmount;
         this.status = "INCOMPLETE";
+
+        setCreationTime();
+    }
+
+    // Use this constructor when we already have values for createdTime and acceptedTime
+    // For example, when we pull a request from Firebase and want to construct it again
+    public Request(
+            String riderId,
+            String driverId,
+            String startLocationName,
+            double startLongitude,
+            double startLatitude,
+            String endLocationName,
+            double endLongitude,
+            double endLatitude,
+            long createdTime,
+            long acceptedTime
+    ) {
+        this.requestId = generateUUID();
+        this.riderUserName = riderId;
+        this.driverUserName = driverId;
+
+        setStartLocationName(startLocationName);
+        this.startLocationName = startLocationName;
+        this.startLongitude = startLongitude;
+        this.startLatitude = startLatitude;
+
+        setEndLocationName(endLocationName);
+        this.endLocationName = endLocationName;
+        this.endLongitude = endLongitude;
+        this.endLatitude = endLatitude;
+
+        this.paymentAmount = "0";
+        this.status = "INCOMPLETE";
+
+        this.creationTime = new RequestTime(createdTime);
+        this.acceptedTime = new RequestTime(acceptedTime);
     }
 
     /**
@@ -91,14 +139,36 @@ public class Request {
      * @return String
      * @author Manpreet Grewal
      */
-    //https://www.baeldung.com/java-uuid
-    //https://towardsdatascience.com/are-uuids-really-unique-57eb80fc2a87
+    /// https://www.baeldung.com/java-uuid
+
+    /// https://towardsdatascience.com/are-uuids-really-unique-57eb80fc2a87
     private String generateUUID() {
         UUID requestUUID = UUID.randomUUID();
         return this.requestId = requestUUID.toString();
     }
 
-    // The remainder of the methods are all 'getter' and 'setter' method(s). Standard, and require no documentation.
+    private void setCreationTime() {
+        this.creationTime = new RequestTime();
+    }
+
+/*    private Date getCreationTime() {
+        // Not sure if this is needed yet
+    }*/
+
+    private void setAcceptedTime() {
+        this.acceptedTime = new RequestTime();
+    }
+
+    private RequestTime getAcceptedTime() {
+        return this.acceptedTime;
+    }
+
+    public String getElapsedTime() {
+        return getAcceptedTime().getTimeElapsed();
+    }
+
+    // The remainder of the methods are all 'getter' and 'setter' method(s).
+    // These are standard, and require no documentation.
     // Added by Bard Samimi
     public String getRequestId() { return requestId; }
 
@@ -140,7 +210,10 @@ public class Request {
 
     public String getDriverUserName() { return driverUserName; }
 
-    public void setDriverUserName(String driverUserName) { this.driverUserName = driverUserName; }
+    public void setDriverUserName(String driverUserName) {
+        this.driverUserName = driverUserName;
+        setAcceptedTime();  // Record the time at which the request was accepted
+    }
 
     public String getStatus() { return status; }
 

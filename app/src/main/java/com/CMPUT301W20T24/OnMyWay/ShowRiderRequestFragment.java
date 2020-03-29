@@ -29,10 +29,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /// CodePath, Using DialogFragment
 /// https://guides.codepath.com/android/using-dialogfragment
 public class ShowRiderRequestFragment extends DialogFragment implements View.OnClickListener {
-    private static final String TAG = "OMW/ShowRiderRequest...";  // Use this tag for call Log.d()
+    private static final String TAG = "OMW/ShowRiderRequest...";  // Use this tag for calling Log.d()
     private CancelRideButtonListener cancelRideButtonListener;
     private FragmentManager fm;
-    private Button cancelRideButton;
 
 
     public ShowRiderRequestFragment() {
@@ -41,13 +40,11 @@ public class ShowRiderRequestFragment extends DialogFragment implements View.OnC
     }
 
 
-    public static ShowRiderRequestFragment newInstance(String driverName, Request request) {
-        DBManager dbManager = new DBManager();
+    public static ShowRiderRequestFragment newInstance(Request request) {
         ShowRiderRequestFragment fragment = new ShowRiderRequestFragment();
         Bundle args = new Bundle();
 
         args.putString("driverId", request.getDriverUserName());
-        args.putString("driverName", driverName);
         args.putString("startLocationName", request.getStartLocationName());
         args.putString("endLocationName", request.getEndLocationName());
 
@@ -93,7 +90,7 @@ public class ShowRiderRequestFragment extends DialogFragment implements View.OnC
         Button backButton = view.findViewById(R.id.buttonBack);
         backButton.setOnClickListener(this);
 
-        cancelRideButton = view.findViewById(R.id.buttonCancelRide);
+        Button cancelRideButton = view.findViewById(R.id.buttonCancelRide);
         cancelRideButton.setOnClickListener(this);
 
         return view;
@@ -112,38 +109,43 @@ public class ShowRiderRequestFragment extends DialogFragment implements View.OnC
         // Fetch arguments from bundle and set title
         Bundle bundle = getArguments();
         String driverId = bundle.getString("driverId", null);
-        String driverName = bundle.getString("driverName", "None");
         String startLocation = bundle.getString("startLocationName", "None");
         String endLocation = bundle.getString("endLocationName", "None");
 
         textStartLocation.setText(startLocation);
         textEndLocation.setText(endLocation);
 
-        /// https://stackoverflow.com/questions/11820526/format-textview-to-look-like-link
-
-        /// StackOverflow post by yugidroid
-        /// Author: https://stackoverflow.com/users/828728/yugidroid
-        /// Answer: https://stackoverflow.com/questions/11820526/format-textview-to-look-like-link
-        SpannableString string = new SpannableString(driverName);
-        string.setSpan(new UnderlineSpan(), 0, string.length(), 0);
-        textDriver.setText(string);
-        textDriver.setClickable(true);
-
-        textDriver.setOnClickListener((View v) -> {
+        if (driverId == null) {
+            textDriver.setText(R.string.text_waiting_for_driver);
+            textDriver.setTextColor(getResources().getColor(R.color.colorError));
+        }
+        else {
             DBManager dbManager = new DBManager();
 
             // Use the listener we made to listen for when the function finishes
             dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
                 @Override
                 public void onUserInfoPulled(User fetchedUser) {
-                    ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(fetchedUser);
-                    showProfileFragment.show(fm);
+                    String driverName = fetchedUser.getFullName();
+
+                    /// StackOverflow post by yugidroid
+                    /// Author: https://stackoverflow.com/users/828728/yugidroid
+                    /// Answer: https://stackoverflow.com/questions/11820526/format-textview-to-look-like-link
+                    SpannableString string = new SpannableString(driverName);
+                    string.setSpan(new UnderlineSpan(), 0, string.length(), 0);
+                    textDriver.setText(string);
+                    textDriver.setClickable(true);
+
+                    textDriver.setOnClickListener((View v) -> {
+                        ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(fetchedUser);
+                        showProfileFragment.show(fm);
+                    });
                 }
             });
 
             // Fetch the user info of a test driver user
             dbManager.fetchUserInfo(driverId);
-        });
+        }
     }
 
 
@@ -157,8 +159,8 @@ public class ShowRiderRequestFragment extends DialogFragment implements View.OnC
     @Override
     public void onClick(View view) {
         Log.d(TAG, "Button pressed");
+
         final int viewId = view.getId();
-        Activity parentActivity = getActivity();
 
         if (viewId == R.id.buttonBack) {
             Log.d(TAG, "Back button pressed");

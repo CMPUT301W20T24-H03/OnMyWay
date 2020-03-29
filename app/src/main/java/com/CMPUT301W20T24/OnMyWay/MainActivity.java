@@ -77,18 +77,21 @@ public class MainActivity extends AppCompatActivity {
 
 
     // Called when the user presses a button
-    public void showRiderTestProfile(View view) {
-        // Use the listener we made to listen for when the function finishes
-        dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
-            @Override
-            public void onUserInfoPulled(User fetchedUser) {
-                ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(fetchedUser);
-                showProfileFragment.show(fm);
-            }
-        });
+    // TODO: Implement this. Need to rewrite Request and DBManager first
+    public void showRiderTestRequest(View view) {
+        Request testRequest = new Request(
+                "pcpzIGU4W7XomSe7o6AUXcFGDJy1",
+                "dYG5SQAAGVbmglT5k8dUhufAnpq1",
+                "University of Alberta",
+                1,
+                2,
+                "WEM",
+                3,
+                4,
+                "12.99"
+        );
 
-        // Fetch the user info of a test rider user
-        dbManager.fetchUserInfo("pcpzIGU4W7XomSe7o6AUXcFGDJy1");
+        ShowRiderRequestFragment showRiderRequestFragment = ShowRiderRequestFragment.newInstance(testRequest);
+        showRiderRequestFragment.show(fm);
     }
-
 }
