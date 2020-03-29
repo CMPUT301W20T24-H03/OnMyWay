@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
@@ -19,6 +20,8 @@ import androidx.fragment.app.FragmentManager;
 
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
@@ -32,6 +35,18 @@ public class ShowRiderRequestFragment extends DialogFragment implements View.OnC
     private static final String TAG = "OMW/ShowRiderRequest...";  // Use this tag for calling Log.d()
     private CancelRideButtonListener cancelRideButtonListener;
     private FragmentManager fm;
+    private TextView textElapsedTime;
+
+    // Runs without a timer by reposting this handler at the end of the runnable
+    Handler timerHandler = new Handler();
+    Runnable timerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            textElapsedTime.setText(UserRequestState.getCurrentRequest().getElapsedTime());
+
+            timerHandler.postDelayed(this, 1000);
+        }
+    };
 
 
     public ShowRiderRequestFragment() {
@@ -102,6 +117,7 @@ public class ShowRiderRequestFragment extends DialogFragment implements View.OnC
         super.onViewCreated(view, savedInstanceState);
 
         // Get fields from view
+        textElapsedTime = view.findViewById(R.id.textElapsedTime);
         TextView textDriver = view.findViewById(R.id.textDriver);
         TextView textStartLocation = view.findViewById(R.id.textStartLocation);
         TextView textEndLocation = view.findViewById(R.id.textEndLocation);
@@ -121,6 +137,8 @@ public class ShowRiderRequestFragment extends DialogFragment implements View.OnC
         }
         else {
             DBManager dbManager = new DBManager();
+
+            timerHandler.postDelayed(timerRunnable, 0); // Start the timer runnable
 
             // Use the listener we made to listen for when the function finishes
             dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
@@ -176,6 +194,7 @@ public class ShowRiderRequestFragment extends DialogFragment implements View.OnC
                 Log.d(TAG, "No cancelRideButtonListener implemented");
             }
             else {
+                timerHandler.removeCallbacks(timerRunnable);    // Stop the timer runnable
                 cancelRideButtonListener.onCancelClick();
             }
         }
