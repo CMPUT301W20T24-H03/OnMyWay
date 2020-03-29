@@ -87,7 +87,8 @@ public class MainActivity extends AppCompatActivity {
                 2,
                 "WEM",
                 3,
-                4
+                4,
+                "12.99"
         );
 
         ShowRiderRequestFragment showRiderRequestFragment = ShowRiderRequestFragment.newInstance(testRequest);
