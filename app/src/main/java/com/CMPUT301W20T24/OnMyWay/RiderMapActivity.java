@@ -24,6 +24,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -274,8 +275,10 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private boolean setStartPinPosition() {
         startLocationName = startSearchView.getQuery().toString();
         List<Address> startLocationList;
-
         Geocoder geocoder = new Geocoder(RiderMapActivity.this);
+        BitmapDescriptor startLocationIcon = BitmapDescriptorFactory
+                .fromResource(R.drawable.ic_start_location_marker);
+
         try {
             startLocationList = geocoder.getFromLocationName(startLocationName, 1);
             if (startLocationList.size() != 0) {
@@ -285,7 +288,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                         new MarkerOptions()
                                 .position(latLng)
                                 .title(startLocationName)
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_location_marker))
+                                .icon(startLocationIcon)
                 );
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
             } else if (startLocationMarker != null && startLocationList.size() != 0) {
@@ -296,8 +299,9 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                         new MarkerOptions()
                                 .position(latLng)
                                 .title(startLocationName)
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_location_marker))
+                                .icon(startLocationIcon)
                 );
+
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
             } else {
                 Toast.makeText(getApplicationContext(), "Invalid start location.", Toast.LENGTH_SHORT).show();
@@ -319,6 +323,8 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private boolean setEndPinPosition() {
         endLocationName = endSearchView.getQuery().toString();
         List<Address> endLocationList;
+        BitmapDescriptor endLocationIcon = BitmapDescriptorFactory
+                .fromResource(R.drawable.ic_end_location_marker);
 
         Geocoder geocoder = new Geocoder(RiderMapActivity.this);
         try {
@@ -330,7 +336,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                         new MarkerOptions()
                                 .position(latLng)
                                 .title(endLocationName)
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_location_marker))
+                                .icon(endLocationIcon)
                 );
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
             } else if (endLocationMarker != null && endLocationList.size() != 0) {
@@ -341,8 +347,9 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                         new MarkerOptions()
                                 .position(latLng)
                                 .title(endLocationName)
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_location_marker))
+                                .icon(endLocationIcon)
                 );
+
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
             } else {
                 Toast.makeText(getApplicationContext(), "Invalid end location.", Toast.LENGTH_SHORT).show();
