@@ -76,37 +76,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // Called when the user presses a button
-    public void showRiderTestProfile(View view) {
-        // Use the listener we made to listen for when the function finishes
-        dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
-            @Override
-            public void onUserInfoPulled(User fetchedUser) {
-                ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(fetchedUser);
-                showProfileFragment.show(fm);
-            }
-        });
-
-        // Fetch the user info of a test rider user
-        dbManager.fetchUserInfo("pcpzIGU4W7XomSe7o6AUXcFGDJy1");
-    }
-
-
-    // Called when the user presses a button
-    public void showDriverTestProfile(View view) {
-        // Use the listener we made to listen for when the function finishes
-        dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
-            @Override
-            public void onUserInfoPulled(User fetchedUser) {
-                ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(fetchedUser);
-                showProfileFragment.show(fm);
-            }
-        });
-
-        // Fetch the user info of a test driver user
-        dbManager.fetchUserInfo("dYG5SQAAGVbmglT5k8dUhufAnpq1");
-    }
-
 
     // Called when the user presses a button
     // TODO: Implement this. Need to rewrite Request and DBManager first
