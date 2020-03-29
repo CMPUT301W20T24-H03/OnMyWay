@@ -2,13 +2,17 @@ package com.CMPUT301W20T24.OnMyWay;
 
 import java.util.Calendar;
 
-import static java.lang.Math.abs;
 
 public class RequestTime {
     private long secondsSinceEpoch;
 
+    // Make an object with the current time if no arguments are given
     public RequestTime() {
-        secondsSinceEpoch = Calendar.getInstance().getTime().getTime() / 1000;
+        this.secondsSinceEpoch = Calendar.getInstance().getTime().getTime() / 1000;
+    }
+
+    public RequestTime(long secondsSinceEpoch) {
+        this.secondsSinceEpoch = secondsSinceEpoch;
     }
 
     public long toLong() {

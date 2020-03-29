@@ -97,6 +97,41 @@ public class Request {
         setCreationTime();
     }
 
+    // Use this constructor when we already have values for createdTime and acceptedTime
+    // For example, when we pull a request from Firebase and want to construct it again
+    public Request(
+            String riderId,
+            String driverId,
+            String startLocationName,
+            double startLongitude,
+            double startLatitude,
+            String endLocationName,
+            double endLongitude,
+            double endLatitude,
+            long createdTime,
+            long acceptedTime
+    ) {
+        this.requestId = generateUUID();
+        this.riderUserName = riderId;
+        this.driverUserName = driverId;
+
+        setStartLocationName(startLocationName);
+        this.startLocationName = startLocationName;
+        this.startLongitude = startLongitude;
+        this.startLatitude = startLatitude;
+
+        setEndLocationName(endLocationName);
+        this.endLocationName = endLocationName;
+        this.endLongitude = endLongitude;
+        this.endLatitude = endLatitude;
+
+        this.paymentAmount = "0";
+        this.status = "INCOMPLETE";
+
+        this.creationTime = new RequestTime(createdTime);
+        this.acceptedTime = new RequestTime(acceptedTime);
+    }
+
     /**
      * Logic to generate a unique UUID string that will be used for the requestID value.
      * @return String
