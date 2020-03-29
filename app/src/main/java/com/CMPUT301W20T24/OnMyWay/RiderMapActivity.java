@@ -177,7 +177,9 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                       
                         // TODO: REMOVE THIS. JUST FOR TESTING. THIS IS WHAT YOU DO WHEN A DRIVER ACCEPTS A REQUEST
                         riderRequest.setDriverUserName("dYG5SQAAGVbmglT5k8dUhufAnpq1");
-                      
+
+                        UserRequestState.setCurrentRequest(riderRequest);
+                        UserRequestState.updateCurrentRequest(); // Push updates to FireBase
                         dbManager.pushRequestInfo(riderRequest);
 
                         Toast.makeText(getApplicationContext(), "Woo! Your ride is confirmed", Toast.LENGTH_SHORT).show();
@@ -238,6 +240,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         endLocationMarker = null;
 
         // TODO: UPDATE STATE HERE
+        UserRequestState.cancelCurrentRequest();
         // TODO: PUSH CHANGES TO FIREBASE
 
         Toast.makeText(getApplicationContext(), "Your request has been cancelled", Toast.LENGTH_SHORT).show();

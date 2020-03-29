@@ -1,6 +1,7 @@
 package com.CMPUT301W20T24.OnMyWay;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 
 public class RequestTime {
@@ -25,6 +26,6 @@ public class RequestTime {
         long minutes = timeDiffSeconds / 60;
         long seconds = timeDiffSeconds % 60;
 
-        return minutes + ":" + seconds;
+        return minutes + ":" + String.format(Locale.US, "%02d", seconds);
     }
 }
