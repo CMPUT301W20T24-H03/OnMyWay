@@ -83,4 +83,19 @@ public class UserRequestState {
         dbManager.logoutUser();
     }
 
+    static public Request getCurrentRequest(){return currentRequest;}
+
+    static public void setCurrentRequest(Request newRequest) {
+        if (currentRequest== null) {
+            currentRequest = newRequest;
+        }
+    }
+    static public void updateCurrentRequest() {
+        dbManager.pushRequestInfo(getCurrentRequest());
+    }
+
+    static private void cancelCurrentRequest() {
+        currentRequest = null;
+    }
+
 }
