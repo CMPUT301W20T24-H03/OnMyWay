@@ -74,24 +74,4 @@ public class MainActivity extends AppCompatActivity {
         showProfileFragment = ShowProfileFragment.newInstance(null);
         showProfileFragment.show(fm);
     }
-
-
-    // Called when the user presses a button
-    // TODO: Implement this. Need to rewrite Request and DBManager first
-    public void showRiderTestRequest(View view) {
-        Request testRequest = new Request(
-                "pcpzIGU4W7XomSe7o6AUXcFGDJy1",
-                "dYG5SQAAGVbmglT5k8dUhufAnpq1",
-                "University of Alberta",
-                1,
-                2,
-                "WEM",
-                3,
-                4,
-                "12.99"
-        );
-
-        ShowRiderRequestFragment showRiderRequestFragment = ShowRiderRequestFragment.newInstance(testRequest);
-        showRiderRequestFragment.show(fm);
-    }
 }
