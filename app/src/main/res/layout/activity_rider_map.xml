@@ -34,8 +34,7 @@
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/riderMap"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:visibility="invisible">
+        app:layout_constraintStart_toStartOf="parent">
 
         <SearchView
             android:id="@+id/startLocationSearchBar"
@@ -123,6 +122,7 @@
         android:background="@android:color/white"
         android:elevation="24dp"
         android:orientation="vertical"
+        android:padding="8dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -46,7 +46,7 @@ import java.util.List;
  * @author Manpreet Grewal and Payas Singh
  */
 public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCallback, CancelRideButtonListener {
-    private static final String TAG = "OMW/RiderMapActivity";
+    private static final String TAG = "OMW/RiderMapActivity";   // Use for calling Log.d()
 
     private GoogleMap mMap;
     private GeoApiContext geoApi;
@@ -165,7 +165,6 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                         newCost = editPrice.getText().toString();
                         riderRequest = new Request(
                                 UserRequestState.getCurrentUser().getUserId(),
-                                "dYG5SQAAGVbmglT5k8dUhufAnpq1", // TODO: HARDCODED DRIVER ID FOR NOW
                                 startLocationName,
                                 startLocationMarker.getPosition().longitude,
                                 startLocationMarker.getPosition().latitude,
@@ -224,9 +223,8 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         viewCurrentRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "Fetching driver info");
-
                 Log.d(TAG, "Opening ShowRiderRequestFragment");
+
                 showRiderRequestFragment = ShowRiderRequestFragment.newInstance(riderRequest);
                 showRiderRequestFragment.show(fm);
             }

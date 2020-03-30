@@ -1,11 +1,7 @@
 package com.CMPUT301W20T24.OnMyWay;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
@@ -20,10 +16,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -33,6 +29,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -41,7 +39,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -56,31 +53,36 @@ import com.google.maps.model.DirectionsRoute;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
-
+public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCallback {
     /**
      * Global declarations
      */
     private static final String TAG = "OMW/DriverMapActivity";
     private GoogleMap mMap;
     private dummyRequest currentRequest;
-    Location currentLocation;
-    FusedLocationProviderClient fusedLocationProviderClient;
+    private Location currentLocation;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private GeoApiContext geoApi;
 
-    LocationManager locationManager;
-    LocationListener locationListener;
-    DrawerLayout drawerLayout;
-    Toolbar toolbar;
+    private Polyline polyline_rider;
+    private Polyline polyline_destination;
 
-    NavigationView navigationView;
-    ActionBarDrawerToggle toggle;
-    private static final int REQUEST_CODE = 101;
-    View mapView;
-    private DBManager dbManager;
     private FragmentManager fm;
+    private ShowDriverRequestFragment showDriverRequestFragment;
+
+    private LinearLayout browseRequestsLayout;
+    private LinearLayout viewCurrentRequestLayout;
+    private BottomSheetDialog bottomSheetDialog;
+
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+
+    private static final int REQUEST_CODE = 101;
+    private View mapView;
+    private DBManager dbManager;
+
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference requests = db.collection("riderRequests");
-
 
 
     // Disable back button for this activity
@@ -109,7 +111,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     /**
      * onCreate method. Sets the view, and finds/stores the drivers current location
-     * @param savedInstanceState
+     * @param savedInstanceState    TODO: WRITE DESCRIPTION HERE
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,32 +120,90 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         dbManager = new DBManager();
         fm = getSupportFragmentManager();
 
-        /// Hamburger menu creation reference: https://www.youtube.com/watch?v=ofu1IqiBNCY
-
-        navigationView = findViewById(R.id.navigationView);
-        navigationView.setNavigationItemSelectedListener(this);
-
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
-
-
         Toast.makeText(DriverMapActivity.this, "DriverMapActivity", Toast.LENGTH_LONG).show();
+
+        browseRequestsLayout = findViewById(R.id.browseRequestsLayout);;
+        viewCurrentRequestLayout = findViewById(R.id.viewCurrentRequestLayout);
+
+        Button viewPreviousRidesButton = findViewById(R.id.buttonViewPreviousRides);
+        Button viewPreviousRidesButton2 = findViewById(R.id.buttonViewPreviousRides2);
+        Button viewCurrentRequestButton = findViewById(R.id.buttonViewCurrentRequest);
+
+        viewPreviousRidesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openViewPreviousRidesActivity();
+            }
+        });
+
+        viewPreviousRidesButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openViewPreviousRidesActivity();
+            }
+        });
+
+        // Listen for clicks on viewCurrentRequestButton
+        viewCurrentRequestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "Opening ShowDriverRequestFragment");
+
+                // TODO: ALL THIS IS HARDCODED. REPLACE WITH THE ACTUAL REQUEST
+                Request riderRequest = new Request(
+                        "pcpzIGU4W7XomSe7o6AUXcFGDJy1",
+                        UserRequestState.getCurrentUser().getUserId(),
+                        "Test start location",
+                        1,
+                        2,
+                        "Test end location",
+                        2,
+                        3,
+                        "13.99",
+                        1585522651
+                );
+
+                // TODO: SAVE THIS TO STATE REAL QUICK SO THAT showDriverRequestFragment WILL
+                // TODO: WORK CORRECTLY. THIS SHOULDN'T BE HERE IN THE FINAL APP VERSION
+                UserRequestState.setCurrentRequest(riderRequest);
+
+                showDriverRequestFragment = ShowDriverRequestFragment.newInstance(riderRequest);
+                showDriverRequestFragment.show(fm);
+            }
+        });
     }
+
+
+    // CALL THIS WHEN A RIDE IS CONFIRMED TO CHANGE THE LAYOUT
+    private void showViewCurrentRequestLayout() {
+        viewCurrentRequestLayout.setVisibility(View.VISIBLE);
+        browseRequestsLayout.setVisibility(View.GONE);
+        bottomSheetDialog.dismiss();    // Close confirm dialog
+    }
+
+
+    private void openViewPreviousRidesActivity() {
+        Intent intent = new Intent(this, ViewPreviousRidesActivity.class);
+        startActivity(intent);
+    }
+
 
     /**
      * Finds the drivers current location, 'currentLocation'
      */
     private void fetchLastLocation() {
-        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
         }
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
         task.addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
-                if(location!=null){
+                if (location != null){
                     currentLocation = location;
                     Toast.makeText(getApplicationContext(), currentLocation.getLatitude() + " " + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -153,6 +213,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             }
         });
     }
+
 
     /// Youtube video by Coding In Flow: Firestore Tutorial Part 8 - ADD AND RETRIEVE MULTIPLE DOCUMENTS - Android Studio Tutorial
     /// https://www.youtube.com/watch?v=Bh0h_ZhX-Qg&t=349s
@@ -165,21 +226,29 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                         if (queryDocumentSnapshots.isEmpty()){
                             Log.d(TAG, "List is Empty");
                             return;
-                        }else{
+                        } else {
                             for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
                                 try {
+                                    BitmapDescriptor startLocationIcon = BitmapDescriptorFactory
+                                            .fromResource(R.drawable.ic_blue_location_marker);
                                     LatLng latlng = new LatLng(Double.parseDouble(documentSnapshot.getString("startLatitude")), Double.parseDouble(documentSnapshot.getString("startLongitude")));
 //                                    Toast.makeText(getApplicationContext(), documentSnapshot.getString("startLatitude")+","+documentSnapshot.getString("startLongitude"), Toast.LENGTH_LONG).show();
-                                    Marker my_marker = mMap.addMarker(new MarkerOptions().position(latlng).title("DUMMY").snippet("$12"));
+                                    Marker my_marker = mMap.addMarker(
+                                            new MarkerOptions()
+                                                    .position(latlng)
+                                                    .title("DUMMY")
+                                                    .icon(startLocationIcon)
+                                                    .snippet("$12")
+                                    );
                                     my_marker.setTag(new LatLng(Double.parseDouble(documentSnapshot.getString("endLatitude")), Double.parseDouble(documentSnapshot.getString("endLongitude"))));
                                 }
-                                catch (NullPointerException e){}
-
+                                catch (NullPointerException e) {}
                             }
                         }
                     }
                 });
     }
+
 
     /**
      * Adds temporary markers for testing purposes
@@ -208,31 +277,36 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         requests.add(request8);
         requests.add(request9);
 
-        for(dummyRequest i : requests){
+        BitmapDescriptor startLocationIcon = BitmapDescriptorFactory
+                .fromResource(R.drawable.ic_blue_location_marker);
+
+        for (dummyRequest i : requests){
             LatLng latlng = new LatLng (i.getLat(), i.getLon());
-            Marker my_marker = mMap.addMarker(new MarkerOptions().position(latlng).title(i.getUsername()).snippet(Float.toString(i.getPayment())));
+            Marker my_marker = mMap.addMarker(
+                    new MarkerOptions()
+                            .position(latlng)
+                            .title(i.getUsername())
+                            .icon(startLocationIcon)
+                            .snippet(Float.toString(i.getPayment())));
             my_marker.setTag(new LatLng(53.53522, -113.4765));
         }
 
     }
 
+
     /// YouTube video by CodingWithMitch: Calculating Directions with Google Directions API
     /// https://www.youtube.com/watch?v=f47L1SL5S0o&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=19
-
-
 
     /**
      * Calculates directions from the driver's current location to a marker (in this case, the rider's location)
      * Calls addPolylinesToMap(result) to draw the resulting directions as a polyline
      * @param marker A marker at the rider's current location
      */
-    private GeoApiContext my_geoApi;
     private void calculateDirections(Marker marker){
-
         com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(marker.getPosition().latitude,marker.getPosition().longitude);
 
-        my_geoApi = new GeoApiContext.Builder().apiKey(getString(R.string.google_api_key)).build();
-        DirectionsApiRequest directions = new DirectionsApiRequest(my_geoApi);
+        geoApi = new GeoApiContext.Builder().apiKey(getString(R.string.google_api_key)).build();
+        DirectionsApiRequest directions = new DirectionsApiRequest(geoApi);
 
         directions.alternatives(true);
         directions.origin(new com.google.maps.model.LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()));
@@ -247,9 +321,9 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             public void onFailure(Throwable e) {
                 System.out.println(e.toString());
             }
-
         });
     }
+
 
     /**
      * Calculates directions from the marker (riders current position) to the final destination
@@ -258,13 +332,12 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
      * @param marker A marker at the rider's current location
      */
     private void calculateDirectionsDestination(Marker marker){
-
         LatLng destination_coordinates = (LatLng) marker.getTag();
         // setting current request for sliding menu view
         com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(destination_coordinates.latitude, destination_coordinates.longitude);
 
-        my_geoApi = new GeoApiContext.Builder().apiKey(getString(R.string.google_api_key)).build();
-        DirectionsApiRequest directions = new DirectionsApiRequest(my_geoApi);
+        geoApi = new GeoApiContext.Builder().apiKey(getString(R.string.google_api_key)).build();
+        DirectionsApiRequest directions = new DirectionsApiRequest(geoApi);
 
         directions.alternatives(true);
         directions.origin(new com.google.maps.model.LatLng(marker.getPosition().latitude, marker.getPosition().longitude));
@@ -279,16 +352,15 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             public void onFailure(Throwable e) {
                 System.out.println(e.toString());
             }
-
         });
     }
+
 
     /// YouTube video by CodingWithMitch: Adding Polylines to a Google Map
     /// https://www.youtube.com/watch?v=xl0GwkLNpNI&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=20
     /**
      * Adds a polyline on the Driver map showing the route to the rider
      */
-    Polyline polyline_rider;
     private void addPolylinesToMap(final DirectionsResult result){
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @SuppressLint("ResourceType")
@@ -296,32 +368,31 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             public void run() {
                 Log.d(TAG, "run: result routes: " + result.routes.length);
 
-                for(DirectionsRoute route: result.routes){
+                for (DirectionsRoute route: result.routes){
                     Log.d(TAG, "run: leg: " + route.legs[0].toString());
                     List<com.google.maps.model.LatLng> decodedPath = PolylineEncoding.decode(route.overviewPolyline.getEncodedPath());
 
                     List<LatLng> newDecodedPath = new ArrayList<>();
 
                     // This loops through all the LatLng coordinates of ONE polyline.
-                    for(com.google.maps.model.LatLng latLng: decodedPath){
+                    for (com.google.maps.model.LatLng latLng: decodedPath){
                         newDecodedPath.add(new LatLng(latLng.lat, latLng.lng));
                     }
 
-                    if(polyline_rider!=null){
+                    if (polyline_rider!=null){
                         polyline_rider.remove();
                     }
 
                     polyline_rider = mMap.addPolyline(new PolylineOptions().addAll(newDecodedPath).color(getApplicationContext().getResources().getColor(R.color.colorPolyline)).clickable(true).width(10));
-
                 }
             }
         });
     }
 
+
     /**
      * Adds a polyline on the Driver's map showing the route from the rider to the final destination
      */
-    Polyline polyline_destination;
     private void addPolylinesToMapDestination(final DirectionsResult result){
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @SuppressLint("ResourceType")
@@ -329,27 +400,27 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             public void run() {
                 Log.d(TAG, "run: result routes: " + result.routes.length);
 
-                for(DirectionsRoute route: result.routes){
+                for (DirectionsRoute route: result.routes){
                     Log.d(TAG, "run: leg: " + route.legs[0].toString());
                     List<com.google.maps.model.LatLng> decodedPath = PolylineEncoding.decode(route.overviewPolyline.getEncodedPath());
 
                     List<LatLng> newDecodedPath = new ArrayList<>();
 
                     // This loops through all the LatLng coordinates of ONE polyline.
-                    for(com.google.maps.model.LatLng latLng: decodedPath){
+                    for (com.google.maps.model.LatLng latLng: decodedPath){
                         newDecodedPath.add(new LatLng(latLng.lat, latLng.lng));
                     }
 
-                    if(polyline_destination!=null){
+                    if (polyline_destination!=null){
                         polyline_destination.remove();
                     }
 
                     polyline_destination = mMap.addPolyline(new PolylineOptions().addAll(newDecodedPath).color(getApplicationContext().getResources().getColor(R.color.colorPolylineDest)).clickable(true).width(10));
-
                 }
             }
         });
     }
+
 
     /**
      * Invoked when the map is ready:
@@ -386,18 +457,19 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                 calculateDirections(marker);
                 calculateDirectionsDestination(marker);
                 showDialogue();
+
                 return false;
             }
         });
-
     }
+
 
     /**
      * The dialogue that is created when a marker is clicked
      */
     public void showDialogue(){
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(DriverMapActivity.this);
-        bottomSheetDialog.setContentView(R.layout.confirm_ride_driver);
+        bottomSheetDialog = new BottomSheetDialog(DriverMapActivity.this);
+        bottomSheetDialog.setContentView(R.layout.dialog_confirm_ride_driver);
         bottomSheetDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         bottomSheetDialog.show();
 
@@ -406,11 +478,11 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onClick(View v) {
                 /**
-                 * TODO:
-                 * Implement confirm ride
-                 * **/
+                 * TODO: IMPLEMENT CONFIRM RIDE
+                 **/
                 currentRequest = new dummyRequest("joe123",currentLocation.getLatitude(),currentLocation.getLongitude(),15.32f);
                 System.out.println("hello");
+                showViewCurrentRequestLayout(); // CHANGE THE LAYOUT
             }
         });
         Button denyButton = bottomSheetDialog.findViewById(R.id.deny_ride_button);
@@ -422,6 +494,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         });
     }
 
+
     public void findRider(View view) {
         if (currentLocation != null) {
             Intent intent = new Intent(this, DriverViewRequestsActivity.class);
@@ -431,20 +504,21 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             intent.putExtra("DRIVER_LON",lon);
             startActivity(intent);
         }
-        else{
+        else {
             Toast.makeText(getApplicationContext(), "Unable to find your current location", Toast.LENGTH_SHORT).show();
         }
     }
 
-    @Override
+
+/*    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.profile:
                 showDriverTestProfile(this.getCurrentFocus());
                 Toast.makeText(getApplicationContext(), "profile working", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.current_request:
-                if(currentRequest != null){
+                if (currentRequest != null){
                     Intent intent = new Intent(this, CurrentRequestActivity.class);
                     intent.putExtra("REQUEST_LATITUDE", currentRequest.getLat());
                     intent.putExtra("REQUEST_LONGITUDE",currentRequest.getLon());
@@ -456,12 +530,12 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                     Toast.makeText(getApplicationContext(), "No active request present", Toast.LENGTH_SHORT).show();
                 }
                 break;
-
         }
         return false;
-    }
+    }*/
 
-    public void showDriverTestProfile(View view) {
+
+/*    public void showDriverTestProfile(View view) {
         // Use the listener we made to listen for when the function finishes
         dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
             @Override
@@ -473,5 +547,5 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
         // Fetch the user info of a test driver user
         dbManager.fetchUserInfo("dYG5SQAAGVbmglT5k8dUhufAnpq1");
-    }
+    }*/
 }

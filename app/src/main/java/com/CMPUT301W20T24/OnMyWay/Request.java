@@ -70,7 +70,6 @@ public class Request {
      */
     public Request(
             String riderId,
-            String driverId,
             String startLocationName,
             double startLongitude,
             double startLatitude,
@@ -81,15 +80,13 @@ public class Request {
     ) {
         this.requestId = generateUUID();
         this.riderUserName = riderId;
-        this.driverUserName = driverId;
+        this.driverUserName = null;
 
         setStartLocationName(startLocationName);
-        this.startLocationName = startLocationName;
         this.startLongitude = startLongitude;
         this.startLatitude = startLatitude;
 
         setEndLocationName(endLocationName);
-        this.endLocationName = endLocationName;
         this.endLongitude = endLongitude;
         this.endLatitude = endLatitude;
 
@@ -99,8 +96,7 @@ public class Request {
         setCreationTime();
     }
 
-    // Use this constructor when we already have values for createdTime and acceptedTime
-    // For example, when we pull a request from Firebase and want to construct it again
+    // Use this constructor when we are assigning a driver. Accepted time will be set automatically
     public Request(
             String riderId,
             String driverId,
@@ -110,28 +106,26 @@ public class Request {
             String endLocationName,
             double endLongitude,
             double endLatitude,
-            long createdTime,
-            long acceptedTime
+            String paymentAmount,
+            long createdTime
     ) {
         this.requestId = generateUUID();
         this.riderUserName = riderId;
         this.driverUserName = driverId;
 
         setStartLocationName(startLocationName);
-        this.startLocationName = startLocationName;
         this.startLongitude = startLongitude;
         this.startLatitude = startLatitude;
 
         setEndLocationName(endLocationName);
-        this.endLocationName = endLocationName;
         this.endLongitude = endLongitude;
         this.endLatitude = endLatitude;
 
-        this.paymentAmount = "0";
+        this.paymentAmount = paymentAmount;
         this.status = "INCOMPLETE";
 
         this.creationTime = new RequestTime(createdTime);
-        this.acceptedTime = new RequestTime(acceptedTime);
+        this.acceptedTime = new RequestTime();
     }
 
     /**
@@ -164,7 +158,12 @@ public class Request {
     }
 
     public String getElapsedTime() {
-        return getAcceptedTime().getTimeElapsed();
+        if (acceptedTime == null) {
+            throw new NullPointerException("The ride hasn't been accepted yet. You can't call getElapsedTime() on it");
+        }
+        else {
+            return getAcceptedTime().getTimeElapsed();
+        }
     }
 
     // The remainder of the methods are all 'getter' and 'setter' method(s).
