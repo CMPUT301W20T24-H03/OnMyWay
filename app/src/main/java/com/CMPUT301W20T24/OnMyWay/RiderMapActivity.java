@@ -250,8 +250,8 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
     /**
-     * Finds the drivers current location, 'currentLocation'
-     * author: Mahin
+     * Finds the rider's current location, 'currentLocation'
+     * @author: Mahin, John
      */
     private void fetchLastLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -416,10 +416,14 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        /**
+         * sets the map location to rider's current location.
+         * @author: mahin (lines 420 - 427)
+         */
         mMap.setMyLocationEnabled(true);
 
         LatLng current_coordinates = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        //mMap.addMarker(new MarkerOptions().position(current_coordinates).title("Marker at current location (DRIVER)"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(current_coordinates));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current_coordinates,15));
     }
