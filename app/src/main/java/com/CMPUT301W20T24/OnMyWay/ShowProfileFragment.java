@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 import de.hdodenhof.circleimageview.CircleImageView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,10 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 
+/**
+ * A dialog fragment that shows a given user's profile information
+ * @author John
+ */
 /// CodePath, Using DialogFragment
 /// https://guides.codepath.com/android/using-dialogfragment
 public class ShowProfileFragment extends DialogFragment implements View.OnClickListener {
@@ -34,10 +37,8 @@ public class ShowProfileFragment extends DialogFragment implements View.OnClickL
 
     public static ShowProfileFragment newInstance(User user) {
         if (user == null) {
-            throw new NullPointerException("User can't be null");
-        }
-        else if (user == State.getCurrentUser()) {
             Log.d(TAG, "Creating profile dialog for current user");
+            user = UserRequestState.getCurrentUser();
             isCurrentUser = true;
         }
         else {
@@ -163,9 +164,9 @@ public class ShowProfileFragment extends DialogFragment implements View.OnClickL
         else if (viewId == R.id.buttonLogout) {
             Log.d(TAG, "Logout button pressed");
 
-            State.logoutUser();
+            UserRequestState.logoutUser();
             Intent intent = new Intent(parentActivity, SplashScreenActivity.class);
-            intent.putExtra("isLoggedOut", true);
+            intent.putExtra("toastMessage", "Logged out successfully");
             startActivity(intent);
         }
         else {

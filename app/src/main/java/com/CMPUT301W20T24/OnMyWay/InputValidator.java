@@ -6,7 +6,11 @@ import java.util.regex.Pattern;
 import static android.telephony.PhoneNumberUtils.formatNumber;
 
 
-// Validate various types of text inputs. Look at ResponseStatus() to see how to call it correctly.
+/**
+ * A static class responsible for validating various types of text inputs.
+ * Look at ResponseStatus() to see how to make sense of the result from methods in this class
+ * @author John
+ */
 public class InputValidator {
     private static final String TAG = "OMW/InputValidator";   // Use this tag for call Log.d()
 
@@ -23,7 +27,6 @@ public class InputValidator {
         }
         return new ResponseStatus(false, "Email address is not valid");
     }
-
 
 
     public static ResponseStatus checkPassword(CharSequence passwordChars) {
@@ -92,16 +95,22 @@ public class InputValidator {
     public static ResponseStatus checkPhoneNumber(CharSequence phoneChars) {
         Log.d(TAG, "Checking phone number");
 
-        // Format the phone number nicely, if possible.
-        // Locale is fixed to CA to prevent consistency issues
-        String formattedPhoneNumber = formatNumber(phoneChars.toString(), "CA");
-
-        if (formattedPhoneNumber != null) {
-            // If its a real phone number, return the nicely formatted version
-            return new ResponseStatus(true, formattedPhoneNumber);
+        // Check if there are special characters that are not allowed
+        if (Pattern.compile("[/N,*;#.]+").matcher(phoneChars).find()) {
+            return new ResponseStatus(false, "The phone number entered is not valid");
         }
         else {
-            return new ResponseStatus(false, "The phone number entered is not valid");
+            // Format the phone number nicely, if possible.
+            // Locale is fixed to CA to prevent consistency issues
+            String formattedPhoneNumber = formatNumber(phoneChars.toString(), "CA");
+
+            if (formattedPhoneNumber != null) {
+                // If its a real phone number, return the nicely formatted version
+                return new ResponseStatus(true, formattedPhoneNumber);
+            }
+            else {
+                return new ResponseStatus(false, "The phone number entered is not valid");
+            }
         }
     }
 }

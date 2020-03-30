@@ -7,6 +7,8 @@
     <color name="colorSuccess">#4CAF50</color>
     <color name="colorPolyline">#CB00B7FF</color>
     <color name="colorPolylineDest">#CB1160FF</color>
-
-
+    <color name="colorWhiteTransparent">#BFFFFFFF</color>
+    <color name="colorMapStartLocation">#66bb6a</color>
+    <color name="colorMapEndLocation">#ef5350</color>
+    <color name="colorMapBlueLocation">#42a5f5</color>
 </resources>

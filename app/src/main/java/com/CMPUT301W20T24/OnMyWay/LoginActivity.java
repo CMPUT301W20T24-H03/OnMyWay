@@ -3,16 +3,24 @@ package com.CMPUT301W20T24.OnMyWay;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
-
+/**
+ * A login page for the user. If the login fails the user is not allowed to continue.
+ * Otherwise, the user is redirected to either DriverMapActivity or RiderMapActivity
+ * @author John
+ */
 public class LoginActivity extends AppCompatActivity{
-    private static final String TAG = "OMW/LoginActivity";   // Use this tag for call Log.d()
+    private static final String TAG = "OMW/LoginActivity";   // Use this tag for calling Log.d()
     private EditText emailField;
     private EditText passwordField;
+    private ConstraintLayout progressContainer;
     private DBManager dbManager;
     private boolean areAllInputsValid;
 
@@ -27,23 +35,32 @@ public class LoginActivity extends AppCompatActivity{
         // Get EditTexts
         emailField = findViewById(R.id.emailField);
         passwordField = findViewById(R.id.passwordField);
+        progressContainer = findViewById(R.id.progressContainer);
     }
 
 
-    // HACK TO GO BACK TO THE MAIN ACTIVITY WHEN THE BACK BUTTON IS PRESSED. DISABLE BACK BUTTON LATER
+    // Disable back button for this activity
     @Override
     public void onBackPressed() {
-        Log.d(TAG, "Switching to MainActivity");
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(intent);
+        // Literally nothing
     }
 
 
-    // A helper function to display error messages in console and in a toast
-//    private void showInputErrorMsg(String errorMsg) {
-//        Log.w(TAG, errorMsg);
-//        Toast.makeText(LoginActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
-//    }
+    // LONGPRESS BACK BUTTON TO GO BACK TO THE MAIN ACTIVITY FOR TESTING. REMOVE THIS LATER
+
+    /// StackOverflow post by oemel09
+    /// Author: https://stackoverflow.com/users/10827064/oemel09
+    /// Answer: https://stackoverflow.com/questions/56913053/android-long-press-system-back-button-listener
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.d(TAG, "Switching to MainActivity");
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onKeyLongPress(keyCode, event);
+    }
 
 
     // A helper function to display error messages in console and in a toast
@@ -51,9 +68,11 @@ public class LoginActivity extends AppCompatActivity{
         areAllInputsValid = false;
 
         Log.w(TAG, errorMsg);
-//        Toast.makeText(EditProfileActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
 
-        if (fieldWithError != null) {
+        if (fieldWithError == null) {
+            Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
+        }
+        else {
             fieldWithError.setError(errorMsg);
         }
     }
@@ -72,7 +91,7 @@ public class LoginActivity extends AppCompatActivity{
                         Log.d(TAG, "Info for current user pulled successfully");
 
                         // Check state and either go to rider map or driver map
-                        if (State.getCurrentUser().isDriver()) {
+                        if (UserRequestState.getCurrentUser().isDriver()) {
                             // Go to DriverMapActivity
                             Log.d(TAG, "Switching to DriverMapActivity");
                             Intent intent = new Intent(LoginActivity.this, DriverMapActivity.class);
@@ -89,37 +108,21 @@ public class LoginActivity extends AppCompatActivity{
             }
 
             public void onLoginFailure(Exception exception) {
-                showInputErrorMsg("Authentication failed. Please check your email and password again" + exception.toString(), null);
+                progressContainer.setVisibility(View.GONE);
+
+                if (exception == null) {
+                    showInputErrorMsg("Authentication failed. Please check your email and password again", null);
+                }
+                else {
+                    showInputErrorMsg(exception.getMessage(), null);
+                }
             }
         });
 
+        progressContainer.setVisibility(View.VISIBLE);
         dbManager.loginUser(emailAddress, password, this);
     }
 
-
-    // Called when login button pressed. Defined in XML
-/*    public void onLoginButtonPressed(View view) {
-        CharSequence emailAddressChars = emailField.getText();
-        // Make sure the email address is valid
-        ResponseStatus emailStatus = InputValidator.checkEmail(emailAddressChars);
-
-        if (emailStatus.success()) {
-            CharSequence passwordChars = passwordField.getText();
-            // Make sure password is valid
-            ResponseStatus passwordStatus = InputValidator.checkPassword(passwordChars);
-
-            if (passwordStatus.success()) {
-                // Pass the email address and password to loginUser if inputs are valid
-                loginUser(emailAddressChars.toString(), passwordChars.toString());
-            }
-            else {
-                showInputErrorMsg(passwordStatus.getErrorMsg(), passwordField);
-            }
-        }
-        else {
-            showInputErrorMsg(emailStatus.getErrorMsg(), emailField);
-        }
-    }*/
 
     public void onLoginButtonPressed(View view) {
         Log.d(TAG, "Login button pressed");
@@ -154,12 +157,12 @@ public class LoginActivity extends AppCompatActivity{
             loginUser(emailAddressChars.toString(), passwordChars.toString());
         }
         else {
-            Toast.makeText(LoginActivity.this, "Please check your inputs again", Toast.LENGTH_SHORT).show();
+            showInputErrorMsg("Authentication failed. Please check your email and password again", null);
         }
     }
 
     public void onSignUpPressed(View view){
-        Intent intent = new Intent(this, SignUp.class);
+        Intent intent = new Intent(this, SignUpActivity.class);
         startActivity(intent);
     }
 }
