@@ -3,17 +3,26 @@ package com.CMPUT301W20T24.OnMyWay;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
-
-public class LoginActivity extends AppCompatActivity {
-    private static final String TAG = "OMW/LoginActivity";   // Use this tag for call Log.d()
+/**
+ * A login page for the user. If the login fails the user is not allowed to continue.
+ * Otherwise, the user is redirected to either DriverMapActivity or RiderMapActivity
+ * @author John
+ */
+public class LoginActivity extends AppCompatActivity{
+    private static final String TAG = "OMW/LoginActivity";   // Use this tag for calling Log.d()
     private EditText emailField;
     private EditText passwordField;
+    private ConstraintLayout progressContainer;
     private DBManager dbManager;
+    private boolean areAllInputsValid;
 
 
     @Override
@@ -23,23 +32,49 @@ public class LoginActivity extends AppCompatActivity {
 
         dbManager = new DBManager();
 
-        // Get text from EditTexts
+        // Get EditTexts
         emailField = findViewById(R.id.emailField);
         passwordField = findViewById(R.id.passwordField);
+        progressContainer = findViewById(R.id.progressContainer);
     }
 
 
-    // Ignore presses of the back button
+    // Disable back button for this activity
     @Override
     public void onBackPressed() {
-       // Literally nothing
+        // Literally nothing
+    }
+
+
+    // LONGPRESS BACK BUTTON TO GO BACK TO THE MAIN ACTIVITY FOR TESTING. REMOVE THIS LATER
+
+    /// StackOverflow post by oemel09
+    /// Author: https://stackoverflow.com/users/10827064/oemel09
+    /// Answer: https://stackoverflow.com/questions/56913053/android-long-press-system-back-button-listener
+    @Override
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.d(TAG, "Switching to MainActivity");
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onKeyLongPress(keyCode, event);
     }
 
 
     // A helper function to display error messages in console and in a toast
-    private void showLoginErrorMsg(String errorMsg) {
+    private void showInputErrorMsg(String errorMsg, EditText fieldWithError) {
+        areAllInputsValid = false;
+
         Log.w(TAG, errorMsg);
-        Toast.makeText(LoginActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+
+        if (fieldWithError == null) {
+            Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show();
+        }
+        else {
+            fieldWithError.setError(errorMsg);
+        }
     }
 
 
@@ -56,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
                         Log.d(TAG, "Info for current user pulled successfully");
 
                         // Check state and either go to rider map or driver map
-                        if (State.getCurrentUser().isDriver()) {
+                        if (UserRequestState.getCurrentUser().isDriver()) {
                             // Go to DriverMapActivity
                             Log.d(TAG, "Switching to DriverMapActivity");
                             Intent intent = new Intent(LoginActivity.this, DriverMapActivity.class);
@@ -73,35 +108,56 @@ public class LoginActivity extends AppCompatActivity {
             }
 
             public void onLoginFailure(Exception exception) {
-                showLoginErrorMsg("Authentication failed. Please check your email and password again" + exception.toString());
+                progressContainer.setVisibility(View.GONE);
+
+                if (exception == null) {
+                    showInputErrorMsg("Authentication failed. Please check your email and password again", null);
+                }
+                else {
+                    showInputErrorMsg(exception.getMessage(), null);
+                }
             }
         });
 
+        progressContainer.setVisibility(View.VISIBLE);
         dbManager.loginUser(emailAddress, password, this);
     }
 
 
-    // Called when login button pressed. Defined in XML
     public void onLoginButtonPressed(View view) {
+        Log.d(TAG, "Login button pressed");
+
+        areAllInputsValid = true;   // Assume all the inputs are valid at the start
+
+        // Get text from EditTexts
         CharSequence emailAddressChars = emailField.getText();
-        // Make sure the email address is valid
-        InputValidatorResponse emailStatus = InputValidator.checkEmail(emailAddressChars);
+        CharSequence passwordChars = passwordField.getText();
 
-        if (emailStatus.success()) {
-            CharSequence passwordChars = passwordField.getText();
-            // Make sure password is valid
-            InputValidatorResponse passwordStatus = InputValidator.checkPassword(passwordChars);
+        // If any of the inputs fail validation, show the error message and update UI
 
-            if (passwordStatus.success()) {
-                // Pass the email address and password to loginUser if inputs are valid
-                loginUser(emailAddressChars.toString(), passwordChars.toString());
-            }
-            else {
-                showLoginErrorMsg(passwordStatus.getErrorMsg());
-            }
+        // Check if the inputs are valid and store the responses in ResponseStatuses
+        ResponseStatus emailStatus = InputValidator.checkEmail(emailAddressChars);
+        ResponseStatus passwordStatus = InputValidator.checkPassword(passwordChars);
+
+        /// StackOverflow post by SilentKiller
+        /// Author: https://stackoverflow.com/users/1160282/silentkiller
+        /// Answer: https://stackoverflow.com/questions/18225365/show-error-on-the-tip-of-the-edit-text-android
+        if (!emailStatus.success()) {
+            showInputErrorMsg(emailStatus.getErrorMsg(), emailField);
+        }
+
+        if (!passwordStatus.success()) {
+            showInputErrorMsg(passwordStatus.getErrorMsg(), passwordField);
+        }
+
+        if (areAllInputsValid) {
+            Log.d(TAG, "All inputs are valid. Trying to login now");
+
+            // Pass the email address and password to loginUser if inputs are valid
+            loginUser(emailAddressChars.toString(), passwordChars.toString());
         }
         else {
-            showLoginErrorMsg(emailStatus.getErrorMsg());
+            showInputErrorMsg("Authentication failed. Please check your email and password again", null);
         }
     }
 

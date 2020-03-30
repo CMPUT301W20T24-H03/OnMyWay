@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/profile_rider"
+        android:icon="@drawable/ic_person_black_24dp"
+        android:title="Profile"/>
+
+    <item
+        android:id="@+id/current_request_rider"
+        android:icon="@drawable/ic_playlist_add_check_black_24dp"
+        android:title="Active Request"/>
+
+    <item
+        android:id = "@+id/see_driver_rating"
+        android:title = "Driver Rating"
+        android:icon = "@drawable/ic_stars_black_24dp"  />
+
+</menu>

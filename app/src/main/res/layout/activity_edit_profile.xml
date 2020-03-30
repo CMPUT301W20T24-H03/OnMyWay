@@ -6,17 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".EditProfileActivity">
 
-<!--    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="409dp"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />-->
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/upperConstraintLayout"
         android:layout_width="match_parent"
@@ -29,13 +18,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!--        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:elevation="4dp"
-            android:scaleType="centerCrop"
-            app:srcCompat="@drawable/splash_screen_background" />-->
         <Button
             android:id="@+id/buttonBack"
             style="@style/Widget.AppCompat.Button.Borderless"
@@ -59,7 +41,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:drawableStart="@drawable/ic_save_white_24dp"
-            android:drawablePadding="2sp"
+            android:drawablePadding="4sp"
             android:elevation="6dp"
             android:onClick="onSaveButtonPressed"
             android:text="@string/text_save"
@@ -71,7 +53,7 @@
         <!--- Henning Dodenhof, CircleImageView library -->
         <!--- https://github.com/hdodenhof/CircleImageView -->
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/imageProfilePhoto"
+            android:id="@+id/imageCurrentProfilePhoto"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="32dp"
@@ -230,6 +212,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:drawableStart="@drawable/ic_delete_red_24dp"
             android:onClick="onDeleteAccountPressed"
             android:text="@string/text_delete_account"
             android:textColor="@color/colorError"
@@ -240,102 +223,5 @@
             app:layout_constraintTop_toBottomOf="@+id/fieldPhone" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <include android:id="@+id/progressContainer" layout="@layout/progress_bar"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-<!--<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent"-->
-<!--    tools:context=".EditProfileActivity">-->
-
-<!--    <com.google.android.material.appbar.AppBarLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:theme="@style/AppTheme.AppBarOverlay">-->
-
-<!--        <androidx.appcompat.widget.Toolbar-->
-<!--            android:id="@+id/toolbar"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="?attr/actionBarSize"-->
-<!--            android:background="?attr/colorPrimary"-->
-<!--            app:navigationIcon="@drawable/ic_arrow_back_white_24dp"-->
-<!--            app:popupTheme="@style/AppTheme.PopupOverlay"-->
-<!--            app:title="Edit Entry" />-->
-<!--    </com.google.android.material.appbar.AppBarLayout>-->
-
-<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent">-->
-
-<!--        <EditText-->
-<!--            android:id="@+id/fieldFirstName"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="@dimen/margin"-->
-<!--            android:layout_marginEnd="@dimen/margin"-->
-<!--            android:ems="10"-->
-<!--            android:hint="@string/text_first_name"-->
-<!--            android:inputType="textPersonName"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/imageView" />-->
-
-<!--        <EditText-->
-<!--            android:id="@+id/fieldLastName"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="@dimen/margin"-->
-<!--            android:layout_marginTop="32dp"-->
-<!--            android:layout_marginEnd="@dimen/margin"-->
-<!--            android:ems="10"-->
-<!--            android:hint="@string/text_last_name"-->
-<!--            android:inputType="textPersonName"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.0"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/fieldFirstName" />-->
-
-<!--        <EditText-->
-<!--            android:id="@+id/fieldEmail"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="@dimen/margin"-->
-<!--            android:layout_marginTop="32dp"-->
-<!--            android:layout_marginEnd="@dimen/margin"-->
-<!--            android:ems="10"-->
-<!--            android:hint="@string/text_email"-->
-<!--            android:inputType="textEmailAddress"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.0"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/fieldLastName" />-->
-
-<!--        <EditText-->
-<!--            android:id="@+id/fieldPhone"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="@dimen/margin"-->
-<!--            android:layout_marginTop="32dp"-->
-<!--            android:layout_marginEnd="@dimen/margin"-->
-<!--            android:ems="10"-->
-<!--            android:hint="@string/text_phone_number"-->
-<!--            android:inputType="phone"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.0"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/fieldEmail" />-->
-
-<!--        <ImageView-->
-<!--            android:id="@+id/imageView"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="96dp"-->
-<!--            android:layout_marginEnd="96dp"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:srcCompat="@drawable/ic_face_white_24dp" />-->
-<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
-<!--</androidx.coordinatorlayout.widget.CoordinatorLayout>-->
