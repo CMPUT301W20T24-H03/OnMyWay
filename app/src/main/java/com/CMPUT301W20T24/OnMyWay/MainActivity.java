@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private DBManager dbManager;
     private FragmentManager fm;
     private ShowProfileFragment showProfileFragment;
-
+    private ShowQRFragment showQRFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,5 +73,11 @@ public class MainActivity extends AppCompatActivity {
     public void showCurrentUserProfile(View view) {
         showProfileFragment = ShowProfileFragment.newInstance(null);
         showProfileFragment.show(fm);
+    }
+
+    public void showQRbuck(View view){
+        showQRFragment = ShowQRFragment.newInstance(null);
+        showQRFragment.show(fm);
+
     }
 }
