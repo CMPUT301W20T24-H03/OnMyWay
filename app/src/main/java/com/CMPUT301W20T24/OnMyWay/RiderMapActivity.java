@@ -1,7 +1,9 @@
 package com.CMPUT301W20T24.OnMyWay;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -18,8 +20,11 @@ import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -31,6 +36,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.internal.PolylineEncoding;
@@ -50,6 +57,9 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
     private GoogleMap mMap;
     private GeoApiContext geoApi;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private Location currentLocation;
+
 
     private LinearLayout searchLocationLayout;
     private LinearLayout editPriceLayout;
@@ -75,6 +85,10 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private String newCost;
 
     private Request riderRequest;
+
+
+    private static final int REQUEST_CODE = 101;
+    private View mapView;
 
 
     // Disable back button for this activity
@@ -105,12 +119,16 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rider_map);
-
         dbManager = new DBManager();
         fm = getSupportFragmentManager();
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.riderMap);
-        mapFragment.getMapAsync(this);
+        //SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.riderMap);
+        //mapFragment.getMapAsync(this);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        fetchLastLocation();
+
+        Toast.makeText(RiderMapActivity.this, "RiderMapActivity", Toast.LENGTH_LONG).show();
+
 
         startSearchView = findViewById(R.id.startLocationSearchBar);
         endSearchView = findViewById(R.id.endLocationSearchBar);
@@ -230,6 +248,30 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
             }
         });
     }
+
+    /**
+     * Finds the rider's current location, 'currentLocation'
+     * @author: Mahin, John
+     */
+    private void fetchLastLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+        }
+        Task<Location> task = fusedLocationProviderClient.getLastLocation();
+        task.addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null){
+                    currentLocation = location;
+                    Toast.makeText(getApplicationContext(), currentLocation.getLatitude() + " " + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.riderMap);
+                    mapView = mapFragment.getView();
+                    mapFragment.getMapAsync(RiderMapActivity.this);
+                }
+            }
+        });
+    }
+
 
 
     public void cancelRide() {
@@ -374,6 +416,16 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        /**
+         * sets the map location to rider's current location.
+         * @author: mahin (lines 420 - 427)
+         */
+        mMap.setMyLocationEnabled(true);
+
+        LatLng current_coordinates = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(current_coordinates));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current_coordinates,15));
     }
 
 
