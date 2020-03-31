@@ -1,5 +1,6 @@
 package com.CMPUT301W20T24.OnMyWay;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
@@ -37,6 +38,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -74,8 +76,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     private LinearLayout viewCurrentRequestLayout;
     private BottomSheetDialog bottomSheetDialog;
 
-    private LocationManager locationManager;
-    private LocationListener locationListener;
+    private String driverUsername;
 
     private static final int REQUEST_CODE = 101;
     private View mapView;
@@ -150,6 +151,8 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         Button viewPreviousRidesButton = findViewById(R.id.buttonViewPreviousRides);
         Button viewPreviousRidesButton2 = findViewById(R.id.buttonViewPreviousRides2);
         Button viewCurrentRequestButton = findViewById(R.id.buttonViewCurrentRequest);
+
+        driverUsername = UserRequestState.getCurrentUser().getUserId();
 
         viewPreviousRidesButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -500,7 +503,22 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                 /**
                  * TODO: IMPLEMENT CONFIRM RIDE
                  **/
-                System.out.println("hello");
+
+               dbManager.getDatabase().collection("riderRequests").document(currentRide.getDocumentId()).update(
+                       "driverUserName", driverUsername,
+                       "status", "ACTIVE").addOnCompleteListener(new OnCompleteListener<Void>() {
+                   @Override
+                   public void onComplete(@NonNull Task<Void> task) {
+                       if(task.isSuccessful()){
+                           Log.d(TAG, "Confirm button driver updated database correctly");
+                       }
+                       else{
+                           Log.d(TAG, "Confirm button driver did not update");
+                       }
+                   }
+               });
+
+
                 showViewCurrentRequestLayout(); // CHANGE THE LAYOUT
             }
         });
@@ -529,85 +547,3 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
 }
-
-
-/*
-    public void addMarkers(){
-        ArrayList<dummyRequest> requests = new ArrayList<dummyRequest>();
-
-        float a = 15.32f;
-        dummyRequest request1 = new dummyRequest("Bob", 53.54,-113.49, a);
-        dummyRequest request2 = new dummyRequest("jerry",53.46, -113.52, a);
-        dummyRequest request3 = new dummyRequest("bill", 53.9, -113.8, a);
-        dummyRequest request4 = new dummyRequest("ali", 53.523089, -113.623933, a);
-        dummyRequest request5 = new dummyRequest("jane",53.565421, -113.563956, a);
-        dummyRequest request6 = new dummyRequest("joan", 53.537817, -113.476856, a);
-        dummyRequest request7 = new dummyRequest("alice",53.52328, -113.5264,a);
-        dummyRequest request8 = new dummyRequest("martha",53.52328, -113.5264,a);
-        dummyRequest request9 = new dummyRequest("trump",37.77986, -122.42905,a);
-
-        requests.add(request1);
-        requests.add(request2);
-        requests.add(request3);
-        requests.add(request4);
-        requests.add(request5);
-        requests.add(request6);
-        requests.add(request7);
-        requests.add(request8);
-        requests.add(request9);
-
-        BitmapDescriptor startLocationIcon = BitmapDescriptorFactory
-                .fromResource(R.drawable.ic_blue_location_marker);
-
-        for (dummyRequest i : requests) {
-            LatLng latlng = new LatLng(i.getLat(), i.getLon());
-            Marker my_marker = mMap.addMarker(
-                    new MarkerOptions()
-                            .position(latlng)
-                            .title(i.getUsername())
-                            .icon(startLocationIcon)
-                            .snippet(Float.toString(i.getPayment())));
-            my_marker.setTag(new LatLng(53.53522, -113.4765));
-        }
-
-    }
-*/
-
-/*    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.profile:
-                showDriverTestProfile(this.getCurrentFocus());
-                Toast.makeText(getApplicationContext(), "profile working", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.current_request:
-                if (currentRequest != null){
-                    Intent intent = new Intent(this, CurrentRequestActivity.class);
-                    intent.putExtra("REQUEST_LATITUDE", currentRequest.getLat());
-                    intent.putExtra("REQUEST_LONGITUDE",currentRequest.getLon());
-                    intent.putExtra("REQUEST_PAYMENTAMOUNT",currentRequest.getPayment());
-                    startActivity(intent);
-                    break;
-                }
-                else {
-                    Toast.makeText(getApplicationContext(), "No active request present", Toast.LENGTH_SHORT).show();
-                }
-                break;
-        }
-        return false;
-    }*/
-
-
-/*    public void showDriverTestProfile(View view) {
-        // Use the listener we made to listen for when the function finishes
-        dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
-            @Override
-            public void onUserInfoPulled(User fetchedUser) {
-                ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(fetchedUser);
-                showProfileFragment.show(fm);
-            }
-        });
-
-        // Fetch the user info of a test driver user
-        dbManager.fetchUserInfo("dYG5SQAAGVbmglT5k8dUhufAnpq1");
-    }*/

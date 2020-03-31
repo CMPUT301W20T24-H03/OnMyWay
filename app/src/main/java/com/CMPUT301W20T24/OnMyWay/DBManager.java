@@ -360,4 +360,8 @@ public class DBManager {
                     }
                 });
     }
+
+    public FirebaseFirestore getDatabase(){
+        return db;
+    }
 }
