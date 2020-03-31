@@ -193,7 +193,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                         );
                       
                         // TODO: REMOVE THIS. JUST FOR TESTING. THIS IS WHAT YOU DO WHEN A DRIVER ACCEPTS A REQUEST
-                        riderRequest.setDriverUserName("dYG5SQAAGVbmglT5k8dUhufAnpq1");
+                        riderRequest.setDriverUserName(null);
 
                         UserRequestState.setCurrentRequest(riderRequest);
                         UserRequestState.updateCurrentRequest(); // Push updates to FireBase
