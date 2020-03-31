@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -83,6 +84,23 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference requests = db.collection("riderRequests");
+
+    private ArrayList<Marker> destinationMarkers = new ArrayList<>();
+    private ArrayList<Marker> pickupMarkers = new ArrayList<>();
+
+
+    private void removeDestinationMarkers(){
+        for(Marker marker : destinationMarkers){
+            marker.remove();
+        }
+        for(Marker marker : pickupMarkers){
+            marker.remove();
+        }
+        destinationMarkers.clear();
+        pickupMarkers.clear();
+        mMap.clear();
+    }
+
 
 
     // Disable back button for this activity
@@ -241,6 +259,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                                                     .snippet("$12")
                                     );
                                     my_marker.setTag(new LatLng(Double.parseDouble(documentSnapshot.getString("endLatitude")), Double.parseDouble(documentSnapshot.getString("endLongitude"))));
+                                    pickupMarkers.add(my_marker);
                                 }
                                 catch (NullPointerException e) {}
                             }
@@ -250,53 +269,8 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
 
-    /**
-     * Adds temporary markers for testing purposes
-     */
-    public void addMarkers(){
-        ArrayList<dummyRequest> requests = new ArrayList<dummyRequest>();
-
-        float a = 15.32f;
-        dummyRequest request1 = new dummyRequest("Bob", 53.54,-113.49, a);
-        dummyRequest request2 = new dummyRequest("jerry",53.46, -113.52, a);
-        dummyRequest request3 = new dummyRequest("bill", 53.9, -113.8, a);
-        dummyRequest request4 = new dummyRequest("ali", 53.523089, -113.623933, a);
-        dummyRequest request5 = new dummyRequest("jane",53.565421, -113.563956, a);
-        dummyRequest request6 = new dummyRequest("joan", 53.537817, -113.476856, a);
-        dummyRequest request7 = new dummyRequest("alice",53.52328, -113.5264,a);
-        dummyRequest request8 = new dummyRequest("martha",53.52328, -113.5264,a);
-        dummyRequest request9 = new dummyRequest("trump",37.77986, -122.42905,a);
-
-        requests.add(request1);
-        requests.add(request2);
-        requests.add(request3);
-        requests.add(request4);
-        requests.add(request5);
-        requests.add(request6);
-        requests.add(request7);
-        requests.add(request8);
-        requests.add(request9);
-
-        BitmapDescriptor startLocationIcon = BitmapDescriptorFactory
-                .fromResource(R.drawable.ic_blue_location_marker);
-
-        for (dummyRequest i : requests){
-            LatLng latlng = new LatLng (i.getLat(), i.getLon());
-            Marker my_marker = mMap.addMarker(
-                    new MarkerOptions()
-                            .position(latlng)
-                            .title(i.getUsername())
-                            .icon(startLocationIcon)
-                            .snippet(Float.toString(i.getPayment())));
-            my_marker.setTag(new LatLng(53.53522, -113.4765));
-        }
-
-    }
-
-
     /// YouTube video by CodingWithMitch: Calculating Directions with Google Directions API
     /// https://www.youtube.com/watch?v=f47L1SL5S0o&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=19
-
     /**
      * Calculates directions from the driver's current location to a marker (in this case, the rider's location)
      * Calls addPolylinesToMap(result) to draw the resulting directions as a polyline
@@ -450,17 +424,35 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
 //        addMarkers();
 
+
         loadMarkers();
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 calculateDirections(marker);
                 calculateDirectionsDestination(marker);
-                showDialogue();
 
+                for(Marker other_markers : pickupMarkers){
+                    if(!other_markers.equals(marker)){
+                        other_markers.remove();
+                    }
+                }
+                BitmapDescriptor endLocationIcon = BitmapDescriptorFactory
+                        .fromResource(R.drawable.ic_end_location_marker);
+                Marker my_marker = mMap.addMarker(
+                        new MarkerOptions()
+                                .position((LatLng) marker.getTag())
+                                .title("Destination")
+                                .icon(endLocationIcon)
+                );
+
+                destinationMarkers.add(my_marker);
+                showDialogue();
                 return true;
             }
         });
+
+
     }
 
 
@@ -472,6 +464,14 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         bottomSheetDialog.setContentView(R.layout.dialog_confirm_ride_driver);
         bottomSheetDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         bottomSheetDialog.show();
+
+        bottomSheetDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                removeDestinationMarkers();
+                loadMarkers();
+            }
+        });
 
         Button acceptButton = bottomSheetDialog.findViewById(R.id.confirm_ride_button);
         acceptButton.setOnClickListener(new View.OnClickListener() {
@@ -509,6 +509,50 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         }
     }
 
+}
+
+
+/*
+    public void addMarkers(){
+        ArrayList<dummyRequest> requests = new ArrayList<dummyRequest>();
+
+        float a = 15.32f;
+        dummyRequest request1 = new dummyRequest("Bob", 53.54,-113.49, a);
+        dummyRequest request2 = new dummyRequest("jerry",53.46, -113.52, a);
+        dummyRequest request3 = new dummyRequest("bill", 53.9, -113.8, a);
+        dummyRequest request4 = new dummyRequest("ali", 53.523089, -113.623933, a);
+        dummyRequest request5 = new dummyRequest("jane",53.565421, -113.563956, a);
+        dummyRequest request6 = new dummyRequest("joan", 53.537817, -113.476856, a);
+        dummyRequest request7 = new dummyRequest("alice",53.52328, -113.5264,a);
+        dummyRequest request8 = new dummyRequest("martha",53.52328, -113.5264,a);
+        dummyRequest request9 = new dummyRequest("trump",37.77986, -122.42905,a);
+
+        requests.add(request1);
+        requests.add(request2);
+        requests.add(request3);
+        requests.add(request4);
+        requests.add(request5);
+        requests.add(request6);
+        requests.add(request7);
+        requests.add(request8);
+        requests.add(request9);
+
+        BitmapDescriptor startLocationIcon = BitmapDescriptorFactory
+                .fromResource(R.drawable.ic_blue_location_marker);
+
+        for (dummyRequest i : requests) {
+            LatLng latlng = new LatLng(i.getLat(), i.getLon());
+            Marker my_marker = mMap.addMarker(
+                    new MarkerOptions()
+                            .position(latlng)
+                            .title(i.getUsername())
+                            .icon(startLocationIcon)
+                            .snippet(Float.toString(i.getPayment())));
+            my_marker.setTag(new LatLng(53.53522, -113.4765));
+        }
+
+    }
+*/
 
 /*    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -548,4 +592,3 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         // Fetch the user info of a test driver user
         dbManager.fetchUserInfo("dYG5SQAAGVbmglT5k8dUhufAnpq1");
     }*/
-}
