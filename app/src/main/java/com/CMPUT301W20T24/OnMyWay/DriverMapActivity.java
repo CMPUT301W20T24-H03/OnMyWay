@@ -254,11 +254,28 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                                     Marker my_marker = mMap.addMarker(
                                             new MarkerOptions()
                                                     .position(latlng)
-                                                    .title("DUMMY")
+                                                    .title("Bid: $" + documentSnapshot.getString("paymentAmount"))
                                                     .icon(startLocationIcon)
-                                                    .snippet("$12")
+                                                    .snippet("Username: " + documentSnapshot.getString("riderUserName"))
                                     );
-                                    my_marker.setTag(new LatLng(Double.parseDouble(documentSnapshot.getString("endLatitude")), Double.parseDouble(documentSnapshot.getString("endLongitude"))));
+
+                                    String documentId = documentSnapshot.getId();
+                                    String requestId = documentSnapshot.getString("requestID");
+                                    String riderUser = documentSnapshot.getString("riderUserName");
+                                    String driverUser = documentSnapshot.getString("driverUserName");
+                                    Double startLat = Double.parseDouble(documentSnapshot.getString("startLatitude"));
+                                    Double startLon = Double.parseDouble(documentSnapshot.getString("startLongitude"));
+                                    Double endLat = Double.parseDouble(documentSnapshot.getString("endLatitude"));
+                                    Double endLon = Double.parseDouble(documentSnapshot.getString("endLongitude"));
+                                    float paymentAmount = Float.parseFloat(documentSnapshot.getString("paymentAmount"));
+                                    String status = documentSnapshot.getString("status");
+
+
+                                    MarkerStoreObject markerStoreObject = new MarkerStoreObject(documentId, driverUser, endLat, endLon, paymentAmount,requestId,riderUser,startLat,startLon,status);
+                                    my_marker.setTag((MarkerStoreObject) markerStoreObject);
+
+
+                                    //my_marker.setTag(new LatLng(Double.parseDouble(documentSnapshot.getString("endLatitude")), Double.parseDouble(documentSnapshot.getString("endLongitude"))));
                                     pickupMarkers.add(my_marker);
                                 }
                                 catch (NullPointerException e) {}
@@ -306,7 +323,9 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
      * @param marker A marker at the rider's current location
      */
     private void calculateDirectionsDestination(Marker marker){
-        LatLng destination_coordinates = (LatLng) marker.getTag();
+
+        MarkerStoreObject markerStoreObject = (MarkerStoreObject) marker.getTag();
+        LatLng destination_coordinates = new LatLng(markerStoreObject.getEndLatitude(), markerStoreObject.getEndLongitude());
         // setting current request for sliding menu view
         com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(destination_coordinates.latitude, destination_coordinates.longitude);
 
@@ -431,6 +450,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             public boolean onMarkerClick(Marker marker) {
                 calculateDirections(marker);
                 calculateDirectionsDestination(marker);
+                MarkerStoreObject markerStoreObject = (MarkerStoreObject) marker.getTag();
 
                 for(Marker other_markers : pickupMarkers){
                     if(!other_markers.equals(marker)){
@@ -441,7 +461,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                         .fromResource(R.drawable.ic_end_location_marker);
                 Marker my_marker = mMap.addMarker(
                         new MarkerOptions()
-                                .position((LatLng) marker.getTag())
+                                .position(new LatLng(markerStoreObject.getEndLatitude(), markerStoreObject.getEndLongitude()))
                                 .title("Destination")
                                 .icon(endLocationIcon)
                 );
