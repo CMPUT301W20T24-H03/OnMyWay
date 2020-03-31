@@ -60,7 +60,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
      */
     private static final String TAG = "OMW/DriverMapActivity";
     private GoogleMap mMap;
-    private dummyRequest currentRequest;
     private Location currentLocation;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private GeoApiContext geoApi;
@@ -81,6 +80,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     private static final int REQUEST_CODE = 101;
     private View mapView;
     private DBManager dbManager;
+    private MarkerStoreObject currentRide;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference requests = db.collection("riderRequests");
@@ -173,15 +173,15 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
                 // TODO: ALL THIS IS HARDCODED. REPLACE WITH THE ACTUAL REQUEST
                 Request riderRequest = new Request(
-                        "pcpzIGU4W7XomSe7o6AUXcFGDJy1",
+                        currentRide.getRiderUsername(),
                         UserRequestState.getCurrentUser().getUserId(),
-                        "Test start location",
-                        1,
-                        2,
-                        "Test end location",
-                        2,
-                        3,
-                        "13.99",
+                        currentRide.getStartAddressName(),
+                        currentRide.getStartLongitude(),
+                        currentRide.getStartLatitude(),
+                        currentRide.getEndAddressName(),
+                        currentRide.getEndLongitude(),
+                        currentRide.getEndLatitude(),
+                        Float.toString(currentRide.getPaymentAmount()),
                         1585522651
                 );
 
@@ -269,13 +269,12 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                                     Double endLon = Double.parseDouble(documentSnapshot.getString("endLongitude"));
                                     float paymentAmount = Float.parseFloat(documentSnapshot.getString("paymentAmount"));
                                     String status = documentSnapshot.getString("status");
+                                    String startAddr = documentSnapshot.getString("startAddressName");
+                                    String endAddr = documentSnapshot.getString("endAddressName");
 
 
-                                    MarkerStoreObject markerStoreObject = new MarkerStoreObject(documentId, driverUser, endLat, endLon, paymentAmount,requestId,riderUser,startLat,startLon,status);
+                                    MarkerStoreObject markerStoreObject = new MarkerStoreObject(documentId, driverUser, endLat, endLon, paymentAmount,requestId,riderUser,startLat,startLon,status,startAddr, endAddr);
                                     my_marker.setTag((MarkerStoreObject) markerStoreObject);
-
-
-                                    //my_marker.setTag(new LatLng(Double.parseDouble(documentSnapshot.getString("endLatitude")), Double.parseDouble(documentSnapshot.getString("endLongitude"))));
                                     pickupMarkers.add(my_marker);
                                 }
                                 catch (NullPointerException e) {}
@@ -466,6 +465,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                                 .icon(endLocationIcon)
                 );
 
+                currentRide = markerStoreObject;
                 destinationMarkers.add(my_marker);
                 showDialogue();
                 return true;
@@ -500,7 +500,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                 /**
                  * TODO: IMPLEMENT CONFIRM RIDE
                  **/
-                currentRequest = new dummyRequest("joe123",currentLocation.getLatitude(),currentLocation.getLongitude(),15.32f);
                 System.out.println("hello");
                 showViewCurrentRequestLayout(); // CHANGE THE LAYOUT
             }

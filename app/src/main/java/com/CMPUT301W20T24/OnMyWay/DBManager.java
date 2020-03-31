@@ -340,6 +340,9 @@ public class DBManager {
         data.put("startLongitude", String.valueOf(riderRequest.getStartLongitude()));
         data.put("driverUserName", String.valueOf(riderRequest.getDriverUserName()));
         data.put("paymentAmount", riderRequest.getPaymentAmount());
+        data.put("status", riderRequest.getStatus());
+        data.put("startAddressName", riderRequest.getStartLocationName());
+        data.put("endAddressName", riderRequest.getEndLocationName());
 
         //Adds a new record the request to the 'riderRequests' collection.
         db.collection("riderRequests")

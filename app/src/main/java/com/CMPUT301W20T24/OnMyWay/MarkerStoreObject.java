@@ -12,8 +12,10 @@ public class MarkerStoreObject {
         private Double startLatitude;
         private Double startLongitude;
         private String status;
+        private String startAddressName;
+        private String endAddressName;
 
-    public MarkerStoreObject(String documentId, String driverUsername, Double endLatitude, Double endLongitude, float paymentAmount, String requestId, String riderUsername, Double startLatitude, Double startLongitude, String status) {
+    public MarkerStoreObject(String documentId, String driverUsername, Double endLatitude, Double endLongitude, float paymentAmount, String requestId, String riderUsername, Double startLatitude, Double startLongitude, String status, String startAddressName, String endAddressName) {
         this.documentId = documentId;
         this.driverUsername = driverUsername;
         this.endLatitude = endLatitude;
@@ -24,6 +26,8 @@ public class MarkerStoreObject {
         this.startLatitude = startLatitude;
         this.startLongitude = startLongitude;
         this.status = status;
+        this.startAddressName = startAddressName;
+        this.endAddressName = endAddressName;
     }
 
     public String getDocumentId() {
@@ -104,5 +108,21 @@ public class MarkerStoreObject {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getStartAddressName() {
+        return startAddressName;
+    }
+
+    public void setStartAddressName(String startAddressName) {
+        this.startAddressName = startAddressName;
+    }
+
+    public String getEndAddressName() {
+        return endAddressName;
+    }
+
+    public void setEndAddressName(String endAddressName) {
+        this.endAddressName = endAddressName;
     }
 }
