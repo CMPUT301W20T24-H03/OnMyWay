@@ -458,7 +458,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                 calculateDirectionsDestination(marker);
                 showDialogue();
 
-                return false;
+                return true;
             }
         });
     }
