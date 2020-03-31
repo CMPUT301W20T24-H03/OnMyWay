@@ -12,12 +12,12 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
-public class CustomListDriverRequest extends ArrayAdapter<dummyRequest> {
+public class CustomListDriverRequest extends ArrayAdapter<Request> {
 
-    private ArrayList<dummyRequest> requests;
+    private ArrayList<Request> requests;
     private Context context;
 
-    public CustomListDriverRequest(Context context, ArrayList<dummyRequest> requests){
+    public CustomListDriverRequest(Context context, ArrayList<Request> requests){
         super(context,0,requests);
         this.requests = requests;
         this.context = context;
@@ -31,7 +31,7 @@ public class CustomListDriverRequest extends ArrayAdapter<dummyRequest> {
             view = LayoutInflater.from(context).inflate(R.layout.custom_list_content,parent,false);
         }
 
-        dummyRequest request = requests.get(position);
+        Request request = requests.get(position);
 
         // setting TextView's that will be added to listview
         TextView usernameText = view.findViewById(R.id.riderUser);
@@ -40,10 +40,9 @@ public class CustomListDriverRequest extends ArrayAdapter<dummyRequest> {
         TextView paymentText = view.findViewById(R.id.paymentAmount);
 
         // setting TextView's
-        usernameText.setText(request.getUsername());
-        latText.setText(Double.toString(request.getLat()));
-        longText.setText(Double.toString(request.getLon()));
-        paymentText.setText(Float.toString(request.getPayment()));
+        usernameText.setText(request.getRiderUserName());
+        latText.setText(Double.toString(request.getStartLatitude()));
+        longText.setText(Double.toString(request.getEndLatitude()));
 
         return view;
     }

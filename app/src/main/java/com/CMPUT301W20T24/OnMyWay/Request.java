@@ -54,11 +54,9 @@ public class Request {
         this.status = "INCOMPLETE";
     }
 
-
     /**
      * Constructor method required to instantiate an instance of the Request class.
      * @param riderId TODO
-     * @param driverId TODO
      * @param startLocationName TODO
      * @param startLongitude TODO
      * @param startLatitude TODO
