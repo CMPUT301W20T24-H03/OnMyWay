@@ -1,5 +1,9 @@
 package com.CMPUT301W20T24.OnMyWay;
 
+import android.util.Log;
+
+import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -8,12 +12,16 @@ import java.util.UUID;
  */
 
 public class Request {
+    private static final String TAG = "OMW/Request";  // Use this tag for calling Log.d()
+
     private String requestId;
     private String riderUserName;
 
+    private String startLocationName;
     private double startLongitude;
     private double startLatitude;
 
+    private String endLocationName;
     private double endLongitude;
     private double endLatitude;
 
@@ -21,6 +29,11 @@ public class Request {
     private String driverUserName;
     private String status;
 
+    private RequestTime creationTime;  // The time when the request was created by a rider
+    private RequestTime acceptedTime;  // The time when the request was accepted by a driver
+
+
+    // TODO: REMOVE THIS OLD CONSTRUCTOR
     /**
      * Constructor method required to instantiate an instance of the Request class.
      * @param startLongitude
@@ -29,16 +42,88 @@ public class Request {
      * @param endLatitude
      * @author Bard Samimi, Manpreet Grewal
      */
-    public Request(double startLongitude, double startLatitude, double endLongitude, double endLatitude) {
+    public Request(double startLongitude, double startLatitude, double endLongitude, double endLatitude, String paymentAmount) {
         this.requestId = generateUUID();
-        this.riderUserName = State.getCurrentUser().getUserId().toString();
+        this.riderUserName = UserRequestState.getCurrentUser().getUserId();
         this.startLongitude = startLongitude;
         this.startLatitude = startLatitude;
         this.endLongitude = endLongitude;
         this.endLatitude = endLatitude;
-        this.paymentAmount = "0";
+        this.paymentAmount = paymentAmount;
         this.driverUserName = "NONE";
         this.status = "INCOMPLETE";
+    }
+
+    /**
+     * Constructor method required to instantiate an instance of the Request class.
+     * @param riderId TODO
+     * @param startLocationName TODO
+     * @param startLongitude TODO
+     * @param startLatitude TODO
+     * @param endLocationName TODO
+     * @param endLongitude TODO
+     * @param endLatitude TODO
+     * @param paymentAmount TODO
+     * @author Bard Samimi, Manpreet Grewal, John
+     */
+    public Request(
+            String riderId,
+            String startLocationName,
+            double startLongitude,
+            double startLatitude,
+            String endLocationName,
+            double endLongitude,
+            double endLatitude,
+            String paymentAmount
+    ) {
+        this.requestId = generateUUID();
+        this.riderUserName = riderId;
+        this.driverUserName = null;
+
+        setStartLocationName(startLocationName);
+        this.startLongitude = startLongitude;
+        this.startLatitude = startLatitude;
+
+        setEndLocationName(endLocationName);
+        this.endLongitude = endLongitude;
+        this.endLatitude = endLatitude;
+
+        this.paymentAmount = paymentAmount;
+        this.status = "INCOMPLETE";
+
+        setCreationTime();
+    }
+
+    // Use this constructor when we are assigning a driver. Accepted time will be set automatically
+    public Request(
+            String riderId,
+            String driverId,
+            String startLocationName,
+            double startLongitude,
+            double startLatitude,
+            String endLocationName,
+            double endLongitude,
+            double endLatitude,
+            String paymentAmount,
+            long createdTime
+    ) {
+        this.requestId = generateUUID();
+        this.riderUserName = riderId;
+        this.driverUserName = driverId;
+
+        setStartLocationName(startLocationName);
+        this.startLongitude = startLongitude;
+        this.startLatitude = startLatitude;
+
+        setEndLocationName(endLocationName);
+        this.endLongitude = endLongitude;
+        this.endLatitude = endLatitude;
+
+        this.paymentAmount = paymentAmount;
+        this.status = "INCOMPLETE";
+
+        this.creationTime = new RequestTime(createdTime);
+        this.acceptedTime = new RequestTime();
     }
 
     /**
@@ -46,19 +131,53 @@ public class Request {
      * @return String
      * @author Manpreet Grewal
      */
-    //https://www.baeldung.com/java-uuid
-    //https://towardsdatascience.com/are-uuids-really-unique-57eb80fc2a87
+    /// https://www.baeldung.com/java-uuid
+
+    /// https://towardsdatascience.com/are-uuids-really-unique-57eb80fc2a87
     private String generateUUID() {
         UUID requestUUID = UUID.randomUUID();
         return this.requestId = requestUUID.toString();
     }
-    // The remainder of the methods are all 'getter' and 'setter' method(s). Standard, and require no documentation.
+
+    private void setCreationTime() {
+        this.creationTime = new RequestTime();
+    }
+
+/*    private Date getCreationTime() {
+        // Not sure if this is needed yet
+    }*/
+
+    private void setAcceptedTime() {
+        this.acceptedTime = new RequestTime();
+    }
+
+    private RequestTime getAcceptedTime() {
+        return this.acceptedTime;
+    }
+
+    public String getElapsedTime() {
+        if (acceptedTime == null) {
+            throw new NullPointerException("The ride hasn't been accepted yet. You can't call getElapsedTime() on it");
+        }
+        else {
+            return getAcceptedTime().getTimeElapsed();
+        }
+    }
+
+    // The remainder of the methods are all 'getter' and 'setter' method(s).
+    // These are standard, and require no documentation.
     // Added by Bard Samimi
     public String getRequestId() { return requestId; }
 
     public String getRiderUserName() { return riderUserName; }
 
     public void setRiderUserName(String riderUserName) { this.riderUserName = riderUserName; }
+
+    public String getStartLocationName() { return startLocationName; }
+
+    private void setStartLocationName(String startLocationName) {
+        this.startLocationName = startLocationName;
+    }
 
     public double getStartLongitude() { return startLongitude; }
 
@@ -67,6 +186,12 @@ public class Request {
     public double getStartLatitude() { return startLatitude; }
 
     public void setStartLatitude(double startLatitude) { this.startLatitude = startLatitude; }
+
+    public String getEndLocationName() { return endLocationName; }
+
+    private void setEndLocationName(String endLocationName) {
+        this.endLocationName = endLocationName;
+    }
 
     public double getEndLongitude() { return endLongitude; }
 
@@ -78,13 +203,17 @@ public class Request {
 
     public String getPaymentAmount() { return paymentAmount; }
 
-    public String setPaymentAmount(String paymentAmount) { return this.paymentAmount; }
+    public void setPaymentAmount(String paymentAmount) { this.paymentAmount = paymentAmount; }
 
     public String getDriverUserName() { return driverUserName; }
 
-    public void setDriverUserName(String driverUserName) { this.driverUserName = driverUserName; }
+    public void setDriverUserName(String driverUserName) {
+        this.driverUserName = driverUserName;
+        setAcceptedTime();  // Record the time at which the request was accepted
+    }
 
     public String getStatus() { return status; }
 
     public void setStatus(String status) { this.status = status; }
+
 }

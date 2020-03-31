@@ -77,14 +77,14 @@ public class SplashScreenActivity extends AppCompatActivity {
         Log.d(TAG, "After");
 
         // If user is logged in, fetch additional user info and go to a map activity
-        if (State.isLoggedIn()) {
+        if (UserRequestState.isLoggedIn()) {
             dbManager.setCurrentUserInfoPulledListener(new CurrentUserInfoPulledListener() {
                 // This is called after fetchCurrentUserInfo() finishes
                 public void onCurrentUserInfoPulled() {
                     Log.d(TAG, "Info for current user pulled successfully");
 
                     // Check state and either go to rider map or driver map
-                    if (State.getCurrentUser().isDriver()) {
+                    if (UserRequestState.getCurrentUser().isDriver()) {
                         // Go to DriverMapActivity
                         Log.d(TAG, "Switching to DriverMapActivity");
                         Intent intent = new Intent(SplashScreenActivity.this, DriverMapActivity.class);

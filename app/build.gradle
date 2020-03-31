@@ -49,4 +49,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:21.4.1'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+    implementation 'com.google.firebase:firebase-database:19.2.1'
+    //    Add Zxing library to generate barcode
+    implementation 'com.google.zxing:core:3.4.0'
+    implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
 }

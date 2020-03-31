@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
@@ -131,7 +132,7 @@ public class DBManager {
 
     /**
      * Logs out the current user from Firebase Auth. This shouldn't be called on its own.
-     * Call the logout method in State to clean up local data and log out online as well
+     * Call the logout method in UserRequestState to clean up local data and log out online as well
      * @author John
      */
     public void logoutUser() {
@@ -140,7 +141,7 @@ public class DBManager {
 
 
     /**
-     * Gets the info of the currently logged in user and saves it to State (phone, rating, etc).
+     * Gets the info of the currently logged in user and saves it to UserRequestState (phone, rating, etc).
      * This should be called after the user is logged in using Firebase Auth to get the user's
      * profile information
      * @author John
@@ -150,7 +151,7 @@ public class DBManager {
         setUserInfoPulledListener(new UserInfoPulledListener() {
             @Override
             public void onUserInfoPulled(User currentUser) {
-                State.setCurrentUser(currentUser);
+                UserRequestState.setCurrentUser(currentUser);
 
                 if (currentUserInfoPulledListener == null) {
                     Log.d(TAG, "No listeners are assigned for currentUserInfoPulledListener");
@@ -286,7 +287,7 @@ public class DBManager {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-//                                            State.logoutUser();
+//                                            UserRequestState.logoutUser();
                                             Log.d(TAG, "User account deleted successfully");
 
                                             if (userDeletedListener == null) {
@@ -326,5 +327,41 @@ public class DBManager {
                         }
                     }
                 });
+    }
+
+    public void pushRequestInfo(Request riderRequest){
+        // store all values in the database
+        HashMap<String, String> data = new HashMap<>();
+        data.put("riderUserName", String.valueOf(riderRequest.getRiderUserName()));
+        data.put("endLatitude", String.valueOf(riderRequest.getEndLatitude()));
+        data.put("endLongitude", String.valueOf(riderRequest.getEndLongitude()));
+        data.put("requestID", riderRequest.getRequestId());
+        data.put("startLatitude", String.valueOf(riderRequest.getStartLatitude()));
+        data.put("startLongitude", String.valueOf(riderRequest.getStartLongitude()));
+        data.put("driverUserName", String.valueOf(riderRequest.getDriverUserName()));
+        data.put("paymentAmount", riderRequest.getPaymentAmount());
+        data.put("status", riderRequest.getStatus());
+        data.put("startAddressName", riderRequest.getStartLocationName());
+        data.put("endAddressName", riderRequest.getEndLocationName());
+
+        //Adds a new record the request to the 'riderRequests' collection.
+        db.collection("riderRequests")
+                .add(data)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "Data addition successful" + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "Data addition failed." + e.toString());
+                    }
+                });
+    }
+
+    public FirebaseFirestore getDatabase(){
+        return db;
     }
 }

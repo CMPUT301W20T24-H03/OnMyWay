@@ -5,10 +5,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 /**
@@ -22,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private DBManager dbManager;
     private FragmentManager fm;
     private ShowProfileFragment showProfileFragment;
-
+    private ShowQRFragment showQRFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         fm = getSupportFragmentManager();
 
         statusTextCurrentUser = findViewById(R.id.statusTextCurrentUser);
-        currentUser = State.getCurrentUser();
+        currentUser = UserRequestState.getCurrentUser();
 
         if (currentUser != null) {
             statusTextCurrentUser.setText(currentUser.getUserId());
@@ -73,48 +71,13 @@ public class MainActivity extends AppCompatActivity {
 
     // Called when the user presses a button
     public void showCurrentUserProfile(View view) {
-        showProfileFragment = ShowProfileFragment.newInstance(currentUser);
+        showProfileFragment = ShowProfileFragment.newInstance(null);
         showProfileFragment.show(fm);
     }
 
+    public void showQRbuck(View view){
+        showQRFragment = ShowQRFragment.newInstance(null);
+        showQRFragment.show(fm);
 
-    // Called when the user presses a button
-    // TODO: Implement this. Need to rewrite User and DBManager first
-    public void showRiderTestProfile(View view) {
-        // Use the listener we made to listen for when the function finishes
-        dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
-            @Override
-            public void onUserInfoPulled(User fetchedUser) {
-                ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(fetchedUser);
-                showProfileFragment.show(fm);
-            }
-        });
-
-        // Fetch the user info of a test rider user
-        dbManager.fetchUserInfo("pcpzIGU4W7XomSe7o6AUXcFGDJy1");
-    }
-
-
-    // Called when the user presses a button
-    // TODO: Implement this. Need to rewrite User and DBManager first
-    public void showDriverTestProfile(View view) {
-        // Use the listener we made to listen for when the function finishes
-        dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
-            @Override
-            public void onUserInfoPulled(User fetchedUser) {
-                ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(fetchedUser);
-                showProfileFragment.show(fm);
-            }
-        });
-
-        // Fetch the user info of a test driver user
-        dbManager.fetchUserInfo("dYG5SQAAGVbmglT5k8dUhufAnpq1");
-    }
-
-
-    // Called when the user presses a button
-    public void openRiderCostActivity(View view) {
-        Intent intent = new Intent(this, RiderCostActivity.class);
-        startActivity(intent);
     }
 }
