@@ -75,11 +75,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     private Polyline polyline_destination;
 
     private FragmentManager fm;
-    private ShowDriverRequestFragment showDriverRequestFragment;
-
-    private LinearLayout browseRequestsLayout;
-    private LinearLayout viewCurrentRequestLayout;
-    private BottomSheetDialog bottomSheetDialog;
 
     private String driverUsername;
 
@@ -137,19 +132,11 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         fetchLastLocation();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
 
-        Toast.makeText(DriverMapActivity.this, "DriverMapActivity", Toast.LENGTH_LONG).show();
+        // Toast.makeText(DriverMapActivity.this, "DriverMapActivity", Toast.LENGTH_LONG).show();
 
         driverUsername = UserRequestState.getCurrentUser().getUserId();
 
     }
-
-
-    // CALL THIS WHEN A RIDE IS CONFIRMED TO CHANGE THE LAYOUT
-    private void showViewCurrentRequestLayout() {
-        viewCurrentRequestLayout.setVisibility(View.VISIBLE);
-        browseRequestsLayout.setVisibility(View.GONE);
-    }
-
 
     private void openViewPreviousRidesActivity() {
         Intent intent = new Intent(this, ViewPreviousRidesActivity.class);
@@ -170,7 +157,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             public void onSuccess(Location location) {
                 if (location != null){
                     currentLocation = location;
-                    Toast.makeText(getApplicationContext(), currentLocation.getLatitude() + " " + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(getApplicationContext(), currentLocation.getLatitude() + " " + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
                     mapView = mapFragment.getView();
                     mapFragment.getMapAsync(DriverMapActivity.this);
@@ -194,17 +181,9 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                         } else {
                             for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
                                 try {
-                                    BitmapDescriptor startLocationIcon = BitmapDescriptorFactory
-                                            .fromResource(R.drawable.ic_blue_location_marker);
+                                    BitmapDescriptor startLocationIcon = BitmapDescriptorFactory.fromResource(R.drawable.ic_blue_location_marker);
                                     LatLng latlng = new LatLng(Double.parseDouble(documentSnapshot.getString("startLatitude")), Double.parseDouble(documentSnapshot.getString("startLongitude")));
-//                                    Toast.makeText(getApplicationContext(), documentSnapshot.getString("startLatitude")+","+documentSnapshot.getString("startLongitude"), Toast.LENGTH_LONG).show();
-                                    Marker my_marker = mMap.addMarker(
-                                            new MarkerOptions()
-                                                    .position(latlng)
-                                                    .title("Bid: $" + documentSnapshot.getString("paymentAmount"))
-                                                    .icon(startLocationIcon)
-                                                    .snippet("Username: " + documentSnapshot.getString("riderUserName"))
-                                    );
+//                                  Toast.makeText(getApplicationContext(), documentSnapshot.getString("startLatitude")+","+documentSnapshot.getString("startLongitude"), Toast.LENGTH_LONG).show();
 
                                     String documentId = documentSnapshot.getId();
                                     String requestId = documentSnapshot.getString("requestID");
@@ -219,10 +198,21 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                                     String startAddr = documentSnapshot.getString("startAddressName");
                                     String endAddr = documentSnapshot.getString("endAddressName");
 
+                                    if(status.equals("INCOMPLETE")) {
+                                        Marker my_marker = mMap.addMarker(
+                                                new MarkerOptions()
+                                                        .position(latlng)
+                                                        .title("Bid: $" + documentSnapshot.getString("paymentAmount"))
+                                                        .icon(startLocationIcon)
+                                                        .snippet("Username: " + documentSnapshot.getString("riderUserName"))
+                                        );
 
-                                    MarkerStoreObject markerStoreObject = new MarkerStoreObject(documentId, driverUser, endLat, endLon, paymentAmount,requestId,riderUser,startLat,startLon,status,startAddr, endAddr);
-                                    my_marker.setTag((MarkerStoreObject) markerStoreObject);
-                                    pickupMarkers.add(my_marker);
+                                        MarkerStoreObject markerStoreObject = new MarkerStoreObject(documentId, driverUser, endLat, endLon, paymentAmount, requestId, riderUser, startLat, startLon, status, startAddr, endAddr);
+                                        my_marker.setTag((MarkerStoreObject) markerStoreObject);
+                                        pickupMarkers.add(my_marker);
+                                    }
+
+
                                 }
                                 catch (NullPointerException e) {}
                             }
@@ -454,9 +444,13 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         popupWindow.showAtLocation(findViewById(android.R.id.content).getRootView(), Gravity.BOTTOM, 0 ,0);
 
         TextView pickupTextview = confirm_dialogue.findViewById(R.id.ride_pickup_text);
-        pickupTextview.setText(((MarkerStoreObject) marker.getTag()).getStartAddressName());
+        String pickup = ((MarkerStoreObject) marker.getTag()).getStartAddressName();
+        pickupTextview.setText(pickup);
+
         TextView destinationTextview = confirm_dialogue.findViewById(R.id.ride_destination_text);
-        destinationTextview.setText(((MarkerStoreObject) marker.getTag()).getEndAddressName());
+        String destination = ((MarkerStoreObject) marker.getTag()).getEndAddressName();
+        destinationTextview.setText(destination);
+
         TextView paymentTextview = confirm_dialogue.findViewById(R.id.ride_payment_text);
         String payment_amount = Float.toString(((MarkerStoreObject) marker.getTag()).getPaymentAmount());
         paymentTextview.setText(payment_amount);
@@ -477,28 +471,115 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /**
-                 * TODO: IMPLEMENT CONFIRM RIDE
-                 **/
 
                dbManager.getDatabase().collection("riderRequests").document(currentRide.getDocumentId()).update(
-                       "driverUserName", driverUsername,
-                       "status", "ACTIVE").addOnCompleteListener(new OnCompleteListener<Void>() {
+                       "driverUserName", driverUsername,"status", "ACTIVE").addOnCompleteListener(new OnCompleteListener<Void>() {
                    @Override
                    public void onComplete(@NonNull Task<Void> task) {
                        if(task.isSuccessful()){
                            Log.d(TAG, "Confirm button driver updated database correctly");
+                           popupWindow.dismiss();
+                           pickupRider(marker);
                        }
                        else{
                            Log.d(TAG, "Confirm button driver did not update");
                        }
                    }
                });
-                popupWindow.dismiss();
-                showViewCurrentRequestLayout(); // CHANGE THE LAYOUT
+
             }
         });
 
+    }
+
+    public void pickupRider(Marker marker){
+        layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        ViewGroup pickup_dialogue = (ViewGroup) layoutInflater.inflate(R.layout.dialog_pickup_rider, null);
+        popupWindow = new PopupWindow(pickup_dialogue);
+        popupWindow.setWindowLayoutMode(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.setHeight(1);
+        popupWindow.setWidth(1);
+        popupWindow.setFocusable(false);
+        popupWindow.showAtLocation(findViewById(android.R.id.content).getRootView(), Gravity.BOTTOM, 0 ,0);
+
+        TextView pickupTextview = pickup_dialogue.findViewById(R.id.ride_pickup_text);
+        String pickup = ((MarkerStoreObject) marker.getTag()).getStartAddressName();
+        pickupTextview.setText(pickup);
+
+        TextView destinationTextview = pickup_dialogue.findViewById(R.id.ride_destination_text);
+        String destination = ((MarkerStoreObject) marker.getTag()).getEndAddressName();
+        destinationTextview.setText(destination);
+
+        TextView paymentTextview = pickup_dialogue.findViewById(R.id.ride_payment_text);
+        String payment_amount = Float.toString(((MarkerStoreObject) marker.getTag()).getPaymentAmount());
+        paymentTextview.setText(payment_amount);
+
+        // "Deny" button on the pop-up window
+        Button confirm_pickup_button = pickup_dialogue.findViewById(R.id.confirm_pickup_button);
+        confirm_pickup_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+                dropoffRider(marker);
+            }
+        });
+
+    }
+
+    public void dropoffRider(Marker marker){
+        layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        ViewGroup dropoff_dialogue = (ViewGroup) layoutInflater.inflate(R.layout.dialog_destination_driver, null);
+        popupWindow = new PopupWindow(dropoff_dialogue);
+        popupWindow.setWindowLayoutMode(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.setHeight(1);
+        popupWindow.setWidth(1);
+        popupWindow.setFocusable(false);
+        popupWindow.showAtLocation(findViewById(android.R.id.content).getRootView(), Gravity.BOTTOM, 0 ,0);
+
+        TextView pickupTextview = dropoff_dialogue.findViewById(R.id.ride_pickup_text);
+        String pickup = ((MarkerStoreObject) marker.getTag()).getStartAddressName();
+        pickupTextview.setText(pickup);
+
+        TextView destinationTextview = dropoff_dialogue.findViewById(R.id.ride_destination_text);
+        String destination = ((MarkerStoreObject) marker.getTag()).getEndAddressName();
+        destinationTextview.setText(destination);
+
+        TextView paymentTextview = dropoff_dialogue.findViewById(R.id.ride_payment_text);
+        String payment_amount = Float.toString(((MarkerStoreObject) marker.getTag()).getPaymentAmount());
+        paymentTextview.setText(payment_amount);
+
+        // "Deny" button on the pop-up window
+        Button confirm_pickup_button = dropoff_dialogue.findViewById(R.id.confirm_dropoff_button);
+        confirm_pickup_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+
+                dbManager.getDatabase().collection("riderRequests").document(currentRide.getDocumentId()).update(
+                        "driverUserName", driverUsername,
+                        "status", "COMPLETE").addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if(task.isSuccessful()){
+                            Log.d(TAG, "Confirm dropoff updated database correctly");
+                            popupWindow.dismiss();
+                        }
+                        else{
+                            Log.d(TAG, "Confirm dropoff did not update");
+                        }
+                    }
+                });
+
+                removeDestinationMarkers();
+                loadMarkers();
+                // TODO start payment activity here!
+
+            }
+        });
 
     }
 
