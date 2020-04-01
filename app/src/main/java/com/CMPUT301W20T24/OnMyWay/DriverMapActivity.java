@@ -17,11 +17,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -89,18 +93,9 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     private ArrayList<Marker> destinationMarkers = new ArrayList<>();
     private ArrayList<Marker> pickupMarkers = new ArrayList<>();
 
-
-    private void removeDestinationMarkers(){
-        for(Marker marker : destinationMarkers){
-            marker.remove();
-        }
-        for(Marker marker : pickupMarkers){
-            marker.remove();
-        }
-        destinationMarkers.clear();
-        pickupMarkers.clear();
-        mMap.clear();
-    }
+    private LayoutInflater layoutInflater;
+    private PopupWindow popupWindow;
+    private RelativeLayout relativeLayout;
 
 
 
@@ -145,57 +140,59 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
         Toast.makeText(DriverMapActivity.this, "DriverMapActivity", Toast.LENGTH_LONG).show();
 
-        browseRequestsLayout = findViewById(R.id.browseRequestsLayout);;
-        viewCurrentRequestLayout = findViewById(R.id.viewCurrentRequestLayout);
-
-        Button viewPreviousRidesButton = findViewById(R.id.buttonViewPreviousRides);
-        Button viewPreviousRidesButton2 = findViewById(R.id.buttonViewPreviousRides2);
-        Button viewCurrentRequestButton = findViewById(R.id.buttonViewCurrentRequest);
+//        browseRequestsLayout = findViewById(R.id.browseRequestsLayout);;
+//        viewCurrentRequestLayout = findViewById(R.id.viewCurrentRequestLayout);
+//
+//        Button viewPreviousRidesButton = findViewById(R.id.buttonViewPreviousRides);
+//        Button viewPreviousRidesButton2 = findViewById(R.id.buttonViewPreviousRides2);
+//        Button viewCurrentRequestButton = findViewById(R.id.buttonViewCurrentRequest);
 
         driverUsername = UserRequestState.getCurrentUser().getUserId();
 
-        viewPreviousRidesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openViewPreviousRidesActivity();
-            }
-        });
+//        viewPreviousRidesButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                openViewPreviousRidesActivity();
+//            }
+//        });
+//
+//        viewPreviousRidesButton2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                openViewPreviousRidesActivity();
+//            }
+//        });
 
-        viewPreviousRidesButton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openViewPreviousRidesActivity();
-            }
-        });
+//        // Listen for clicks on viewCurrentRequestButton
+//        viewCurrentRequestButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d(TAG, "Opening ShowDriverRequestFragment");
+//
+//                // TODO: ALL THIS IS HARDCODED. REPLACE WITH THE ACTUAL REQUEST
+//                Request riderRequest = new Request(
+//                        currentRide.getRiderUsername(),
+//                        UserRequestState.getCurrentUser().getUserId(),
+//                        currentRide.getStartAddressName(),
+//                        currentRide.getStartLongitude(),
+//                        currentRide.getStartLatitude(),
+//                        currentRide.getEndAddressName(),
+//                        currentRide.getEndLongitude(),
+//                        currentRide.getEndLatitude(),
+//                        Float.toString(currentRide.getPaymentAmount()),
+//                        1585522651
+//                );
+//
+//                // TODO: SAVE THIS TO STATE REAL QUICK SO THAT showDriverRequestFragment WILL
+//                // TODO: WORK CORRECTLY. THIS SHOULDN'T BE HERE IN THE FINAL APP VERSION
+//                UserRequestState.setCurrentRequest(riderRequest);
+//
+//                showDriverRequestFragment = ShowDriverRequestFragment.newInstance(riderRequest);
+//                showDriverRequestFragment.show(fm);
+//            }
+//        });
 
-        // Listen for clicks on viewCurrentRequestButton
-        viewCurrentRequestButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "Opening ShowDriverRequestFragment");
 
-                // TODO: ALL THIS IS HARDCODED. REPLACE WITH THE ACTUAL REQUEST
-                Request riderRequest = new Request(
-                        currentRide.getRiderUsername(),
-                        UserRequestState.getCurrentUser().getUserId(),
-                        currentRide.getStartAddressName(),
-                        currentRide.getStartLongitude(),
-                        currentRide.getStartLatitude(),
-                        currentRide.getEndAddressName(),
-                        currentRide.getEndLongitude(),
-                        currentRide.getEndLatitude(),
-                        Float.toString(currentRide.getPaymentAmount()),
-                        1585522651
-                );
-
-                // TODO: SAVE THIS TO STATE REAL QUICK SO THAT showDriverRequestFragment WILL
-                // TODO: WORK CORRECTLY. THIS SHOULDN'T BE HERE IN THE FINAL APP VERSION
-                UserRequestState.setCurrentRequest(riderRequest);
-
-                showDriverRequestFragment = ShowDriverRequestFragment.newInstance(riderRequest);
-                showDriverRequestFragment.show(fm);
-            }
-        });
     }
 
 
@@ -203,7 +200,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     private void showViewCurrentRequestLayout() {
         viewCurrentRequestLayout.setVisibility(View.VISIBLE);
         browseRequestsLayout.setVisibility(View.GONE);
-        bottomSheetDialog.dismiss();    // Close confirm dialog
     }
 
 
@@ -452,25 +448,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             public boolean onMarkerClick(Marker marker) {
                 calculateDirections(marker);
                 calculateDirectionsDestination(marker);
-                MarkerStoreObject markerStoreObject = (MarkerStoreObject) marker.getTag();
-
-                for(Marker other_markers : pickupMarkers){
-                    if(!other_markers.equals(marker)){
-                        other_markers.remove();
-                    }
-                }
-                BitmapDescriptor endLocationIcon = BitmapDescriptorFactory
-                        .fromResource(R.drawable.ic_end_location_marker);
-                Marker my_marker = mMap.addMarker(
-                        new MarkerOptions()
-                                .position(new LatLng(markerStoreObject.getEndLatitude(), markerStoreObject.getEndLongitude()))
-                                .title("Destination")
-                                .icon(endLocationIcon)
-                );
-
-                currentRide = markerStoreObject;
-                destinationMarkers.add(my_marker);
-                showDialogue();
+                showDialogue(marker);
                 return true;
             }
         });
@@ -478,25 +456,68 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     }
 
+    private void removeDestinationMarkers(){
+        for(Marker marker : destinationMarkers){
+            marker.remove();
+        }
+        for(Marker marker : pickupMarkers){
+            marker.remove();
+        }
+        destinationMarkers.clear();
+        pickupMarkers.clear();
+        mMap.clear();
+    }
+
 
     /**
      * The dialogue that is created when a marker is clicked
      */
-    public void showDialogue(){
-        bottomSheetDialog = new BottomSheetDialog(DriverMapActivity.this);
-        bottomSheetDialog.setContentView(R.layout.dialog_confirm_ride_driver);
-        bottomSheetDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        bottomSheetDialog.show();
+    public void showDialogue(Marker marker){
 
-        bottomSheetDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        // Show the appropriate markers on the map when a marker is clicked and the dialogue loads:
+        MarkerStoreObject markerStoreObject = (MarkerStoreObject) marker.getTag();
+        for(Marker other_markers : pickupMarkers){
+            if(!other_markers.equals(marker)){
+                other_markers.remove();
+            }
+        }
+        BitmapDescriptor endLocationIcon = BitmapDescriptorFactory
+                .fromResource(R.drawable.ic_end_location_marker);
+        Marker my_marker = mMap.addMarker(
+                new MarkerOptions()
+                        .position(new LatLng(markerStoreObject.getEndLatitude(), markerStoreObject.getEndLongitude()))
+                        .title("Destination")
+                        .icon(endLocationIcon)
+        );
+        currentRide = markerStoreObject;
+        destinationMarkers.add(my_marker);
+        //
+
+        // Create the pop-up window
+        layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        ViewGroup confirm_dialogue = (ViewGroup) layoutInflater.inflate(R.layout.dialog_confirm_ride_driver, null);
+        popupWindow = new PopupWindow(confirm_dialogue);
+        popupWindow.setWindowLayoutMode(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.setHeight(1);
+        popupWindow.setWidth(1);
+        popupWindow.setFocusable(false);
+        popupWindow.showAtLocation(findViewById(android.R.id.content).getRootView(), Gravity.BOTTOM, 0 ,0);
+
+        // "Deny" button on the pop-up window
+        Button denyButton = confirm_dialogue.findViewById(R.id.deny_ride_button);
+        denyButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDismiss(DialogInterface dialog) {
+            public void onClick(View v) {
+                popupWindow.dismiss();
                 removeDestinationMarkers();
                 loadMarkers();
             }
         });
 
-        Button acceptButton = bottomSheetDialog.findViewById(R.id.confirm_ride_button);
+        // Accept button on the pop-up window
+        Button acceptButton = confirm_dialogue.findViewById(R.id.confirm_ride_button);
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -517,18 +538,12 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                        }
                    }
                });
-
-
+                popupWindow.dismiss();
                 showViewCurrentRequestLayout(); // CHANGE THE LAYOUT
             }
         });
-        Button denyButton = bottomSheetDialog.findViewById(R.id.deny_ride_button);
-        denyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bottomSheetDialog.cancel();
-            }
-        });
+
+
     }
 
 
