@@ -51,4 +51,8 @@
     <string name="text_view_current_request">View Current Request</string>
     <string name="text_waiting_for_driver">Waiting for a driver…</string>
     <string name="text_view_previous_rides">View Previous Rides</string>
+    <string name="low_storage_error">Face detector dependencies cannot be downloaded due to low device storage</string>
+    <string name="no_camera_permission">The app does not have permission to use the Camera. Please go to settings and grant permission to use this feature.</string>
+    <string name="ok">Okay</string>
+    <string name="barcode_error_format">\"Error reading barcode: %1$s\"</string>
 </resources>

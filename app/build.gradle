@@ -53,4 +53,6 @@ dependencies {
     //    Add Zxing library to generate barcode
     implementation 'com.google.zxing:core:3.4.0'
     implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
+    //google vision for barcode scanning and decoding
+    implementation 'com.google.android.gms:play-services-vision:19.0.0'
 }
