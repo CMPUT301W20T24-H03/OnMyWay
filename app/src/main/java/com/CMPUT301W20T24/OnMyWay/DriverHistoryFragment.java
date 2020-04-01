@@ -10,9 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.squareup.picasso.Picasso;
-
-
 public class DriverHistoryFragment extends Fragment implements View.OnClickListener {
 
     @Override

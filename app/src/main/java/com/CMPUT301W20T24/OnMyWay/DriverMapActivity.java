@@ -27,6 +27,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -95,8 +96,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     private LayoutInflater layoutInflater;
     private PopupWindow popupWindow;
-    private RelativeLayout relativeLayout;
-
 
 
     // Disable back button for this activity
@@ -504,6 +503,14 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         popupWindow.setWidth(1);
         popupWindow.setFocusable(false);
         popupWindow.showAtLocation(findViewById(android.R.id.content).getRootView(), Gravity.BOTTOM, 0 ,0);
+
+        TextView pickupTextview = confirm_dialogue.findViewById(R.id.ride_pickup_text);
+        pickupTextview.setText(((MarkerStoreObject) marker.getTag()).getStartAddressName());
+        TextView destinationTextview = confirm_dialogue.findViewById(R.id.ride_destination_text);
+        destinationTextview.setText(((MarkerStoreObject) marker.getTag()).getEndAddressName());
+        TextView paymentTextview = confirm_dialogue.findViewById(R.id.ride_payment_text);
+        String payment_amount = Float.toString(((MarkerStoreObject) marker.getTag()).getPaymentAmount());
+        paymentTextview.setText(payment_amount);
 
         // "Deny" button on the pop-up window
         Button denyButton = confirm_dialogue.findViewById(R.id.deny_ride_button);
