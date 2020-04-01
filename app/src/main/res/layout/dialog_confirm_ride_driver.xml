@@ -4,7 +4,10 @@
     android:layout_height="wrap_content"
     android:elevation="24dp"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:background="@android:color/white"
+    >
+
 
     <TextView
         android:id="@+id/textView"
@@ -74,6 +77,6 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:backgroundTint="@color/colorError"
-            android:text="Nah" />
+            android:text="Deny" />
     </LinearLayout>
 </LinearLayout>
