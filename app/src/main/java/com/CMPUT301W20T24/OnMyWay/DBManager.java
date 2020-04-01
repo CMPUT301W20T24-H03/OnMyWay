@@ -261,6 +261,7 @@ public class DBManager {
                         Log.w(TAG, "Error updating user profile", e);
                     }
                 });
+
     }
 
 
