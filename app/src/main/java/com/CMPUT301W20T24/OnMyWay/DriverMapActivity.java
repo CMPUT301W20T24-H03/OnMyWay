@@ -481,7 +481,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                  * TODO: IMPLEMENT CONFIRM RIDE
                  **/
 
-               dbManager.getDatabase().collection("riderRequests").document(currentRide.getDocumentId()).update(
+               db.collection("riderRequests").document(currentRide.getDocumentId()).update(
                        "driverUserName", driverUsername,
                        "status", "ACTIVE").addOnCompleteListener(new OnCompleteListener<Void>() {
                    @Override

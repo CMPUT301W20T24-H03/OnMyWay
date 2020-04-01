@@ -1,9 +1,5 @@
 package com.CMPUT301W20T24.OnMyWay;
 
-import android.util.Log;
-
-import java.util.Calendar;
-import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -25,8 +21,8 @@ public class Request {
     private double endLongitude;
     private double endLatitude;
 
-    private String paymentAmount;
     private String driverUserName;
+    private String paymentAmount;
     private String status;
 
     private RequestTime creationTime;  // The time when the request was created by a rider
@@ -143,15 +139,15 @@ public class Request {
         this.creationTime = new RequestTime();
     }
 
-/*    private Date getCreationTime() {
-        // Not sure if this is needed yet
-    }*/
+    public RequestTime getCreationTime() {
+        return this.creationTime;
+    }
 
     private void setAcceptedTime() {
         this.acceptedTime = new RequestTime();
     }
 
-    private RequestTime getAcceptedTime() {
+    public RequestTime getAcceptedTime() {
         return this.acceptedTime;
     }
 

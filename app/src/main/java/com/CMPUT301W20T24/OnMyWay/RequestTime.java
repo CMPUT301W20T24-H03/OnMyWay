@@ -1,7 +1,6 @@
 package com.CMPUT301W20T24.OnMyWay;
 
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Locale;
 
