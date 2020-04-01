@@ -139,58 +139,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
         Toast.makeText(DriverMapActivity.this, "DriverMapActivity", Toast.LENGTH_LONG).show();
 
-//        browseRequestsLayout = findViewById(R.id.browseRequestsLayout);;
-//        viewCurrentRequestLayout = findViewById(R.id.viewCurrentRequestLayout);
-//
-//        Button viewPreviousRidesButton = findViewById(R.id.buttonViewPreviousRides);
-//        Button viewPreviousRidesButton2 = findViewById(R.id.buttonViewPreviousRides2);
-//        Button viewCurrentRequestButton = findViewById(R.id.buttonViewCurrentRequest);
-
         driverUsername = UserRequestState.getCurrentUser().getUserId();
-
-//        viewPreviousRidesButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                openViewPreviousRidesActivity();
-//            }
-//        });
-//
-//        viewPreviousRidesButton2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                openViewPreviousRidesActivity();
-//            }
-//        });
-
-//        // Listen for clicks on viewCurrentRequestButton
-//        viewCurrentRequestButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.d(TAG, "Opening ShowDriverRequestFragment");
-//
-//                // TODO: ALL THIS IS HARDCODED. REPLACE WITH THE ACTUAL REQUEST
-//                Request riderRequest = new Request(
-//                        currentRide.getRiderUsername(),
-//                        UserRequestState.getCurrentUser().getUserId(),
-//                        currentRide.getStartAddressName(),
-//                        currentRide.getStartLongitude(),
-//                        currentRide.getStartLatitude(),
-//                        currentRide.getEndAddressName(),
-//                        currentRide.getEndLongitude(),
-//                        currentRide.getEndLatitude(),
-//                        Float.toString(currentRide.getPaymentAmount()),
-//                        1585522651
-//                );
-//
-//                // TODO: SAVE THIS TO STATE REAL QUICK SO THAT showDriverRequestFragment WILL
-//                // TODO: WORK CORRECTLY. THIS SHOULDN'T BE HERE IN THE FINAL APP VERSION
-//                UserRequestState.setCurrentRequest(riderRequest);
-//
-//                showDriverRequestFragment = ShowDriverRequestFragment.newInstance(riderRequest);
-//                showDriverRequestFragment.show(fm);
-//            }
-//        });
-
 
     }
 
@@ -432,14 +381,14 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         /// Stack Overflow post by Adam https://stackoverflow.com/users/6789978/adam
         /// Answer https://stackoverflow.com/questions/36785542/how-to-change-the-position-of-my-location-button-in-google-maps-using-android-st
         View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+        View compassButton = mapView.findViewWithTag("GoogleMapCompass");
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
         // position on right bottom
         rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         rlp.setMargins(30,30,30,120);
-
-//        addMarkers();
-
+        RelativeLayout.LayoutParams rlp2 = (RelativeLayout.LayoutParams) compassButton.getLayoutParams();
+        rlp2.leftMargin = 185;
 
         loadMarkers();
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
