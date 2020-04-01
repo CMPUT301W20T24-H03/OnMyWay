@@ -1,5 +1,6 @@
 package com.CMPUT301W20T24.OnMyWay;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
@@ -16,11 +17,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -37,6 +42,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -60,7 +66,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
      */
     private static final String TAG = "OMW/DriverMapActivity";
     private GoogleMap mMap;
-    private dummyRequest currentRequest;
     private Location currentLocation;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private GeoApiContext geoApi;
@@ -75,12 +80,12 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     private LinearLayout viewCurrentRequestLayout;
     private BottomSheetDialog bottomSheetDialog;
 
-    private LocationManager locationManager;
-    private LocationListener locationListener;
+    private String driverUsername;
 
     private static final int REQUEST_CODE = 101;
     private View mapView;
     private DBManager dbManager;
+    private MarkerStoreObject currentRide;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference requests = db.collection("riderRequests");
@@ -88,18 +93,9 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     private ArrayList<Marker> destinationMarkers = new ArrayList<>();
     private ArrayList<Marker> pickupMarkers = new ArrayList<>();
 
-
-    private void removeDestinationMarkers(){
-        for(Marker marker : destinationMarkers){
-            marker.remove();
-        }
-        for(Marker marker : pickupMarkers){
-            marker.remove();
-        }
-        destinationMarkers.clear();
-        pickupMarkers.clear();
-        mMap.clear();
-    }
+    private LayoutInflater layoutInflater;
+    private PopupWindow popupWindow;
+    private RelativeLayout relativeLayout;
 
 
 
@@ -144,55 +140,59 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
         Toast.makeText(DriverMapActivity.this, "DriverMapActivity", Toast.LENGTH_LONG).show();
 
-        browseRequestsLayout = findViewById(R.id.browseRequestsLayout);;
-        viewCurrentRequestLayout = findViewById(R.id.viewCurrentRequestLayout);
+//        browseRequestsLayout = findViewById(R.id.browseRequestsLayout);;
+//        viewCurrentRequestLayout = findViewById(R.id.viewCurrentRequestLayout);
+//
+//        Button viewPreviousRidesButton = findViewById(R.id.buttonViewPreviousRides);
+//        Button viewPreviousRidesButton2 = findViewById(R.id.buttonViewPreviousRides2);
+//        Button viewCurrentRequestButton = findViewById(R.id.buttonViewCurrentRequest);
 
-        Button viewPreviousRidesButton = findViewById(R.id.buttonViewPreviousRides);
-        Button viewPreviousRidesButton2 = findViewById(R.id.buttonViewPreviousRides2);
-        Button viewCurrentRequestButton = findViewById(R.id.buttonViewCurrentRequest);
+        driverUsername = UserRequestState.getCurrentUser().getUserId();
 
-        viewPreviousRidesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openViewPreviousRidesActivity();
-            }
-        });
+//        viewPreviousRidesButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                openViewPreviousRidesActivity();
+//            }
+//        });
+//
+//        viewPreviousRidesButton2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                openViewPreviousRidesActivity();
+//            }
+//        });
 
-        viewPreviousRidesButton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openViewPreviousRidesActivity();
-            }
-        });
+//        // Listen for clicks on viewCurrentRequestButton
+//        viewCurrentRequestButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d(TAG, "Opening ShowDriverRequestFragment");
+//
+//                // TODO: ALL THIS IS HARDCODED. REPLACE WITH THE ACTUAL REQUEST
+//                Request riderRequest = new Request(
+//                        currentRide.getRiderUsername(),
+//                        UserRequestState.getCurrentUser().getUserId(),
+//                        currentRide.getStartAddressName(),
+//                        currentRide.getStartLongitude(),
+//                        currentRide.getStartLatitude(),
+//                        currentRide.getEndAddressName(),
+//                        currentRide.getEndLongitude(),
+//                        currentRide.getEndLatitude(),
+//                        Float.toString(currentRide.getPaymentAmount()),
+//                        1585522651
+//                );
+//
+//                // TODO: SAVE THIS TO STATE REAL QUICK SO THAT showDriverRequestFragment WILL
+//                // TODO: WORK CORRECTLY. THIS SHOULDN'T BE HERE IN THE FINAL APP VERSION
+//                UserRequestState.setCurrentRequest(riderRequest);
+//
+//                showDriverRequestFragment = ShowDriverRequestFragment.newInstance(riderRequest);
+//                showDriverRequestFragment.show(fm);
+//            }
+//        });
 
-        // Listen for clicks on viewCurrentRequestButton
-        viewCurrentRequestButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "Opening ShowDriverRequestFragment");
 
-                // TODO: ALL THIS IS HARDCODED. REPLACE WITH THE ACTUAL REQUEST
-                Request riderRequest = new Request(
-                        "pcpzIGU4W7XomSe7o6AUXcFGDJy1",
-                        UserRequestState.getCurrentUser().getUserId(),
-                        "Test start location",
-                        1,
-                        2,
-                        "Test end location",
-                        2,
-                        3,
-                        "13.99",
-                        1585522651
-                );
-
-                // TODO: SAVE THIS TO STATE REAL QUICK SO THAT showDriverRequestFragment WILL
-                // TODO: WORK CORRECTLY. THIS SHOULDN'T BE HERE IN THE FINAL APP VERSION
-                UserRequestState.setCurrentRequest(riderRequest);
-
-                showDriverRequestFragment = ShowDriverRequestFragment.newInstance(riderRequest);
-                showDriverRequestFragment.show(fm);
-            }
-        });
     }
 
 
@@ -200,7 +200,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     private void showViewCurrentRequestLayout() {
         viewCurrentRequestLayout.setVisibility(View.VISIBLE);
         browseRequestsLayout.setVisibility(View.GONE);
-        bottomSheetDialog.dismiss();    // Close confirm dialog
     }
 
 
@@ -254,11 +253,27 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                                     Marker my_marker = mMap.addMarker(
                                             new MarkerOptions()
                                                     .position(latlng)
-                                                    .title("DUMMY")
+                                                    .title("Bid: $" + documentSnapshot.getString("paymentAmount"))
                                                     .icon(startLocationIcon)
-                                                    .snippet("$12")
+                                                    .snippet("Username: " + documentSnapshot.getString("riderUserName"))
                                     );
-                                    my_marker.setTag(new LatLng(Double.parseDouble(documentSnapshot.getString("endLatitude")), Double.parseDouble(documentSnapshot.getString("endLongitude"))));
+
+                                    String documentId = documentSnapshot.getId();
+                                    String requestId = documentSnapshot.getString("requestID");
+                                    String riderUser = documentSnapshot.getString("riderUserName");
+                                    String driverUser = documentSnapshot.getString("driverUserName");
+                                    Double startLat = Double.parseDouble(documentSnapshot.getString("startLatitude"));
+                                    Double startLon = Double.parseDouble(documentSnapshot.getString("startLongitude"));
+                                    Double endLat = Double.parseDouble(documentSnapshot.getString("endLatitude"));
+                                    Double endLon = Double.parseDouble(documentSnapshot.getString("endLongitude"));
+                                    float paymentAmount = Float.parseFloat(documentSnapshot.getString("paymentAmount"));
+                                    String status = documentSnapshot.getString("status");
+                                    String startAddr = documentSnapshot.getString("startAddressName");
+                                    String endAddr = documentSnapshot.getString("endAddressName");
+
+
+                                    MarkerStoreObject markerStoreObject = new MarkerStoreObject(documentId, driverUser, endLat, endLon, paymentAmount,requestId,riderUser,startLat,startLon,status,startAddr, endAddr);
+                                    my_marker.setTag((MarkerStoreObject) markerStoreObject);
                                     pickupMarkers.add(my_marker);
                                 }
                                 catch (NullPointerException e) {}
@@ -306,7 +321,9 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
      * @param marker A marker at the rider's current location
      */
     private void calculateDirectionsDestination(Marker marker){
-        LatLng destination_coordinates = (LatLng) marker.getTag();
+
+        MarkerStoreObject markerStoreObject = (MarkerStoreObject) marker.getTag();
+        LatLng destination_coordinates = new LatLng(markerStoreObject.getEndLatitude(), markerStoreObject.getEndLongitude());
         // setting current request for sliding menu view
         com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(destination_coordinates.latitude, destination_coordinates.longitude);
 
@@ -431,23 +448,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             public boolean onMarkerClick(Marker marker) {
                 calculateDirections(marker);
                 calculateDirectionsDestination(marker);
-
-                for(Marker other_markers : pickupMarkers){
-                    if(!other_markers.equals(marker)){
-                        other_markers.remove();
-                    }
-                }
-                BitmapDescriptor endLocationIcon = BitmapDescriptorFactory
-                        .fromResource(R.drawable.ic_end_location_marker);
-                Marker my_marker = mMap.addMarker(
-                        new MarkerOptions()
-                                .position((LatLng) marker.getTag())
-                                .title("Destination")
-                                .icon(endLocationIcon)
-                );
-
-                destinationMarkers.add(my_marker);
-                showDialogue();
+                showDialogue(marker);
                 return true;
             }
         });
@@ -455,43 +456,94 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     }
 
+    private void removeDestinationMarkers(){
+        for(Marker marker : destinationMarkers){
+            marker.remove();
+        }
+        for(Marker marker : pickupMarkers){
+            marker.remove();
+        }
+        destinationMarkers.clear();
+        pickupMarkers.clear();
+        mMap.clear();
+    }
+
 
     /**
      * The dialogue that is created when a marker is clicked
      */
-    public void showDialogue(){
-        bottomSheetDialog = new BottomSheetDialog(DriverMapActivity.this);
-        bottomSheetDialog.setContentView(R.layout.dialog_confirm_ride_driver);
-        bottomSheetDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        bottomSheetDialog.show();
+    public void showDialogue(Marker marker){
 
-        bottomSheetDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        // Show the appropriate markers on the map when a marker is clicked and the dialogue loads:
+        MarkerStoreObject markerStoreObject = (MarkerStoreObject) marker.getTag();
+        for(Marker other_markers : pickupMarkers){
+            if(!other_markers.equals(marker)){
+                other_markers.remove();
+            }
+        }
+        BitmapDescriptor endLocationIcon = BitmapDescriptorFactory
+                .fromResource(R.drawable.ic_end_location_marker);
+        Marker my_marker = mMap.addMarker(
+                new MarkerOptions()
+                        .position(new LatLng(markerStoreObject.getEndLatitude(), markerStoreObject.getEndLongitude()))
+                        .title("Destination")
+                        .icon(endLocationIcon)
+        );
+        currentRide = markerStoreObject;
+        destinationMarkers.add(my_marker);
+        //
+
+        // Create the pop-up window
+        layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        ViewGroup confirm_dialogue = (ViewGroup) layoutInflater.inflate(R.layout.dialog_confirm_ride_driver, null);
+        popupWindow = new PopupWindow(confirm_dialogue);
+        popupWindow.setWindowLayoutMode(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        popupWindow.setHeight(1);
+        popupWindow.setWidth(1);
+        popupWindow.setFocusable(false);
+        popupWindow.showAtLocation(findViewById(android.R.id.content).getRootView(), Gravity.BOTTOM, 0 ,0);
+
+        // "Deny" button on the pop-up window
+        Button denyButton = confirm_dialogue.findViewById(R.id.deny_ride_button);
+        denyButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDismiss(DialogInterface dialog) {
+            public void onClick(View v) {
+                popupWindow.dismiss();
                 removeDestinationMarkers();
                 loadMarkers();
             }
         });
 
-        Button acceptButton = bottomSheetDialog.findViewById(R.id.confirm_ride_button);
+        // Accept button on the pop-up window
+        Button acceptButton = confirm_dialogue.findViewById(R.id.confirm_ride_button);
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 /**
                  * TODO: IMPLEMENT CONFIRM RIDE
                  **/
-                currentRequest = new dummyRequest("joe123",currentLocation.getLatitude(),currentLocation.getLongitude(),15.32f);
-                System.out.println("hello");
+
+               dbManager.getDatabase().collection("riderRequests").document(currentRide.getDocumentId()).update(
+                       "driverUserName", driverUsername,
+                       "status", "ACTIVE").addOnCompleteListener(new OnCompleteListener<Void>() {
+                   @Override
+                   public void onComplete(@NonNull Task<Void> task) {
+                       if(task.isSuccessful()){
+                           Log.d(TAG, "Confirm button driver updated database correctly");
+                       }
+                       else{
+                           Log.d(TAG, "Confirm button driver did not update");
+                       }
+                   }
+               });
+                popupWindow.dismiss();
                 showViewCurrentRequestLayout(); // CHANGE THE LAYOUT
             }
         });
-        Button denyButton = bottomSheetDialog.findViewById(R.id.deny_ride_button);
-        denyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bottomSheetDialog.cancel();
-            }
-        });
+
+
     }
 
 
@@ -510,85 +562,3 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
 }
-
-
-/*
-    public void addMarkers(){
-        ArrayList<dummyRequest> requests = new ArrayList<dummyRequest>();
-
-        float a = 15.32f;
-        dummyRequest request1 = new dummyRequest("Bob", 53.54,-113.49, a);
-        dummyRequest request2 = new dummyRequest("jerry",53.46, -113.52, a);
-        dummyRequest request3 = new dummyRequest("bill", 53.9, -113.8, a);
-        dummyRequest request4 = new dummyRequest("ali", 53.523089, -113.623933, a);
-        dummyRequest request5 = new dummyRequest("jane",53.565421, -113.563956, a);
-        dummyRequest request6 = new dummyRequest("joan", 53.537817, -113.476856, a);
-        dummyRequest request7 = new dummyRequest("alice",53.52328, -113.5264,a);
-        dummyRequest request8 = new dummyRequest("martha",53.52328, -113.5264,a);
-        dummyRequest request9 = new dummyRequest("trump",37.77986, -122.42905,a);
-
-        requests.add(request1);
-        requests.add(request2);
-        requests.add(request3);
-        requests.add(request4);
-        requests.add(request5);
-        requests.add(request6);
-        requests.add(request7);
-        requests.add(request8);
-        requests.add(request9);
-
-        BitmapDescriptor startLocationIcon = BitmapDescriptorFactory
-                .fromResource(R.drawable.ic_blue_location_marker);
-
-        for (dummyRequest i : requests) {
-            LatLng latlng = new LatLng(i.getLat(), i.getLon());
-            Marker my_marker = mMap.addMarker(
-                    new MarkerOptions()
-                            .position(latlng)
-                            .title(i.getUsername())
-                            .icon(startLocationIcon)
-                            .snippet(Float.toString(i.getPayment())));
-            my_marker.setTag(new LatLng(53.53522, -113.4765));
-        }
-
-    }
-*/
-
-/*    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.profile:
-                showDriverTestProfile(this.getCurrentFocus());
-                Toast.makeText(getApplicationContext(), "profile working", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.current_request:
-                if (currentRequest != null){
-                    Intent intent = new Intent(this, CurrentRequestActivity.class);
-                    intent.putExtra("REQUEST_LATITUDE", currentRequest.getLat());
-                    intent.putExtra("REQUEST_LONGITUDE",currentRequest.getLon());
-                    intent.putExtra("REQUEST_PAYMENTAMOUNT",currentRequest.getPayment());
-                    startActivity(intent);
-                    break;
-                }
-                else {
-                    Toast.makeText(getApplicationContext(), "No active request present", Toast.LENGTH_SHORT).show();
-                }
-                break;
-        }
-        return false;
-    }*/
-
-
-/*    public void showDriverTestProfile(View view) {
-        // Use the listener we made to listen for when the function finishes
-        dbManager.setUserInfoPulledListener(new UserInfoPulledListener() {
-            @Override
-            public void onUserInfoPulled(User fetchedUser) {
-                ShowProfileFragment showProfileFragment = ShowProfileFragment.newInstance(fetchedUser);
-                showProfileFragment.show(fm);
-            }
-        });
-
-        // Fetch the user info of a test driver user
-        dbManager.fetchUserInfo("dYG5SQAAGVbmglT5k8dUhufAnpq1");
-    }*/
