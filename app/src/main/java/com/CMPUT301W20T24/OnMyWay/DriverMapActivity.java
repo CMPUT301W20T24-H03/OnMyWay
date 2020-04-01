@@ -27,6 +27,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -95,8 +96,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     private LayoutInflater layoutInflater;
     private PopupWindow popupWindow;
-    private RelativeLayout relativeLayout;
-
 
 
     // Disable back button for this activity
@@ -140,58 +139,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
         Toast.makeText(DriverMapActivity.this, "DriverMapActivity", Toast.LENGTH_LONG).show();
 
-//        browseRequestsLayout = findViewById(R.id.browseRequestsLayout);;
-//        viewCurrentRequestLayout = findViewById(R.id.viewCurrentRequestLayout);
-//
-//        Button viewPreviousRidesButton = findViewById(R.id.buttonViewPreviousRides);
-//        Button viewPreviousRidesButton2 = findViewById(R.id.buttonViewPreviousRides2);
-//        Button viewCurrentRequestButton = findViewById(R.id.buttonViewCurrentRequest);
-
         driverUsername = UserRequestState.getCurrentUser().getUserId();
-
-//        viewPreviousRidesButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                openViewPreviousRidesActivity();
-//            }
-//        });
-//
-//        viewPreviousRidesButton2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                openViewPreviousRidesActivity();
-//            }
-//        });
-
-//        // Listen for clicks on viewCurrentRequestButton
-//        viewCurrentRequestButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.d(TAG, "Opening ShowDriverRequestFragment");
-//
-//                // TODO: ALL THIS IS HARDCODED. REPLACE WITH THE ACTUAL REQUEST
-//                Request riderRequest = new Request(
-//                        currentRide.getRiderUsername(),
-//                        UserRequestState.getCurrentUser().getUserId(),
-//                        currentRide.getStartAddressName(),
-//                        currentRide.getStartLongitude(),
-//                        currentRide.getStartLatitude(),
-//                        currentRide.getEndAddressName(),
-//                        currentRide.getEndLongitude(),
-//                        currentRide.getEndLatitude(),
-//                        Float.toString(currentRide.getPaymentAmount()),
-//                        1585522651
-//                );
-//
-//                // TODO: SAVE THIS TO STATE REAL QUICK SO THAT showDriverRequestFragment WILL
-//                // TODO: WORK CORRECTLY. THIS SHOULDN'T BE HERE IN THE FINAL APP VERSION
-//                UserRequestState.setCurrentRequest(riderRequest);
-//
-//                showDriverRequestFragment = ShowDriverRequestFragment.newInstance(riderRequest);
-//                showDriverRequestFragment.show(fm);
-//            }
-//        });
-
 
     }
 
@@ -433,14 +381,14 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         /// Stack Overflow post by Adam https://stackoverflow.com/users/6789978/adam
         /// Answer https://stackoverflow.com/questions/36785542/how-to-change-the-position-of-my-location-button-in-google-maps-using-android-st
         View locationButton = ((View) mapView.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+        View compassButton = mapView.findViewWithTag("GoogleMapCompass");
         RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
         // position on right bottom
         rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
         rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
         rlp.setMargins(30,30,30,120);
-
-//        addMarkers();
-
+        RelativeLayout.LayoutParams rlp2 = (RelativeLayout.LayoutParams) compassButton.getLayoutParams();
+        rlp2.leftMargin = 185;
 
         loadMarkers();
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -504,6 +452,14 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         popupWindow.setWidth(1);
         popupWindow.setFocusable(false);
         popupWindow.showAtLocation(findViewById(android.R.id.content).getRootView(), Gravity.BOTTOM, 0 ,0);
+
+        TextView pickupTextview = confirm_dialogue.findViewById(R.id.ride_pickup_text);
+        pickupTextview.setText(((MarkerStoreObject) marker.getTag()).getStartAddressName());
+        TextView destinationTextview = confirm_dialogue.findViewById(R.id.ride_destination_text);
+        destinationTextview.setText(((MarkerStoreObject) marker.getTag()).getEndAddressName());
+        TextView paymentTextview = confirm_dialogue.findViewById(R.id.ride_payment_text);
+        String payment_amount = Float.toString(((MarkerStoreObject) marker.getTag()).getPaymentAmount());
+        paymentTextview.setText(payment_amount);
 
         // "Deny" button on the pop-up window
         Button denyButton = confirm_dialogue.findViewById(R.id.deny_ride_button);
