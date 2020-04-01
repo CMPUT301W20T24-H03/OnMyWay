@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    >
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="100"
+        android:id="@+id/foo"
+        >
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:weightSum="100"
+            >
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:text="ID:"
+                android:textStyle="bold"
+                android:layout_weight="10"
+                />
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:id="@+id/tvID"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:layout_weight="90"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:weightSum="100"
+            >
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:text="Start:"
+                android:textStyle="bold"
+                android:layout_weight="10"
+                />
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:id="@+id/tvStart"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:layout_weight="90"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:weightSum="100"
+            >
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:text="End:"
+                android:textStyle="bold"
+                android:layout_weight="10"
+                />
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:id="@+id/tvDest"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:layout_weight="90"
+                />
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
+
+</RelativeLayout>

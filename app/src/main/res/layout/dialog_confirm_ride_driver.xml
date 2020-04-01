@@ -4,7 +4,10 @@
     android:layout_height="wrap_content"
     android:elevation="24dp"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:background="@android:color/white"
+    >
+
 
     <TextView
         android:id="@+id/textView"
@@ -17,37 +20,82 @@
         android:textStyle="bold" />
 
     <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="25dp"
+    android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:gravity="end|center_vertical"
+        android:layout_weight="1"
+        android:text="Pickup:"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/ride_pickup_text"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:layout_weight="10"
+        android:gravity="center"
+        android:text="pickup"
+         />
+
+
+</LinearLayout>
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="25dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_weight="10"
-            android:gravity="center"
-            android:text="Rider_Name"
-            android:textAlignment="center"
-            android:textStyle="bold" />
+            android:layout_weight="1"
+            android:text="Destination:"
+            android:gravity="end|center_vertical"
+            android:textStyle="bold"
+            />
 
         <TextView
+            android:id="@+id/ride_destination_text"
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_weight="10"
             android:gravity="center"
-            android:text="Payment"
+            android:text="destination"
             android:textAlignment="center"
-            android:textStyle="bold" />
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="80dp"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="Payment:"
+            android:gravity="end|center_vertical"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/ride_payment_text"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
             android:layout_weight="10"
             android:gravity="center"
-            android:text="Distance"
+            android:text="payment"
             android:textAlignment="center"
-            android:textStyle="bold" />
+
+            />
+
     </LinearLayout>
 
     <LinearLayout
@@ -74,6 +122,6 @@
             android:layout_gravity="center"
             android:layout_weight="1"
             android:backgroundTint="@color/colorError"
-            android:text="Nah" />
+            android:text="Deny" />
     </LinearLayout>
 </LinearLayout>

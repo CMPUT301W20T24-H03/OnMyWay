@@ -26,62 +26,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/browseRequestsLayout"
-        android:layout_width="match_parent"
+    <fragment
+        android:id="@+id/profileButtonFragment2"
+        android:name="com.CMPUT301W20T24.OnMyWay.DriverHistoryFragment"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:elevation="24dp"
-        android:orientation="vertical"
-        android:padding="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
-        <Button
-            android:id="@+id/buttonRequestList"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="findRider"
-            android:text="@string/text_find_nearby_riders" />
 
-        <Button
-            android:id="@+id/buttonViewPreviousRides"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="findRider"
-            android:text="@string/text_view_previous_rides" />
 
-    </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/viewCurrentRequestLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:elevation="24dp"
-        android:orientation="vertical"
-        android:padding="8dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/buttonViewCurrentRequest"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/text_view_current_request" />
-
-        <Button
-            android:id="@+id/buttonViewPreviousRides2"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="findRider"
-            android:text="@string/text_view_previous_rides" />
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
