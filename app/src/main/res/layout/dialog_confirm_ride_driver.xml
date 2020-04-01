@@ -27,11 +27,9 @@
     <TextView
         android:layout_width="80dp"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
+        android:gravity="end|center_vertical"
         android:layout_weight="1"
-        android:gravity="center"
         android:text="Pickup:"
-        android:textAlignment="textEnd"
         android:textStyle="bold"
         />
 
@@ -42,7 +40,6 @@
         android:layout_weight="10"
         android:gravity="center"
         android:text="pickup"
-        android:textAlignment="center"
          />
 
 
@@ -57,9 +54,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:gravity="center"
             android:text="Destination:"
-            android:textAlignment="textEnd"
+            android:gravity="end|center_vertical"
             android:textStyle="bold"
             />
 
@@ -85,9 +81,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:gravity="center"
             android:text="Payment:"
-            android:textAlignment="textEnd"
+            android:gravity="end|center_vertical"
             android:textStyle="bold" />
 
         <TextView
