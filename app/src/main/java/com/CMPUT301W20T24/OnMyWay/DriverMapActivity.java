@@ -1,6 +1,7 @@
 package com.CMPUT301W20T24.OnMyWay;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
@@ -48,7 +49,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.maps.DirectionsApiRequest;
@@ -181,7 +184,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                                 try {
                                     BitmapDescriptor startLocationIcon = BitmapDescriptorFactory.fromResource(R.drawable.ic_blue_location_marker);
                                     LatLng latlng = new LatLng((documentSnapshot.getDouble("startLatitude")), (documentSnapshot.getDouble("startLongitude")));
-//                                  Toast.makeText(getApplicationContext(), documentSnapshot.getString("startLatitude")+","+documentSnapshot.getString("startLongitude"), Toast.LENGTH_LONG).show();
 
                                     String documentId = documentSnapshot.getId();
                                     String requestId = documentSnapshot.getString("requestID");
@@ -219,7 +221,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                     }
                 });
     }
-
 
     /// YouTube video by CodingWithMitch: Calculating Directions with Google Directions API
     /// https://www.youtube.com/watch?v=f47L1SL5S0o&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=19
@@ -387,6 +388,22 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         rlp2.leftMargin = 185;
 
         loadMarkers();
+
+        // listen for changes in the database
+        requests.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e);
+                    return;
+                }
+                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                    loadMarkers();
+                }
+
+            }
+        });
+
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
