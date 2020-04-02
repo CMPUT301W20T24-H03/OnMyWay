@@ -418,5 +418,8 @@ public class DBManager {
 
     }
 
+    public CollectionReference getRequests(){
+        return db.collection("riderRequests");
+    }
 
 }

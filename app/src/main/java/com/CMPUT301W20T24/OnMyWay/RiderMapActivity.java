@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
@@ -38,6 +39,11 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.internal.PolylineEncoding;
@@ -70,6 +76,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
     private FragmentManager fm;
     private ShowRiderRequestFragment showRiderRequestFragment;
+    private ShowQRFragment showQRFragment;
 
     private String startLocationName;
     private String endLocationName;
@@ -78,6 +85,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private Marker endLocationMarker;
     private Polyline polyline_rider;
     private Polyline polyline_destination;
+
 
     // Instantiating DBManager()
     private DBManager dbManager;
@@ -91,6 +99,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private View mapView;
 
     private String requestID;
+    private ListenerRegistration driverListener;
 
     // Disable back button for this activity
     @Override
@@ -217,6 +226,32 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                             Toast.makeText(getApplicationContext(), "Woo! Your ride is confirmed", Toast.LENGTH_SHORT).show();
 
                             showCurrentRequestLayout();
+
+                            /// https://www.youtube.com/watch?v=LfkhFCDnkS0&list=PLrnPJCHvNZuDrSqu-dKdDi3Q6nM-VUyxD&index=4
+                            //TODO need to detach the listener when ride done or canceled figured out
+                            Toast.makeText(getApplicationContext(),riderRequest.getRequestId(),Toast.LENGTH_SHORT).show();
+                            driverListener = dbManager.getRequests().whereEqualTo("requestID", riderRequest.getRequestId()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                    if(e != null){
+                                        Toast.makeText(getApplicationContext(),"Error with database update", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    else{
+                                        List<DocumentSnapshot> documentList = queryDocumentSnapshots.getDocuments();
+                                        for (DocumentSnapshot documentSnapshot : documentList){
+                                            if(documentSnapshot.getString("status").equals("COMPLETE")){
+                                                showQRFragment = ShowQRFragment.newInstance(null);
+                                                showQRFragment.show(fm);
+                                            }
+                                            else if(documentSnapshot.getString("status").equals("ACTIVE")){
+                                                Toast.makeText(getApplicationContext(),"The driver is on the way, check status on the top right corner!",Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    }
+
+                                }
+                            });
                         }
                     }
                 });
@@ -301,6 +336,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         dbManager.cancelRequest(requestID);
         Toast.makeText(getApplicationContext(), "Your request has been cancelled", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Request cancelled");
+        driverListener.remove();
     }
 
 
