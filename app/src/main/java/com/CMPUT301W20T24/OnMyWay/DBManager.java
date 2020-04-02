@@ -334,22 +334,22 @@ public class DBManager {
         Map<String, Object> updatedRequestObj = new HashMap<>();
 
         updatedRequestObj.put("requestID", updatedRequest.getRequestId());
-        updatedRequestObj.put("riderUserName", updatedRequest.getRiderUserName());
+        updatedRequestObj.put("riderId", updatedRequest.getRiderId());
+        updatedRequestObj.put("driverId", updatedRequest.getDriverId());
 
-        updatedRequestObj.put("startAddressName", updatedRequest.getStartLocationName());
+        updatedRequestObj.put("startLocationName", updatedRequest.getStartLocationName());
         updatedRequestObj.put("startLatitude", updatedRequest.getStartLatitude());
         updatedRequestObj.put("startLongitude", updatedRequest.getStartLongitude());
 
-        updatedRequestObj.put("endAddressName", updatedRequest.getEndLocationName());
+        updatedRequestObj.put("endLocationName", updatedRequest.getEndLocationName());
         updatedRequestObj.put("endLatitude", updatedRequest.getEndLatitude());
         updatedRequestObj.put("endLongitude", updatedRequest.getEndLongitude());
-
-        updatedRequestObj.put("driverUserName", updatedRequest.getDriverUserName());
+        
         updatedRequestObj.put("paymentAmount", updatedRequest.getPaymentAmount());
         updatedRequestObj.put("status", updatedRequest.getStatus());
 
-        updatedRequestObj.put("creationTime", updatedRequest.getCreationTime().toLong());
-        updatedRequestObj.put("acceptedTime", updatedRequest.getAcceptedTime().toLong());
+        updatedRequestObj.put("timeCreated", updatedRequest.getTimeCreated().toLong());
+        updatedRequestObj.put("timeAccepted", updatedRequest.getTimeAccepted().toLong());
 
 
         //Adds a new record the request to the 'riderRequests' collection.

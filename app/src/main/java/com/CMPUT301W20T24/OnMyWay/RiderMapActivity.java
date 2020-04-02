@@ -183,17 +183,18 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                         newCost = editPrice.getText().toString();
                         riderRequest = new Request(
                                 UserRequestState.getCurrentUser().getUserId(),
+                                null,
                                 startLocationName,
                                 startLocationMarker.getPosition().longitude,
                                 startLocationMarker.getPosition().latitude,
                                 endLocationName,
                                 endLocationMarker.getPosition().longitude,
                                 endLocationMarker.getPosition().latitude,
-                                newCost
+                                newCost,
+                                "INCOMPLETE",
+                                null,
+                                null
                         );
-                      
-                        // TODO: REMOVE THIS. JUST FOR TESTING. THIS IS WHAT YOU DO WHEN A DRIVER ACCEPTS A REQUEST
-                        riderRequest.setDriverUserName(null);
 
                         UserRequestState.setCurrentRequest(riderRequest);
                         UserRequestState.updateCurrentRequest(); // Push updates to FireBase
