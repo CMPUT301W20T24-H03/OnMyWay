@@ -1,6 +1,7 @@
 package com.CMPUT301W20T24.OnMyWay;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
@@ -48,7 +49,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.maps.DirectionsApiRequest;
@@ -93,6 +96,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     private PopupWindow popupWindow;
 
     private boolean currently_driving = false;
+    private boolean viewing_ride = false;
 
 
     // Disable back button for this activity
@@ -362,7 +366,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
      * Enable current location, moves the camera to the driver's location
      * Shows dialogue when a maker is clicked
      * @param googleMap
-     * @author Neel
+     * @author Neel, Payas
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -388,10 +392,30 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         rlp2.leftMargin = 185;
 
         loadMarkers();
+
+        requests.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if(!viewing_ride) {
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e);
+                        return;
+                    }
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        removeDestinationMarkers();
+                        loadMarkers();
+                    }
+                }
+
+            }
+        });
+
+
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 if(marker.getTag() != null && !currently_driving) {
+                    viewing_ride = true;
                     calculateDirections(marker);
                     calculateDirectionsDestination(marker);
                     showDialogue(marker);
@@ -478,6 +502,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onClick(View v) {
                 popupWindow.dismiss();
+                viewing_ride = false;
                 removeDestinationMarkers();
                 loadMarkers();
             }
@@ -603,6 +628,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                     }
                 });
 
+                viewing_ride = false;
                 removeDestinationMarkers();
                 loadMarkers();
                 // TODO start payment activity here!
