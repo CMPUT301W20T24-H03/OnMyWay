@@ -180,7 +180,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                             for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
                                 try {
                                     BitmapDescriptor startLocationIcon = BitmapDescriptorFactory.fromResource(R.drawable.ic_blue_location_marker);
-                                    LatLng latlng = new LatLng(Double.parseDouble(documentSnapshot.getString("startLatitude")), Double.parseDouble(documentSnapshot.getString("startLongitude")));
+                                    LatLng latlng = new LatLng((documentSnapshot.getDouble("startLatitude")), (documentSnapshot.getDouble("startLongitude")));
 //                                  Toast.makeText(getApplicationContext(), documentSnapshot.getString("startLatitude")+","+documentSnapshot.getString("startLongitude"), Toast.LENGTH_LONG).show();
 
                                     String documentId = documentSnapshot.getId();

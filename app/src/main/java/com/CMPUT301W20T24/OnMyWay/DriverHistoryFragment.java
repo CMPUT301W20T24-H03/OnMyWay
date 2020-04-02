@@ -37,13 +37,17 @@ public class DriverHistoryFragment extends Fragment implements View.OnClickListe
         view.setOnClickListener(this);
 
         User currentUser = UserRequestState.getCurrentUser();
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" + currentUser.getUserId());
         requests.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
-                    if (documentSnapshot.getString("driverId").equals(currentUser.getUserId())){
-                        DriverHistoryInfo temp = new DriverHistoryInfo(documentSnapshot.getString("requestID"), documentSnapshot.getString("startLocationName"), documentSnapshot.getString("endLocationName"));
-                        foo.add(temp);
+                    if (documentSnapshot.getString("driverId") != null){
+                        if(documentSnapshot.getString("driverId").equals(currentUser.getUserId()))
+                        {
+                            DriverHistoryInfo temp = new DriverHistoryInfo(documentSnapshot.getString("requestID"), documentSnapshot.getString("startLocationName"), documentSnapshot.getString("endLocationName"));
+                            foo.add(temp);
+                        }
                     }
                 }
             }
