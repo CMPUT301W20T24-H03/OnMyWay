@@ -77,6 +77,9 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private FragmentManager fm;
     private ShowRiderRequestFragment showRiderRequestFragment;
     private ShowQRFragment showQRFragment;
+    private ShowRiderSeesDriverAccept showRiderSeesDriverAccept;
+    // remove later
+    private ShowDriverRequestFragment showDriverRequestFragment;
 
     private String startLocationName;
     private String endLocationName;
@@ -259,7 +262,8 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                                                 driverUsername = null;
                                             }
                                             else if(documentSnapshot.getString("status").equals("ACTIVE")){
-                                                Toast.makeText(getApplicationContext(),"The driver is on the way, click view requests to see their profile!",Toast.LENGTH_SHORT).show();
+                                                showRiderSeesDriverAccept = ShowRiderSeesDriverAccept.newInstance();
+                                                showRiderSeesDriverAccept.show(fm);
                                                 driverUsername = documentSnapshot.getString("driverId");
                                             }
                                         }
