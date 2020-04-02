@@ -41,9 +41,12 @@ public class DriverHistoryFragment extends Fragment implements View.OnClickListe
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
-                    if (documentSnapshot.getString("driverUserName").equals(currentUser.getUserId())){
-                        DriverHistoryInfo temp = new DriverHistoryInfo(documentSnapshot.getString("requestID"), documentSnapshot.getString("startAddressName"), documentSnapshot.getString("endAddressName"));
-                        foo.add(temp);
+                    if (documentSnapshot.getString("driverId") != null){
+                        if(documentSnapshot.getString("driverId").equals(currentUser.getUserId()))
+                        {
+                            DriverHistoryInfo temp = new DriverHistoryInfo(documentSnapshot.getString("requestID"), documentSnapshot.getString("startLocationName"), documentSnapshot.getString("endLocationName"));
+                            foo.add(temp);
+                        }
                     }
                 }
             }
