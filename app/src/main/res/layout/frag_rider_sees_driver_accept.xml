@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="24dp"
-    tools:context=".ShowRiderSeesDriverAccept">
-
+    tools:context=".ShowRiderRequestFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/upperConstraintLayout"
@@ -15,89 +14,56 @@
         android:background="@drawable/splash_screen_background"
         android:elevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/ic_launcher"
+
+            />
 
         <TextView
-            android:id="@+id/driverConfirm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:text="You've been matched!"
-            android:textAlignment="center"
+            android:id="@+id/textElapsedTime"
+            android:layout_width="0dp"
+            android:layout_height="128dp"
+            android:layout_marginTop="32dp"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="You've been matched to a driver!"
             android:textColor="@android:color/white"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toTopOf="@+id/labelElapsedTime"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/labelDriverAccepts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="A driver is on the way!\n Check the View Request to see their profile!"
-        android:textColor="@color/colorPrimary"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/buttonOK"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/upperConstraintLayout" />
 
     <TextView
         android:id="@+id/textRider"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/placeholder_none"
+        android:text="\nYou've been matched to a driver!\nClick the view requests for more information\nEnjoy the ride!\n\n\n"
         android:textColor="@color/colorAccent"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/labelRider"
-        app:layout_constraintStart_toEndOf="@+id/labelRider"
-        app:layout_constraintTop_toTopOf="@+id/labelRider" />
-
-    <TextView
-        android:id="@+id/labelStartLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/label_start_location"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/textStartLocation"
-        app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/labelRider" />
-
-    <TextView
-        android:id="@+id/textStartLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autoLink="email"
-        android:text="@string/placeholder_none"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/labelStartLocation"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/labelStartLocation"
-        app:layout_constraintTop_toTopOf="@+id/labelStartLocation" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/upperConstraintLayout" />
+
 
     <Button
         android:id="@+id/buttonOK"
-        android:layout_width="243dp"
-        android:layout_height="41dp"
-        android:background="@color/colorPrimary"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:elevation="6dp"
         android:text="OK"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="143dp" />
-
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
