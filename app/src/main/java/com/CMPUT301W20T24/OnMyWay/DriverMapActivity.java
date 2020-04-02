@@ -574,8 +574,10 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         confirm_pickup_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                popupWindow.dismiss();
 
+                ShowDriverScanFragment showDriverScanFragment = ShowDriverScanFragment.newInstance(null);
+                showDriverScanFragment.show(fm);
+                popupWindow.dismiss();
                 db.collection("riderRequests").document(currentRide.getDocumentId()).update(
                         "driverId", driverId,
                         "status", "COMPLETE").addOnCompleteListener(new OnCompleteListener<Void>() {
