@@ -160,6 +160,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                     }
                 }
 
+
                 // Calculate a price estimate for the ride depending on the start and end locations
                 String priceEstimate = calculatePrice(
                         startLocationMarker.getPosition().longitude,
@@ -172,6 +173,8 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                 // rider a price estimate and gives the rider the option to edit the price
                 showEditPriceLayout();
 
+
+
                 EditText editPrice = findViewById(R.id.editPrice);
                 editPrice.setText(priceEstimate);
 
@@ -181,27 +184,33 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                     @Override
                     public void onClick(View v) {
                         newCost = editPrice.getText().toString();
-                        riderRequest = new Request(
-                                UserRequestState.getCurrentUser().getUserId(),
-                                startLocationName,
-                                startLocationMarker.getPosition().longitude,
-                                startLocationMarker.getPosition().latitude,
-                                endLocationName,
-                                endLocationMarker.getPosition().longitude,
-                                endLocationMarker.getPosition().latitude,
-                                newCost
-                        );
-                      
-                        // TODO: REMOVE THIS. JUST FOR TESTING. THIS IS WHAT YOU DO WHEN A DRIVER ACCEPTS A REQUEST
-                        riderRequest.setDriverUserName(null);
+                        float newCostFloat = Float.parseFloat(newCost);
+                        float priceEstimateFloat = Float.parseFloat(priceEstimate);
+                        if(newCostFloat<priceEstimateFloat){
+                            Toast.makeText(getApplicationContext(), "Please enter a value higher than your base price of $"+ priceEstimate, Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            riderRequest = new Request(
+                                    UserRequestState.getCurrentUser().getUserId(),
+                                    startLocationName,
+                                    startLocationMarker.getPosition().longitude,
+                                    startLocationMarker.getPosition().latitude,
+                                    endLocationName,
+                                    endLocationMarker.getPosition().longitude,
+                                    endLocationMarker.getPosition().latitude,
+                                    newCost
+                            );
 
-                        UserRequestState.setCurrentRequest(riderRequest);
-                        UserRequestState.updateCurrentRequest(); // Push updates to FireBase
-                        dbManager.pushRequestInfo(riderRequest);
+                            riderRequest.setDriverUserName(null);
 
-                        Toast.makeText(getApplicationContext(), "Woo! Your ride is confirmed", Toast.LENGTH_SHORT).show();
+                            UserRequestState.setCurrentRequest(riderRequest);
+                            UserRequestState.updateCurrentRequest(); // Push updates to FireBase
+                            dbManager.pushRequestInfo(riderRequest);
 
-                        showCurrentRequestLayout();
+                            Toast.makeText(getApplicationContext(), "Woo! Your ride is confirmed", Toast.LENGTH_SHORT).show();
+
+                            showCurrentRequestLayout();
+                        }
                     }
                 });
             }
