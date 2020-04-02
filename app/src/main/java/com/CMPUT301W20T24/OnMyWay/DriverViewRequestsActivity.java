@@ -97,8 +97,22 @@ public class DriverViewRequestsActivity extends AppCompatActivity {
                                 Log.w(TAG, "Listen failed.", e);
                                 return;
                             }
-                            for (QueryDocumentSnapshot i : queryDocumentSnapshots){
-                                Request request = new Request(Double.parseDouble(i.getString("startLongitude")), Double.parseDouble(i.getString("startLatitude")), Double.parseDouble(i.getString("endLongitude")), Double.parseDouble(i.getString("endLatitude")),"$5.00");
+                            for (QueryDocumentSnapshot doc : queryDocumentSnapshots) {
+                                // FIXME: THIS IS NOT A VALID CONSTRUCTOR ANYMORE. REQUEST NEEDS TO HAVE MANY MORE VALUES
+                                Request request = new Request(
+                                        doc.getString("riderId"),
+                                        doc.getString("driverId"),
+                                        doc.getString("startLocationName"),
+                                        Utilities.checkDoubleNotNull(doc.getDouble("startLongitude")),
+                                        Utilities.checkDoubleNotNull(doc.getDouble("startLatitude")),
+                                        doc.getString("endLocationName"),
+                                        Utilities.checkDoubleNotNull(doc.getDouble("endLongitude")),
+                                        Utilities.checkDoubleNotNull(doc.getDouble("endLatitude")),
+                                        "$5.00",
+                                        doc.getString("status"),
+                                        doc.getLong("timeCreated"),
+                                        doc.getLong("timeAccepted")
+                                );
                                 //request = i.toObject(Request.class);
                                 arrayAdapter.add(request);
                             }

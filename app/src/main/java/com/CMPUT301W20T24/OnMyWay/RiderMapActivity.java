@@ -22,9 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -41,11 +39,10 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
@@ -89,20 +86,27 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private Polyline polyline_rider;
     private Polyline polyline_destination;
 
+
     // Instantiating DBManager()
     private DBManager dbManager;
+
     private String newCost;
+
     private Request riderRequest;
+
 
     private static final int REQUEST_CODE = 101;
     private View mapView;
-    private FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
+
+    private String requestID;
+    private ListenerRegistration driverListener;
 
     // Disable back button for this activity
     @Override
     public void onBackPressed() {
         // Literally nothing
     }
+
 
     // LONGPRESS BACK BUTTON TO GO BACK TO THE MAIN ACTIVITY FOR TESTING. REMOVE THIS LATER
 
@@ -190,6 +194,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                     @Override
                     public void onClick(View v) {
                         newCost = editPrice.getText().toString();
+
                         float newCostFloat = Float.parseFloat(newCost);
                         float priceEstimateFloat = Float.parseFloat(priceEstimate);
                         if(newCostFloat<priceEstimateFloat){
@@ -198,24 +203,55 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                         else {
                             riderRequest = new Request(
                                     UserRequestState.getCurrentUser().getUserId(),
+                                    null,
                                     startLocationName,
                                     startLocationMarker.getPosition().longitude,
                                     startLocationMarker.getPosition().latitude,
                                     endLocationName,
                                     endLocationMarker.getPosition().longitude,
                                     endLocationMarker.getPosition().latitude,
-                                    newCost
+                                    newCost,
+                                    "INCOMPLETE",
+                                    null,
+                                    null
                             );
-
-                            riderRequest.setDriverUserName(null);
 
                             UserRequestState.setCurrentRequest(riderRequest);
                             UserRequestState.updateCurrentRequest(); // Push updates to FireBase
                             dbManager.pushRequestInfo(riderRequest);
 
+                            // get the request id of the current request
+                            requestID = UserRequestState.getCurrentRequest().getRequestId();
+
                             Toast.makeText(getApplicationContext(), "Woo! Your ride is confirmed", Toast.LENGTH_SHORT).show();
 
                             showCurrentRequestLayout();
+
+                            /// https://www.youtube.com/watch?v=LfkhFCDnkS0&list=PLrnPJCHvNZuDrSqu-dKdDi3Q6nM-VUyxD&index=4
+                            //TODO need to detach the listener when ride done or canceled figured out
+                            Toast.makeText(getApplicationContext(),riderRequest.getRequestId(),Toast.LENGTH_SHORT).show();
+                            driverListener = dbManager.getRequests().whereEqualTo("requestID", riderRequest.getRequestId()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                    if(e != null){
+                                        Toast.makeText(getApplicationContext(),"Error with database update", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    else{
+                                        List<DocumentSnapshot> documentList = queryDocumentSnapshots.getDocuments();
+                                        for (DocumentSnapshot documentSnapshot : documentList){
+                                            if(documentSnapshot.getString("status").equals("COMPLETE")){
+                                                showQRFragment = ShowQRFragment.newInstance(null);
+                                                showQRFragment.show(fm);
+                                            }
+                                            else if(documentSnapshot.getString("status").equals("ACTIVE")){
+                                                Toast.makeText(getApplicationContext(),"The driver is on the way, check status on the top right corner!",Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    }
+
+                                }
+                            });
                         }
                     }
                 });
@@ -266,7 +302,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
     /**
      * Finds the rider's current location, 'currentLocation'
-     * @author: Mahin, John
+     * @author: Mahin, John, Neel
      */
     private void fetchLastLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -287,31 +323,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         });
     }
 
-    public void executePayment(){
-        CollectionReference collectionReference = mDatabase.collection("riderRequests");
-        mDatabase.collection("riderRequests")
-        .whereEqualTo("riderRequests", UserRequestState.getCurrentRequest().getRequestId())
-        .addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.w(TAG, "Listen failed.", e);
-                    return;
-                }
-                else {
-                    if (UserRequestState.getCurrentRequest().getStatus() == "COMPLETE"){
-                        loadFragment();
-                    }
-                }
-            }
-        });
-    }
 
-    public void loadFragment(){
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.replace(R.id.show_qr_buck, showQRFragment);
-        fragmentTransaction.commit();
-    }
 
     public void cancelRide() {
         mMap.clear();
@@ -321,9 +333,10 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         // TODO: UPDATE STATE HERE
         UserRequestState.cancelCurrentRequest();
         // TODO: PUSH CHANGES TO FIREBASE
-
+        dbManager.cancelRequest(requestID);
         Toast.makeText(getApplicationContext(), "Your request has been cancelled", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Request cancelled");
+        driverListener.remove();
     }
 
 

@@ -54,7 +54,7 @@ public class ShowDriverRequestFragment extends DialogFragment implements View.On
         ShowDriverRequestFragment fragment = new ShowDriverRequestFragment();
         Bundle args = new Bundle();
 
-        args.putString("riderId", request.getRiderUserName());
+        args.putString("riderId", request.getRiderId());
         args.putString("startLocationName", request.getStartLocationName());
         args.putString("endLocationName", request.getEndLocationName());
 

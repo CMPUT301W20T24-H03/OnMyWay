@@ -89,7 +89,7 @@ public class Utilities {
     // Check if a Boolean object is null and return the value if not
     static public boolean checkBooleanNotNull(Boolean booleanToCheck) {
         if (booleanToCheck == null) {
-            throw new NullPointerException("The string fetched from FireStore is null. Make sure data is added for this user");
+            throw new NullPointerException("The boolean fetched from FireStore is null");
         }
         else {
             return booleanToCheck;    // No unboxing needed. This is cast to a boolean automatically
@@ -107,10 +107,28 @@ public class Utilities {
     // Check if a Long object is null and return the value as an int if not
     static public int checkLongNotNull(Long longToCheck) {
         if (longToCheck == null) {
-            throw new NullPointerException("The string fetched from FireStore is null. Make sure data is added for this user");
+            throw new NullPointerException("The long fetched from FireStore is null");
         }
         else {
             return longToCheck.intValue();
+        }
+    }
+
+
+    /**
+     * Check if a double object is null, returning it's primitive value if not.
+     * Otherwise a NullPointerException is thrown
+     * @param doubleToCheck The Long object we want to check
+     * @return The primitive double extracted from the input object
+     * @author John
+     */
+    // Check if a Long object is null and return the value as an int if not
+    static public double checkDoubleNotNull(Double doubleToCheck) {
+        if (doubleToCheck == null) {
+            throw new NullPointerException("The double fetched from FireStore is null");
+        }
+        else {
+            return doubleToCheck;
         }
     }
 }
