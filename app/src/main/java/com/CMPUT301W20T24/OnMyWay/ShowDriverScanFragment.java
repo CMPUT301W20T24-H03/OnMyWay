@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,13 +35,15 @@ public class ShowDriverScanFragment extends DialogFragment implements View.OnCli
     Button scanQR;
     TextView money;
     TextView accept_dialog;
+    ImageView uprating;
+    ImageView downrating;
 
     private static Request request;
 
     public ShowDriverScanFragment() {
         // Empty constructor required here
         // Use newInstance() to create a new instance of the dialog
-    }
+        }
 
 
     @SuppressLint("LongLogTag")
@@ -79,8 +82,15 @@ public class ShowDriverScanFragment extends DialogFragment implements View.OnCli
         View view = inflater.inflate(R.layout.fragment_show_payment, container);
         backButton = view.findViewById(R.id.buttonBack);
         scanQR = view.findViewById(R.id.scan_qr_buck);
+
+        uprating = view.findViewById(R.id.thumbs_up);
+        downrating = view.findViewById(R.id.thumbs_down);
+
         money = view.findViewById(R.id.money_money_money);
         accept_dialog = view.findViewById(R.id.accept_payment);
+
+        uprating.setOnClickListener(this);
+        downrating.setOnClickListener(this);
         backButton.setOnClickListener(this);
         scanQR.setOnClickListener(this);
         return view;
@@ -116,7 +126,12 @@ public class ShowDriverScanFragment extends DialogFragment implements View.OnCli
             Intent intent = new Intent(this.getActivity().getApplicationContext(), BarcodeCaptureActivity.class);
             startActivityForResult(intent, ShowDriverScanFragment.BARCODE_READER_REQUEST_CODE);
 
+        }else if(viewId == R.id.thumbs_up){
+            downrating.setVisibility(View.INVISIBLE);
+        }else if(viewId == R.id.thumbs_down){
+            uprating.setVisibility(View.INVISIBLE);
         }
+
         else {
             throw new NullPointerException("No button with the correct ID was found");
         }
@@ -137,6 +152,8 @@ public class ShowDriverScanFragment extends DialogFragment implements View.OnCli
                     scanQR.setVisibility(View.INVISIBLE);
                     accept_dialog.setVisibility(View.VISIBLE);
                     money.setVisibility(View.VISIBLE);
+
+
                 } else {
                     Log.d(TAG, "No QR code captured");
                 }
