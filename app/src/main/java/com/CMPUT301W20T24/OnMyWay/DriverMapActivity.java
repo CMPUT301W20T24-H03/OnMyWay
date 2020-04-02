@@ -92,6 +92,8 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     private LayoutInflater layoutInflater;
     private PopupWindow popupWindow;
 
+    private boolean currently_driving = false;
+
 
     // Disable back button for this activity
     @Override
@@ -180,7 +182,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                             for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
                                 try {
                                     BitmapDescriptor startLocationIcon = BitmapDescriptorFactory.fromResource(R.drawable.ic_blue_location_marker);
-                                    LatLng latlng = new LatLng((documentSnapshot.getDouble("startLatitude")), (documentSnapshot.getDouble("startLongitude")));
+                                    LatLng latlng = new LatLng(documentSnapshot.getDouble("startLatitude"), documentSnapshot.getDouble("startLongitude"));
 //                                  Toast.makeText(getApplicationContext(), documentSnapshot.getString("startLatitude")+","+documentSnapshot.getString("startLongitude"), Toast.LENGTH_LONG).show();
 
                                     String documentId = documentSnapshot.getId();
@@ -201,9 +203,8 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                                         Marker my_marker = mMap.addMarker(
                                                 new MarkerOptions()
                                                         .position(latlng)
-                                                        .title("Bid: $" + documentSnapshot.getString("paymentAmount"))
+                                                        .title("Pickup")
                                                         .icon(startLocationIcon)
-                                                        .snippet("Username: " + documentSnapshot.getString("riderUserName"))
                                         );
 
                                         MarkerStoreObject markerStoreObject = new MarkerStoreObject(documentId, driverUser, endLat, endLon, paymentAmount, requestId, riderUser, startLat, startLon, status, startAddr, endAddr);
@@ -390,10 +391,15 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                calculateDirections(marker);
-                calculateDirectionsDestination(marker);
-                showDialogue(marker);
-                return true;
+                if(marker.getTag() != null && !currently_driving) {
+                    calculateDirections(marker);
+                    calculateDirectionsDestination(marker);
+                    showDialogue(marker);
+                    return true;
+                }
+                else{
+                    return false;
+                }
             }
         });
 
@@ -489,6 +495,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                        if(task.isSuccessful()){
                            Log.d(TAG, "Confirm button driver updated database correctly");
                            popupWindow.dismiss();
+                           currently_driving = true;
                            pickupRider(marker);
                        }
                        else{
@@ -586,6 +593,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                         if(task.isSuccessful()){
                             Log.d(TAG, "Confirm dropoff updated database correctly");
                             popupWindow.dismiss();
+                            currently_driving = false;
                         }
                         else{
                             Log.d(TAG, "Confirm dropoff did not update");
