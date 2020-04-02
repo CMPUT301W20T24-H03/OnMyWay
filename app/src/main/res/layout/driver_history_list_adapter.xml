@@ -51,6 +51,31 @@
                 android:layout_height="match_parent"
                 android:textAlignment="center"
                 android:gravity="center"
+                android:text="Date:"
+                android:textStyle="bold"
+                android:layout_weight="10"
+                />
+            <TextView
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:id="@+id/tvTime"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:layout_weight="90"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:weightSum="100"
+            >
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:textAlignment="center"
+                android:gravity="center"
                 android:text="Start:"
                 android:textStyle="bold"
                 android:layout_weight="10"
@@ -89,6 +114,8 @@
                 android:layout_weight="90"
                 />
         </LinearLayout>
+
+
 
 
 

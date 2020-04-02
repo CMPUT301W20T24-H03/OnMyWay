@@ -230,8 +230,8 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                             );
 
                             UserRequestState.setCurrentRequest(riderRequest);
-                            UserRequestState.updateCurrentRequest(); // Push updates to FireBase
-                            dbManager.pushRequestInfo(riderRequest);
+                            UserRequestState.updateCurrentRequest();
+                            // dbManager.pushRequestInfo(riderRequest); // Potentially causing duplicates?
 
                             // get the request id of the current request
                             requestID = UserRequestState.getCurrentRequest().getRequestId();
@@ -329,7 +329,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
             public void onSuccess(Location location) {
                 if (location != null){
                     currentLocation = location;
-                    Toast.makeText(getApplicationContext(), currentLocation.getLatitude() + " " + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(getApplicationContext(), currentLocation.getLatitude() + " " + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.riderMap);
                     mapView = mapFragment.getView();
                     mapFragment.getMapAsync(RiderMapActivity.this);
@@ -425,7 +425,6 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         if (endLocationMarker != null && startLocationMarker != null) {
             calculateDirections();
-            calculateDirectionsDestination();
         }
 
         return startLocationMarker != null;   // Return true if startLocationMarker exists now
@@ -473,7 +472,6 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         if (endLocationMarker != null && startLocationMarker != null) {
             calculateDirections();
-            calculateDirectionsDestination();
         }
 
         return endLocationMarker != null;   // Return true if endLocationMarker exists now
@@ -512,30 +510,6 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onResult(DirectionsResult result) {
                 addPolylinesToMap(result);
-            }
-
-            @Override
-            public void onFailure(Throwable e) {
-                Log.e(TAG, e.toString());
-            }
-        });
-    }
-
-
-    private void calculateDirectionsDestination() {
-        // Setting current request for sliding menu view
-        com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(endLocationMarker.getPosition().latitude, endLocationMarker.getPosition().longitude);
-
-        geoApi = new GeoApiContext.Builder().apiKey(getString(R.string.google_api_key)).build();
-        DirectionsApiRequest directions = new DirectionsApiRequest(geoApi);
-
-        directions.alternatives(true);
-        directions.origin(new com.google.maps.model.LatLng(startLocationMarker.getPosition().latitude, startLocationMarker.getPosition().longitude));
-
-        directions.destination(String.valueOf(destination)).setCallback(new com.google.maps.PendingResult.Callback<DirectionsResult>() {
-            @Override
-            public void onResult(DirectionsResult result) {
-                addPolylinesToMapDestination(result);
             }
 
             @Override
@@ -585,41 +559,6 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         });
     }
 
-
-    private void addPolylinesToMapDestination(final DirectionsResult result) {
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
-            @SuppressLint("ResourceType")
-            @Override
-            public void run() {
-                Log.d(TAG, "run: result routes: " + result.routes.length);
-
-                for (DirectionsRoute route : result.routes) {
-                    Log.d(TAG, "run: leg: " + route.legs[0].toString());
-                    List<com.google.maps.model.LatLng> decodedPath = PolylineEncoding.decode(route.overviewPolyline.getEncodedPath());
-
-                    List<LatLng> newDecodedPath = new ArrayList<>();
-
-                    // This loops through all the LatLng coordinates of ONE polyline.
-                    for (com.google.maps.model.LatLng latLng : decodedPath) {
-                        newDecodedPath.add(new LatLng(latLng.lat, latLng.lng));
-                    }
-
-                    if (polyline_destination != null) {
-                        polyline_destination.remove();
-                    }
-                    polyline_destination = mMap.addPolyline(
-                            new PolylineOptions()
-                                    .addAll(newDecodedPath)
-                                    .color(getApplicationContext()
-                                            .getResources()
-                                            .getColor(R.color.colorPolylineDest)
-                                    )
-                                    .clickable(true)
-                                    .width(10));
-                }
-            }
-        });
-    }
 
 
     // This method calculates a price estimate for the rider depending on the distance

@@ -7,17 +7,20 @@ public class DriverHistoryInfo implements Parcelable {
     private String history_id;
     private String history_start;
     private String history_dest;
+    private Long history_time;
 
-    DriverHistoryInfo(String history_id, String history_start, String history_dest){
+    DriverHistoryInfo(String history_id, String history_start, String history_dest, Long history_time){
         this.history_id = history_id;
         this.history_start = history_start;
         this.history_dest = history_dest;
+        this.history_time = history_time;
     }
 
     protected DriverHistoryInfo(Parcel in) {
         history_id = in.readString();
         history_start = in.readString();
         history_dest = in.readString();
+        history_time = in.readLong();
     }
 
     public static final Creator<DriverHistoryInfo> CREATOR = new Creator<DriverHistoryInfo>() {
@@ -56,6 +59,14 @@ public class DriverHistoryInfo implements Parcelable {
         this.history_dest = history_dest;
     }
 
+    public Long getHistory_time() {
+        return history_time;
+    }
+
+    public void setHistory_time(Long history_time) {
+        this.history_time = history_time;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -66,5 +77,6 @@ public class DriverHistoryInfo implements Parcelable {
         dest.writeString(this.history_id);
         dest.writeString(this.history_dest);
         dest.writeString(this.history_start);
+        dest.writeLong(this.history_time);
     }
 }

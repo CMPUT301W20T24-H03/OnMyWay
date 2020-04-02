@@ -1,12 +1,14 @@
 package com.CMPUT301W20T24.OnMyWay;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -48,7 +50,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.maps.DirectionsApiRequest;
@@ -58,6 +62,7 @@ import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
 
 
+import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,6 +96,9 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     private LayoutInflater layoutInflater;
     private PopupWindow popupWindow;
+
+    private boolean currently_driving = false;
+    private boolean viewing_ride = false;
 
 
     // Disable back button for this activity
@@ -180,7 +188,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                             for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
                                 try {
                                     BitmapDescriptor startLocationIcon = BitmapDescriptorFactory.fromResource(R.drawable.ic_blue_location_marker);
-                                    LatLng latlng = new LatLng((documentSnapshot.getDouble("startLatitude")), (documentSnapshot.getDouble("startLongitude")));
+                                    LatLng latlng = new LatLng(documentSnapshot.getDouble("startLatitude"), documentSnapshot.getDouble("startLongitude"));
 //                                  Toast.makeText(getApplicationContext(), documentSnapshot.getString("startLatitude")+","+documentSnapshot.getString("startLongitude"), Toast.LENGTH_LONG).show();
 
                                     String documentId = documentSnapshot.getId();
@@ -201,9 +209,8 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                                         Marker my_marker = mMap.addMarker(
                                                 new MarkerOptions()
                                                         .position(latlng)
-                                                        .title("Bid: $" + documentSnapshot.getString("paymentAmount"))
+                                                        .title("Pickup")
                                                         .icon(startLocationIcon)
-                                                        .snippet("Username: " + documentSnapshot.getString("riderUserName"))
                                         );
 
                                         MarkerStoreObject markerStoreObject = new MarkerStoreObject(documentId, driverUser, endLat, endLon, paymentAmount, requestId, riderUser, startLat, startLon, status, startAddr, endAddr);
@@ -361,7 +368,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
      * Enable current location, moves the camera to the driver's location
      * Shows dialogue when a maker is clicked
      * @param googleMap
-     * @author Neel
+     * @author Neel, Payas
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -387,13 +394,38 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         rlp2.leftMargin = 185;
 
         loadMarkers();
+
+        requests.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if(!viewing_ride) {
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e);
+                        return;
+                    }
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        removeDestinationMarkers();
+                        loadMarkers();
+                    }
+                }
+
+            }
+        });
+
+
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                calculateDirections(marker);
-                calculateDirectionsDestination(marker);
-                showDialogue(marker);
-                return true;
+                if(marker.getTag() != null && !currently_driving) {
+                    viewing_ride = true;
+                    calculateDirections(marker);
+                    calculateDirectionsDestination(marker);
+                    showDialogue(marker);
+                    return true;
+                }
+                else{
+                    return false;
+                }
             }
         });
     }
@@ -470,6 +502,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onClick(View v) {
                 popupWindow.dismiss();
+                viewing_ride = false;
                 removeDestinationMarkers();
                 loadMarkers();
             }
@@ -480,13 +513,15 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+               RequestTime the_time =  new RequestTime();
                db.collection("riderRequests").document(currentRide.getDocumentId()).update(
-                       "driverId", driverId, "status", "ACTIVE").addOnCompleteListener(new OnCompleteListener<Void>() {
+                       "driverId", driverId,"status", "ACTIVE", "timeAccepted", the_time.toLong()).addOnCompleteListener(new OnCompleteListener<Void>() {
                    @Override
                    public void onComplete(@NonNull Task<Void> task) {
                        if(task.isSuccessful()){
                            Log.d(TAG, "Confirm button driver updated database correctly");
                            popupWindow.dismiss();
+                           currently_driving = true;
                            pickupRider(marker);
                        }
                        else{
@@ -494,6 +529,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                        }
                    }
                });
+
 
             }
         });
@@ -584,13 +620,14 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                         if(task.isSuccessful()){
                             Log.d(TAG, "Confirm dropoff updated database correctly");
                             popupWindow.dismiss();
+                            currently_driving = false;
                         }
                         else{
                             Log.d(TAG, "Confirm dropoff did not update");
                         }
                     }
                 });
-
+                viewing_ride = false;
                 removeDestinationMarkers();
                 loadMarkers();
                 // TODO start payment activity here!

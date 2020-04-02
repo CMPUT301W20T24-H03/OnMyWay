@@ -8,7 +8,7 @@ import java.util.Locale;
 public class RequestTime {
     private long secondsSinceEpoch;
     private Calendar calendar = Calendar.getInstance();
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("MMMMM d', 'y' at 'h':'m", Locale.US);
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d', 'y' at 'h':'m", Locale.US);
     private SimpleDateFormat timeFormat = new SimpleDateFormat("a", Locale.US);
 
 
