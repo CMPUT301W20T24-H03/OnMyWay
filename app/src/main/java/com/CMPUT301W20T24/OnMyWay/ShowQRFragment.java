@@ -35,10 +35,12 @@ public class ShowQRFragment extends DialogFragment implements View.OnClickListen
     private static final String TAG = "OMW/ShowProfileFragment";  // Use this tag for call Log.d()
     private static boolean isCurrentUser = false;
 
-    private Button editButton;
-    private Button logoutButton;
+
     private static Request request;
     private ImageView qrCode;
+
+    ImageView uprating;
+    ImageView downrating;
 
     public ShowQRFragment() {
         // Empty constructor required here
@@ -93,6 +95,9 @@ public class ShowQRFragment extends DialogFragment implements View.OnClickListen
         Button backButton = view.findViewById(R.id.buttonBack);
         backButton.setOnClickListener(this);
 
+        uprating.setOnClickListener(this);
+        downrating.setOnClickListener(this);
+
         return view;
     }
 
@@ -142,6 +147,10 @@ public class ShowQRFragment extends DialogFragment implements View.OnClickListen
 
             this.dismiss(); // Close the dialog
             parentActivity.recreate();
+        }else if(viewId == R.id.thumbs_up){
+            downrating.setVisibility(View.INVISIBLE);
+        }else if(viewId == R.id.thumbs_down){
+            uprating.setVisibility(View.INVISIBLE);
         }
         else {
             throw new NullPointerException("No button with the correct ID was found");
