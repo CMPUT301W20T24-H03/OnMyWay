@@ -25,4 +25,5 @@ public class RequestTimeTests {
 
         assertEquals(Calendar.getInstance().getTime().getTime() / 1000, requestTime.toLong());
     }
+
 }

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.CMPUT301W20T24.OnMyWay.barcode.BarcodeCaptureActivity;
 import com.google.android.gms.common.api.CommonStatusCodes;
@@ -90,8 +91,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void QRScan(View view){
-        Intent intent = new Intent(MainActivity.this.getApplicationContext(), BarcodeCaptureActivity.class);
-        MainActivity.this.startActivityForResult(intent, MainActivity.BARCODE_READER_REQUEST_CODE);
+        ShowDriverScanFragment showDriverScanFragment = ShowDriverScanFragment.newInstance(null);
+        showDriverScanFragment.show(fm);
+
+        //Intent intent = new Intent(MainActivity.this.getApplicationContext(), BarcodeCaptureActivity.class);
+        //MainActivity.this.startActivityForResult(intent, MainActivity.BARCODE_READER_REQUEST_CODE);
+
     }
 
     @Override
@@ -103,6 +108,11 @@ public class MainActivity extends AppCompatActivity {
                     Barcode barcode = data.getParcelableExtra("Barcode");
                     Point[] p = barcode.cornerPoints;
                     String info = barcode.displayValue;
+                    String[] arrOfStr = info.split(";");
+
+
+                    Toast.makeText(getApplicationContext(), arrOfStr[1], Toast.LENGTH_SHORT).show();
+
                 } else {
                     Log.d(TAG, "No QR code captured");
                 }
