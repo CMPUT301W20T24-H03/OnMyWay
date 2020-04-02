@@ -38,6 +38,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.internal.PolylineEncoding;
@@ -89,6 +90,8 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
     private static final int REQUEST_CODE = 101;
     private View mapView;
+
+    private String requestId;
 
 
     // Disable back button for this activity
@@ -200,8 +203,11 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                         dbManager.pushRequestInfo(riderRequest);
 
                         Toast.makeText(getApplicationContext(), "Woo! Your ride is confirmed", Toast.LENGTH_SHORT).show();
+                        // get the auto-generated request ID of the current request
+                        requestId = UserRequestState.getCurrentRequest().getRequestId();
 
                         showCurrentRequestLayout();
+
                     }
                 });
             }
@@ -281,8 +287,8 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         // TODO: UPDATE STATE HERE
         UserRequestState.cancelCurrentRequest();
-        // TODO: PUSH CHANGES TO FIREBASE
-
+        Toast.makeText(getApplicationContext(),requestId , Toast.LENGTH_SHORT).show();
+        dbManager.deleteRequest(requestId);
         Toast.makeText(getApplicationContext(), "Your request has been cancelled", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Request cancelled");
     }
