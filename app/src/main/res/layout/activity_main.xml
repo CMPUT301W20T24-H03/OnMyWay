@@ -104,8 +104,20 @@
         android:layout_marginTop="52dp"
         android:text="QR Buck"
         android:onClick="showQRbuck"
-
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/show_current_user_profile_button" />
+
+    <Button
+        android:id="@+id/scan_qr"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="124dp"
+        android:onClick="QRScan"
+        android:text="Scan QR buck"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/show_current_user_profile_button" />
 </androidx.constraintlayout.widget.ConstraintLayout>

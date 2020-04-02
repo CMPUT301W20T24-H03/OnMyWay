@@ -261,6 +261,7 @@ public class DBManager {
                         Log.w(TAG, "Error updating user profile", e);
                     }
                 });
+
     }
 
 
@@ -340,6 +341,9 @@ public class DBManager {
         data.put("startLongitude", String.valueOf(riderRequest.getStartLongitude()));
         data.put("driverUserName", String.valueOf(riderRequest.getDriverUserName()));
         data.put("paymentAmount", riderRequest.getPaymentAmount());
+        data.put("status", riderRequest.getStatus());
+        data.put("startAddressName", riderRequest.getStartLocationName());
+        data.put("endAddressName", riderRequest.getEndLocationName());
 
         //Adds a new record the request to the 'riderRequests' collection.
         db.collection("riderRequests")
@@ -356,5 +360,9 @@ public class DBManager {
                         Log.d(TAG, "Data addition failed." + e.toString());
                     }
                 });
+    }
+
+    public FirebaseFirestore getDatabase(){
+        return db;
     }
 }

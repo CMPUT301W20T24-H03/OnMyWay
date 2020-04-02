@@ -37,6 +37,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
+        <FrameLayout
+            android:id="@+id/show_qr_buck"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"/>
+
         <SearchView
             android:id="@+id/startLocationSearchBar"
             style="@android:style/Widget.Material.Light.SearchView"
