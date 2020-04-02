@@ -76,7 +76,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     private FragmentManager fm;
 
-    private String driverUsername;
+    private String driverId;
 
     private static final int REQUEST_CODE = 101;
     private View mapView;
@@ -101,7 +101,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
 
     // LONGPRESS BACK BUTTON TO GO BACK TO THE MAIN ACTIVITY FOR TESTING. REMOVE THIS LATER
-
     /// StackOverflow post by oemel09
     /// Author: https://stackoverflow.com/users/10827064/oemel09
     /// Answer: https://stackoverflow.com/questions/56913053/android-long-press-system-back-button-listener
@@ -119,7 +118,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     /**
      * onCreate method. Sets the view, and finds/stores the drivers current location
-     * @param savedInstanceState    TODO: WRITE DESCRIPTION HERE
+     * @param savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,18 +133,13 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
         // Toast.makeText(DriverMapActivity.this, "DriverMapActivity", Toast.LENGTH_LONG).show();
 
-        driverUsername = UserRequestState.getCurrentUser().getUserId();
+        driverId = UserRequestState.getCurrentUser().getUserId();
 
     }
-
-    private void openViewPreviousRidesActivity() {
-        Intent intent = new Intent(this, ViewPreviousRidesActivity.class);
-        startActivity(intent);
-    }
-
 
     /**
      * Finds the drivers current location, 'currentLocation'
+     * @author Neel
      */
     private void fetchLastLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -170,6 +164,10 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     /// Youtube video by Coding In Flow: Firestore Tutorial Part 8 - ADD AND RETRIEVE MULTIPLE DOCUMENTS - Android Studio Tutorial
     /// https://www.youtube.com/watch?v=Bh0h_ZhX-Qg&t=349s
     // load requests from the database
+    /**
+     * Loads potential ride requests on the map
+     * @author Payas, Bard, Neel
+     */
     public void loadMarkers(){
         requests.get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -187,16 +185,17 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
                                     String documentId = documentSnapshot.getId();
                                     String requestId = documentSnapshot.getString("requestID");
-                                    String riderUser = documentSnapshot.getString("riderUserName");
-                                    String driverUser = documentSnapshot.getString("driverUserName");
-                                    Double startLat = Double.parseDouble(documentSnapshot.getString("startLatitude"));
-                                    Double startLon = Double.parseDouble(documentSnapshot.getString("startLongitude"));
-                                    Double endLat = Double.parseDouble(documentSnapshot.getString("endLatitude"));
-                                    Double endLon = Double.parseDouble(documentSnapshot.getString("endLongitude"));
+                                    String riderUser = documentSnapshot.getString("riderId");
+                                    String driverUser = documentSnapshot.getString("driverId");
+                                    Double startLat = documentSnapshot.getDouble("startLatitude");
+                                    Double startLon = documentSnapshot.getDouble("startLongitude");
+                                    Double endLat = documentSnapshot.getDouble("endLatitude");
+                                    Double endLon = documentSnapshot.getDouble("endLongitude");
                                     float paymentAmount = Float.parseFloat(documentSnapshot.getString("paymentAmount"));
                                     String status = documentSnapshot.getString("status");
-                                    String startAddr = documentSnapshot.getString("startAddressName");
-                                    String endAddr = documentSnapshot.getString("endAddressName");
+                                    String startAddr = documentSnapshot.getString("startLocationName");
+                                    String endAddr = documentSnapshot.getString("endLocationName");
+                                    Long timeCreated = documentSnapshot.getLong("timeCreated");
 
                                     if(status.equals("INCOMPLETE")) {
                                         Marker my_marker = mMap.addMarker(
@@ -228,6 +227,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
      * Calculates directions from the driver's current location to a marker (in this case, the rider's location)
      * Calls addPolylinesToMap(result) to draw the resulting directions as a polyline
      * @param marker A marker at the rider's current location
+     * @author Neel
      */
     private void calculateDirections(Marker marker){
         com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(marker.getPosition().latitude,marker.getPosition().longitude);
@@ -257,6 +257,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
      * The location of the final destination is stored as a LatLng object in the marker's tag
      * Calls addPolylinesToMapDestination(result) to draw the resulting directions as a polyline
      * @param marker A marker at the rider's current location
+     * @author Neel
      */
     private void calculateDirectionsDestination(Marker marker){
 
@@ -289,6 +290,8 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
     /// https://www.youtube.com/watch?v=xl0GwkLNpNI&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=20
     /**
      * Adds a polyline on the Driver map showing the route to the rider
+     * @param result The directions object containing the directional data
+     * @author Neel
      */
     private void addPolylinesToMap(final DirectionsResult result){
         new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -321,6 +324,8 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     /**
      * Adds a polyline on the Driver's map showing the route from the rider to the final destination
+     * @param result The directions object containing the directional data
+     * @author Neel
      */
     private void addPolylinesToMapDestination(final DirectionsResult result){
         new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -356,6 +361,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
      * Enable current location, moves the camera to the driver's location
      * Shows dialogue when a maker is clicked
      * @param googleMap
+     * @author Neel
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -392,6 +398,10 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         });
     }
 
+    /**
+     * Remove markers from the array and the map
+     * @author Neel
+     */
     private void removeDestinationMarkers(){
         for(Marker marker : destinationMarkers){
             marker.remove();
@@ -407,6 +417,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     /**
      * The dialogue that is created when a marker is clicked
+     * @author Neel, Bard
      */
     public void showDialogue(Marker marker){
 
@@ -470,7 +481,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public void onClick(View v) {
                db.collection("riderRequests").document(currentRide.getDocumentId()).update(
-                       "driverUserName", driverUsername,"status", "ACTIVE").addOnCompleteListener(new OnCompleteListener<Void>() {
+                       "driverId", driverId, "status", "ACTIVE").addOnCompleteListener(new OnCompleteListener<Void>() {
                    @Override
                    public void onComplete(@NonNull Task<Void> task) {
                        if(task.isSuccessful()){
@@ -489,6 +500,11 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     }
 
+
+    /**
+     * The dialogue that is created when a driver is en-route to pick up a rider
+     * @author Neel
+     */
     public void pickupRider(Marker marker){
         layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         ViewGroup pickup_dialogue = (ViewGroup) layoutInflater.inflate(R.layout.dialog_pickup_rider, null);
@@ -525,6 +541,10 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
 
     }
 
+    /**
+     * The dialogue that is created when a driver is en-route to the rider's destination
+     * @author Neel
+     */
     public void dropoffRider(Marker marker){
         layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         ViewGroup dropoff_dialogue = (ViewGroup) layoutInflater.inflate(R.layout.dialog_destination_driver, null);
@@ -557,7 +577,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                 popupWindow.dismiss();
 
                 db.collection("riderRequests").document(currentRide.getDocumentId()).update(
-                        "driverUserName", driverUsername,
+                        "driverId", driverId,
                         "status", "COMPLETE").addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -579,7 +599,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         });
 
     }
-
 
     public void findRider(View view) {
         if (currentLocation != null) {

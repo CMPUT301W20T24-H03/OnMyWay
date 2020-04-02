@@ -267,7 +267,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
     /**
      * Finds the rider's current location, 'currentLocation'
-     * @author: Mahin, John
+     * @author: Mahin, John, Neel
      */
     private void fetchLastLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {

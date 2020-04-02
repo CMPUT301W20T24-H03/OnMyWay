@@ -351,10 +351,13 @@ public class DBManager {
         updatedRequestObj.put("paymentAmount", updatedRequest.getPaymentAmount());
         updatedRequestObj.put("status", updatedRequest.getStatus());
 
-        updatedRequestObj.put("timeCreated", updatedRequest.getTimeCreated().toLong());
-//        updatedRequestObj.put("timeAccepted", updatedRequest.getTimeAccepted().toLong());
 
+        RequestTime timeCreated = updatedRequest.getTimeCreated();
+        RequestTime timeAccepted = updatedRequest.getTimeAccepted();
 
+        updatedRequestObj.put("timeCreated", (timeCreated == null) ? null : timeCreated.toLong());
+        updatedRequestObj.put("timeAccepted", (timeAccepted == null) ? null : timeAccepted.toLong());
+        
         //Adds a new record the request to the 'riderRequests' collection.
         db.collection("riderRequests")
                 .add(updatedRequestObj)
