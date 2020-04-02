@@ -141,6 +141,7 @@ public class ShowQRFragment extends DialogFragment implements View.OnClickListen
             Log.d(TAG, "Back button pressed");
 
             this.dismiss(); // Close the dialog
+            parentActivity.recreate();
         }
         else {
             throw new NullPointerException("No button with the correct ID was found");
