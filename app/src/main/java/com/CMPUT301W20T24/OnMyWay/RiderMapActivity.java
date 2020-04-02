@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
@@ -38,6 +39,11 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.internal.PolylineEncoding;
@@ -70,6 +76,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
     private FragmentManager fm;
     private ShowRiderRequestFragment showRiderRequestFragment;
+    private ShowQRFragment showQRFragment;
 
     private String startLocationName;
     private String endLocationName;
@@ -78,6 +85,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private Marker endLocationMarker;
     private Polyline polyline_rider;
     private Polyline polyline_destination;
+
 
     // Instantiating DBManager()
     private DBManager dbManager;
@@ -90,6 +98,9 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private static final int REQUEST_CODE = 101;
     private View mapView;
 
+    private String requestID;
+    private String driverUsername;
+    private ListenerRegistration driverListener;
 
     // Disable back button for this activity
     @Override
@@ -97,6 +108,14 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         // Literally nothing
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(driverListener!=null){
+            driverListener.remove();
+        }
+
+    }
 
     // LONGPRESS BACK BUTTON TO GO BACK TO THE MAIN ACTIVITY FOR TESTING. REMOVE THIS LATER
 
@@ -110,6 +129,10 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
             Intent intent = new Intent(RiderMapActivity.this, MainActivity.class);
             startActivity(intent);
             return true;
+        }
+
+        if(driverListener!=null){
+            driverListener.remove();
         }
         return super.onKeyLongPress(keyCode, event);
     }
@@ -210,9 +233,40 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                             UserRequestState.updateCurrentRequest();
                             // dbManager.pushRequestInfo(riderRequest); // Potentially causing duplicates?
 
+                            // get the request id of the current request
+                            requestID = UserRequestState.getCurrentRequest().getRequestId();
+
                             Toast.makeText(getApplicationContext(), "Woo! Your ride is confirmed", Toast.LENGTH_SHORT).show();
 
                             showCurrentRequestLayout();
+
+                            /// https://www.youtube.com/watch?v=LfkhFCDnkS0&list=PLrnPJCHvNZuDrSqu-dKdDi3Q6nM-VUyxD&index=4
+                            Toast.makeText(getApplicationContext(),riderRequest.getRequestId(),Toast.LENGTH_SHORT).show();
+                            driverListener = dbManager.getRequests().whereEqualTo("requestID", riderRequest.getRequestId()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                    if(e != null){
+                                        Toast.makeText(getApplicationContext(),"Error with database update", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    else{
+                                        List<DocumentSnapshot> documentList = queryDocumentSnapshots.getDocuments();
+                                        for (DocumentSnapshot documentSnapshot : documentList){
+                                            if(documentSnapshot.getString("status").equals("COMPLETE")){
+                                                showQRFragment = ShowQRFragment.newInstance(null);
+                                                showQRFragment.show(fm);
+                                                driverListener.remove();
+                                                driverUsername = null;
+                                            }
+                                            else if(documentSnapshot.getString("status").equals("ACTIVE")){
+                                                Toast.makeText(getApplicationContext(),"The driver is on the way, click view requests to see their profile!",Toast.LENGTH_SHORT).show();
+                                                driverUsername = documentSnapshot.getString("driverId");
+                                            }
+                                        }
+                                    }
+
+                                }
+                            });
                         }
                     }
                 });
@@ -254,7 +308,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "Opening ShowRiderRequestFragment");
-
+                riderRequest.setDriverId(driverUsername, null);
                 showRiderRequestFragment = ShowRiderRequestFragment.newInstance(riderRequest);
                 showRiderRequestFragment.show(fm);
             }
@@ -294,9 +348,11 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         // TODO: UPDATE STATE HERE
         UserRequestState.cancelCurrentRequest();
         // TODO: PUSH CHANGES TO FIREBASE
-
+        dbManager.cancelRequest(requestID);
         Toast.makeText(getApplicationContext(), "Your request has been cancelled", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Request cancelled");
+        driverListener.remove();
+        driverUsername = null;
     }
 
 

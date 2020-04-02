@@ -9,9 +9,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 import java.util.HashMap;
 import java.util.Map;
@@ -348,13 +351,13 @@ public class DBManager {
         updatedRequestObj.put("paymentAmount", updatedRequest.getPaymentAmount());
         updatedRequestObj.put("status", updatedRequest.getStatus());
 
+
         RequestTime timeCreated = updatedRequest.getTimeCreated();
         RequestTime timeAccepted = updatedRequest.getTimeAccepted();
 
         updatedRequestObj.put("timeCreated", (timeCreated == null) ? null : timeCreated.toLong());
         updatedRequestObj.put("timeAccepted", (timeAccepted == null) ? null : timeAccepted.toLong());
-
-
+        
         //Adds a new record the request to the 'riderRequests' collection.
         db.collection("riderRequests")
                 .add(updatedRequestObj)
@@ -371,4 +374,52 @@ public class DBManager {
                     }
                 });
     }
+
+
+    /**
+     * if a rider cancels a ride, update the status to "CANCELLED" in the database
+     * @param requestID
+     */
+    /// StackOverflow post by Alan Nelson
+    /// Author: https://stackoverflow.com/users/5526322/alan-nelson
+    /// Answer: https://stackoverflow.com/a/51092366
+    public void cancelRequest(String requestID){
+        CollectionReference collectionReference = db.collection("riderRequests");
+        Query query = collectionReference.whereEqualTo("requestID", requestID);
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+
+        {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    for (DocumentSnapshot document : task.getResult()){
+                        Log.d(TAG, document.getId() + " => " + document.getData());
+                        String idDelete = document.getId();
+                        db.collection("riderRequests").document(idDelete)
+                                .update("status", "CANCELLED")
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w(TAG, "Error deleting document", e);
+                                    }
+                                });
+                    }
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
+
+    }
+
+    public CollectionReference getRequests(){
+        return db.collection("riderRequests");
+    }
+
 }
