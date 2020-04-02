@@ -187,10 +187,10 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                                     String requestId = documentSnapshot.getString("requestID");
                                     String riderUser = documentSnapshot.getString("riderId");
                                     String driverUser = documentSnapshot.getString("driverId");
-                                    Double startLat = Double.parseDouble(documentSnapshot.getString("startLatitude"));
-                                    Double startLon = Double.parseDouble(documentSnapshot.getString("startLongitude"));
-                                    Double endLat = Double.parseDouble(documentSnapshot.getString("endLatitude"));
-                                    Double endLon = Double.parseDouble(documentSnapshot.getString("endLongitude"));
+                                    Double startLat = documentSnapshot.getDouble("startLatitude");
+                                    Double startLon = documentSnapshot.getDouble("startLongitude");
+                                    Double endLat = documentSnapshot.getDouble("endLatitude");
+                                    Double endLon = documentSnapshot.getDouble("endLongitude");
                                     float paymentAmount = Float.parseFloat(documentSnapshot.getString("paymentAmount"));
                                     String status = documentSnapshot.getString("status");
                                     String startAddr = documentSnapshot.getString("startLocationName");
