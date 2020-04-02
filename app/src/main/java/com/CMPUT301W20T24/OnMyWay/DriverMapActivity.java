@@ -488,8 +488,9 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+               RequestTime the_time =  new RequestTime();
                db.collection("riderRequests").document(currentRide.getDocumentId()).update(
-                       "driverId", driverId, "status", "ACTIVE").addOnCompleteListener(new OnCompleteListener<Void>() {
+                       "driverId", driverId,"status", "ACTIVE", "timeAccepted", the_time.toLong()).addOnCompleteListener(new OnCompleteListener<Void>() {
                    @Override
                    public void onComplete(@NonNull Task<Void> task) {
                        if(task.isSuccessful()){
@@ -503,6 +504,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                        }
                    }
                });
+
 
             }
         });
