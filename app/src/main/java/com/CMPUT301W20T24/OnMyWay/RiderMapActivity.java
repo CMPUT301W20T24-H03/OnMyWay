@@ -19,9 +19,12 @@ import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -38,6 +41,12 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
 import com.google.maps.internal.PolylineEncoding;
@@ -70,6 +79,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
     private FragmentManager fm;
     private ShowRiderRequestFragment showRiderRequestFragment;
+    private ShowQRFragment showQRFragment;
 
     private String startLocationName;
     private String endLocationName;
@@ -81,22 +91,18 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
     // Instantiating DBManager()
     private DBManager dbManager;
-
     private String newCost;
-
     private Request riderRequest;
-
 
     private static final int REQUEST_CODE = 101;
     private View mapView;
-
+    private FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
 
     // Disable back button for this activity
     @Override
     public void onBackPressed() {
         // Literally nothing
     }
-
 
     // LONGPRESS BACK BUTTON TO GO BACK TO THE MAIN ACTIVITY FOR TESTING. REMOVE THIS LATER
 
@@ -272,7 +278,31 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         });
     }
 
+    public void executePayment(){
+        CollectionReference collectionReference = mDatabase.collection("riderRequests");
+        mDatabase.collection("riderRequests")
+        .whereEqualTo("riderRequests", UserRequestState.getCurrentRequest().getRequestId())
+        .addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e);
+                    return;
+                }
+                else {
+                    if (UserRequestState.getCurrentRequest().getStatus() == "COMPLETE"){
+                        loadFragment();
+                    }
+                }
+            }
+        });
+    }
 
+    public void loadFragment(){
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        fragmentTransaction.replace(R.id.show_qr_buck, showQRFragment);
+        fragmentTransaction.commit();
+    }
 
     public void cancelRide() {
         mMap.clear();

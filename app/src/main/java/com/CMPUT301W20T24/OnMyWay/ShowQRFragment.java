@@ -45,7 +45,6 @@ public class ShowQRFragment extends DialogFragment implements View.OnClickListen
         // Use newInstance() to create a new instance of the dialog
     }
 
-
     public static ShowQRFragment newInstance(User user) {
         if (user == null) {
             Log.d(TAG, "Creating profile dialog for current user");
