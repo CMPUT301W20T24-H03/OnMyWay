@@ -91,7 +91,8 @@ public class ShowQRFragment extends DialogFragment implements View.OnClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_show_qr_buck, container);
-
+        uprating = view.findViewById(R.id.thumbs_up);
+        downrating = view.findViewById(R.id.thumbs_down);
         Button backButton = view.findViewById(R.id.buttonBack);
         backButton.setOnClickListener(this);
 
