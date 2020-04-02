@@ -244,7 +244,6 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                             showCurrentRequestLayout();
 
                             /// https://www.youtube.com/watch?v=LfkhFCDnkS0&list=PLrnPJCHvNZuDrSqu-dKdDi3Q6nM-VUyxD&index=4
-                            Toast.makeText(getApplicationContext(),riderRequest.getRequestId(),Toast.LENGTH_SHORT).show();
                             driverListener = dbManager.getRequests().whereEqualTo("requestID", riderRequest.getRequestId()).addSnapshotListener(new EventListener<QuerySnapshot>() {
                                 @Override
                                 public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
