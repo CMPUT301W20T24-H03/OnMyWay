@@ -140,6 +140,7 @@ public class ShowDriverRequestFragment extends DialogFragment implements View.On
 
             // Fetch the user info of a test driver user
             dbManager.fetchUserInfo(riderId);
+
         }
     }
 
