@@ -396,8 +396,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                 return true;
             }
         });
-
-
     }
 
     /**

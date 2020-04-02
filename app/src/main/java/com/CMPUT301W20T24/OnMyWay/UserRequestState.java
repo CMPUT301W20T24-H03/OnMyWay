@@ -14,7 +14,6 @@ public class UserRequestState {
     static private User currentUser;
     // Make a DBManager so we can interact with the database
     static private DBManager dbManager = new DBManager();
-
     static private Request currentRequest;
 
     /**

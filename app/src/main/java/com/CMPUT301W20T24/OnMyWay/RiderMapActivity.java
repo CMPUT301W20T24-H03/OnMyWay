@@ -90,6 +90,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private static final int REQUEST_CODE = 101;
     private View mapView;
 
+    private String requestID;
 
     // Disable back button for this activity
     @Override
@@ -210,6 +211,9 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                             UserRequestState.updateCurrentRequest(); // Push updates to FireBase
                             dbManager.pushRequestInfo(riderRequest);
 
+                            // get the request id of the current request
+                            requestID = UserRequestState.getCurrentRequest().getRequestId();
+
                             Toast.makeText(getApplicationContext(), "Woo! Your ride is confirmed", Toast.LENGTH_SHORT).show();
 
                             showCurrentRequestLayout();
@@ -294,7 +298,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         // TODO: UPDATE STATE HERE
         UserRequestState.cancelCurrentRequest();
         // TODO: PUSH CHANGES TO FIREBASE
-
+        dbManager.cancelRequest(requestID);
         Toast.makeText(getApplicationContext(), "Your request has been cancelled", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Request cancelled");
     }
