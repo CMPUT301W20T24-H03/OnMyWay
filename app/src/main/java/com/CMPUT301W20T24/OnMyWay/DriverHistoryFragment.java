@@ -37,7 +37,6 @@ public class DriverHistoryFragment extends Fragment implements View.OnClickListe
         view.setOnClickListener(this);
 
         User currentUser = UserRequestState.getCurrentUser();
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" + currentUser.getUserId());
         requests.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
