@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -26,7 +27,7 @@ public class DriverHistoryFragment extends Fragment implements View.OnClickListe
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference requests = db.collection("riderRequests");
 
-    private ArrayList<DriverHistoryInfo> foo = new ArrayList<>();
+    private ArrayList<DriverHistoryInfo> historyArray = new ArrayList<>();
 
 
     @Override
@@ -41,11 +42,16 @@ public class DriverHistoryFragment extends Fragment implements View.OnClickListe
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots){
-                    if (documentSnapshot.getString("driverId") != null){
+                    if (documentSnapshot.getString("driverId") != null && documentSnapshot.getString("status").equals("COMPLETE")){
                         if(documentSnapshot.getString("driverId").equals(currentUser.getUserId()))
                         {
-                            DriverHistoryInfo temp = new DriverHistoryInfo(documentSnapshot.getString("requestID"), documentSnapshot.getString("startLocationName"), documentSnapshot.getString("endLocationName"));
-                            foo.add(temp);
+                            DriverHistoryInfo temp = new DriverHistoryInfo(
+                                    documentSnapshot.getString("requestID"),
+                                    documentSnapshot.getString("startLocationName"),
+                                    documentSnapshot.getString("endLocationName"),
+                                    documentSnapshot.getLong("timeAccepted")
+                            );
+                            historyArray.add(temp);
                         }
                     }
                 }
@@ -58,9 +64,16 @@ public class DriverHistoryFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        Intent intent = new Intent(getContext(), DriverHistoryActivity.class);
-        intent.putParcelableArrayListExtra("TheData", foo);
-        startActivity(intent);
+
+
+        if(historyArray.size() >0) {
+            Intent intent = new Intent(getContext(), DriverHistoryActivity.class);
+            intent.putParcelableArrayListExtra("TheData", historyArray);
+            startActivity(intent);
+        }
+        else{
+            Toast.makeText(getContext(),"No History", Toast.LENGTH_LONG);
+        }
     }
 
     public void openActivity(){
