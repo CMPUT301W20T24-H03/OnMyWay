@@ -184,6 +184,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                     @Override
                     public void onClick(View v) {
                         newCost = editPrice.getText().toString();
+
                         float newCostFloat = Float.parseFloat(newCost);
                         float priceEstimateFloat = Float.parseFloat(priceEstimate);
                         if(newCostFloat<priceEstimateFloat){
@@ -192,16 +193,18 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                         else {
                             riderRequest = new Request(
                                     UserRequestState.getCurrentUser().getUserId(),
+                                    null,
                                     startLocationName,
                                     startLocationMarker.getPosition().longitude,
                                     startLocationMarker.getPosition().latitude,
                                     endLocationName,
                                     endLocationMarker.getPosition().longitude,
                                     endLocationMarker.getPosition().latitude,
-                                    newCost
+                                    newCost,
+                                    "INCOMPLETE",
+                                    null,
+                                    null
                             );
-
-                            riderRequest.setDriverUserName(null);
 
                             UserRequestState.setCurrentRequest(riderRequest);
                             UserRequestState.updateCurrentRequest(); // Push updates to FireBase
