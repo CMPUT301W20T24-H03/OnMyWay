@@ -8,7 +8,7 @@
     tools:context=".ShowRiderRequestFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/upperConstraintLayout"
+        android:id="@+id/notifyRequestConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/splash_screen_background"
@@ -25,7 +25,6 @@
             />
 
         <TextView
-            android:id="@+id/textElapsedTime"
             android:layout_width="0dp"
             android:layout_height="128dp"
             android:layout_marginTop="32dp"
@@ -42,7 +41,6 @@
 
 
     <TextView
-        android:id="@+id/textRider"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="\nYou've been matched to a driver!\nClick the view requests for more information\nEnjoy the ride!\n\n\n"
