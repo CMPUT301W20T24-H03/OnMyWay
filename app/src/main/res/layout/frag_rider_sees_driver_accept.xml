@@ -8,7 +8,7 @@
     tools:context=".ShowRiderRequestFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/notifyRequestConstraintLayout"
+        android:id="@+id/upperConstraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/splash_screen_background"
