@@ -40,13 +40,10 @@ public class CustomListDriverRequest extends ArrayAdapter<Request> {
         TextView paymentText = view.findViewById(R.id.paymentAmount);
 
         // setting TextView's
-        usernameText.setText(request.getRiderUserName());
-        latText.setText(Double.toString(request.getStartLatitude()));
-        longText.setText(Double.toString(request.getEndLatitude()));
+        usernameText.setText(request.getRiderId());
+        latText.setText(String.valueOf(request.getStartLatitude()));
+        longText.setText(String.valueOf(request.getEndLatitude()));
 
         return view;
     }
-
-
-
 }
