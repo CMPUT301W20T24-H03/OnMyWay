@@ -10,11 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.CMPUT301W20T24.OnMyWay.barcode.BarcodeCaptureActivity;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
+
+import org.w3c.dom.Text;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
@@ -27,6 +30,10 @@ public class ShowDriverScanFragment extends DialogFragment implements View.OnCli
     private static boolean isCurrentUser = false;
     private static final int BARCODE_READER_REQUEST_CODE = 1 ;
 
+    Button backButton;
+    Button scanQR;
+    TextView money;
+    TextView accept_dialog;
 
     private static Request request;
 
@@ -70,8 +77,10 @@ public class ShowDriverScanFragment extends DialogFragment implements View.OnCli
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_show_payment, container);
-        Button backButton = view.findViewById(R.id.buttonBack);
-        Button scanQR = view.findViewById(R.id.scan_qr_buck);
+        backButton = view.findViewById(R.id.buttonBack);
+        scanQR = view.findViewById(R.id.scan_qr_buck);
+        money = view.findViewById(R.id.money_money_money);
+        accept_dialog = view.findViewById(R.id.accept_payment);
         backButton.setOnClickListener(this);
         scanQR.setOnClickListener(this);
         return view;
@@ -106,6 +115,7 @@ public class ShowDriverScanFragment extends DialogFragment implements View.OnCli
             Log.d(TAG, "Scan QR button pressed");
             Intent intent = new Intent(this.getActivity().getApplicationContext(), BarcodeCaptureActivity.class);
             startActivityForResult(intent, ShowDriverScanFragment.BARCODE_READER_REQUEST_CODE);
+
         }
         else {
             throw new NullPointerException("No button with the correct ID was found");
@@ -123,8 +133,10 @@ public class ShowDriverScanFragment extends DialogFragment implements View.OnCli
                     Point[] p = barcode.cornerPoints;
                     String info = barcode.displayValue;
                     String[] arrOfStr = info.split(";");
-
-                    //Toast.makeText(getActivity(), arrOfStr[1], Toast.LENGTH_SHORT).show();
+                    money.setText("$" + arrOfStr[1]);
+                    scanQR.setVisibility(View.INVISIBLE);
+                    accept_dialog.setVisibility(View.VISIBLE);
+                    money.setVisibility(View.VISIBLE);
                 } else {
                     Log.d(TAG, "No QR code captured");
                 }
