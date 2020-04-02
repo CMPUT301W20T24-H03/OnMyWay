@@ -9,9 +9,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 import java.util.HashMap;
 import java.util.Map;
@@ -261,7 +264,6 @@ public class DBManager {
                         Log.w(TAG, "Error updating user profile", e);
                     }
                 });
-
     }
 
 
@@ -330,39 +332,100 @@ public class DBManager {
                 });
     }
 
-    public void pushRequestInfo(Request riderRequest){
-        // store all values in the database
-        HashMap<String, String> data = new HashMap<>();
-        data.put("riderUserName", String.valueOf(riderRequest.getRiderUserName()));
-        data.put("endLatitude", String.valueOf(riderRequest.getEndLatitude()));
-        data.put("endLongitude", String.valueOf(riderRequest.getEndLongitude()));
-        data.put("requestID", riderRequest.getRequestId());
-        data.put("startLatitude", String.valueOf(riderRequest.getStartLatitude()));
-        data.put("startLongitude", String.valueOf(riderRequest.getStartLongitude()));
-        data.put("driverUserName", String.valueOf(riderRequest.getDriverUserName()));
-        data.put("paymentAmount", riderRequest.getPaymentAmount());
-        data.put("status", riderRequest.getStatus());
-        data.put("startAddressName", riderRequest.getStartLocationName());
-        data.put("endAddressName", riderRequest.getEndLocationName());
+    public void pushRequestInfo(Request updatedRequest) {
+        // Store all values in the database
+        Map<String, Object> updatedRequestObj = new HashMap<>();
 
+        updatedRequestObj.put("requestID", updatedRequest.getRequestId());
+        updatedRequestObj.put("riderId", updatedRequest.getRiderId());
+        updatedRequestObj.put("driverId", updatedRequest.getDriverId());
+
+        updatedRequestObj.put("startLocationName", updatedRequest.getStartLocationName());
+        updatedRequestObj.put("startLatitude", updatedRequest.getStartLatitude());
+        updatedRequestObj.put("startLongitude", updatedRequest.getStartLongitude());
+
+        updatedRequestObj.put("endLocationName", updatedRequest.getEndLocationName());
+        updatedRequestObj.put("endLatitude", updatedRequest.getEndLatitude());
+        updatedRequestObj.put("endLongitude", updatedRequest.getEndLongitude());
+
+        updatedRequestObj.put("paymentAmount", updatedRequest.getPaymentAmount());
+        updatedRequestObj.put("status", updatedRequest.getStatus());
+
+
+        RequestTime timeCreated = updatedRequest.getTimeCreated();
+        RequestTime timeAccepted = updatedRequest.getTimeAccepted();
+
+        updatedRequestObj.put("timeCreated", (timeCreated == null) ? null : timeCreated.toLong());
+        updatedRequestObj.put("timeAccepted", (timeAccepted == null) ? null : timeAccepted.toLong());
+        
         //Adds a new record the request to the 'riderRequests' collection.
         db.collection("riderRequests")
-                .add(data)
+                .add(updatedRequestObj)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "Data addition successful" + documentReference.getId());
+                        Log.d(TAG, "Request added to database successfully. ID: " + documentReference.getId());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "Data addition failed." + e.toString());
+                        Log.w(TAG, "Error adding request to database", e);
                     }
                 });
     }
 
-    public FirebaseFirestore getDatabase(){
-        return db;
+
+    /**
+     * if a rider cancels a ride, update the status to "CANCELLED" in the database
+     * @param requestID
+     */
+    /// StackOverflow post by Alan Nelson
+    /// Author: https://stackoverflow.com/users/5526322/alan-nelson
+    /// Answer: https://stackoverflow.com/a/51092366
+    public void cancelRequest(String requestID){
+        CollectionReference collectionReference = db.collection("riderRequests");
+        Query query = collectionReference.whereEqualTo("requestID", requestID);
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+
+        {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()){
+                    for (DocumentSnapshot document : task.getResult()){
+                        Log.d(TAG, document.getId() + " => " + document.getData());
+                        String idDelete = document.getId();
+                        db.collection("riderRequests").document(idDelete)
+                                .update("status", "CANCELLED")
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.w(TAG, "Error deleting document", e);
+                                    }
+                                });
+                    }
+                } else {
+                    Log.d(TAG, "Error getting documents: ", task.getException());
+                }
+            }
+        });
+
+    }
+
+    public CollectionReference getRequests(){
+        return db.collection("riderRequests");
+    }
+    public void updateRatingUP(String driverId){
+        DocumentReference documentReference = db.collection("users").document(driverId);
+        documentReference
+                .update("totalRatings", 1);
+        documentReference
+                .update("upRatings", 1);
     }
 }

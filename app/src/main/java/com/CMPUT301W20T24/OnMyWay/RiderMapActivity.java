@@ -22,9 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -42,10 +40,12 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
@@ -72,6 +72,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
     private LinearLayout searchLocationLayout;
     private LinearLayout editPriceLayout;
+    private LinearLayout ratingLayout;
     private LinearLayout viewCurrentRequestLayout;
 
     private SearchView startSearchView;
@@ -89,19 +90,35 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private Polyline polyline_rider;
     private Polyline polyline_destination;
 
+
     // Instantiating DBManager()
     private DBManager dbManager;
+
     private String newCost;
+
     private Request riderRequest;
+
 
     private static final int REQUEST_CODE = 101;
     private View mapView;
-    private FirebaseFirestore mDatabase = FirebaseFirestore.getInstance();
+
+    private String requestID;
+    private String driverUsername;
+    private ListenerRegistration driverListener;
 
     // Disable back button for this activity
     @Override
     public void onBackPressed() {
         // Literally nothing
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (driverListener != null) {
+            driverListener.remove();
+        }
+
     }
 
     // LONGPRESS BACK BUTTON TO GO BACK TO THE MAIN ACTIVITY FOR TESTING. REMOVE THIS LATER
@@ -116,6 +133,10 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
             Intent intent = new Intent(RiderMapActivity.this, MainActivity.class);
             startActivity(intent);
             return true;
+        }
+
+        if (driverListener != null) {
+            driverListener.remove();
         }
         return super.onKeyLongPress(keyCode, event);
     }
@@ -141,6 +162,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         searchLocationLayout = findViewById(R.id.searchLocationLayout);
         editPriceLayout = findViewById(R.id.editPriceLayout);
+        ratingLayout = findViewById(R.id.ratingLayout);
         viewCurrentRequestLayout = findViewById(R.id.viewCurrentRequestLayout);
 
         Button viewCurrentRequestButton = findViewById(R.id.viewCurrentRequestButton);
@@ -157,14 +179,15 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onClick(View view) {
                 if (startLocationMarker == null || endLocationMarker == null) {
-                    if (setStartPinPosition() && setEndPinPosition()) { }
-                    else {
+                    if (setStartPinPosition() && setEndPinPosition()) {
+                    } else {
                         Log.d(TAG, "Request invalid. START or END location not specified/stored.");
                         Toast.makeText(getApplicationContext(), "Request Invalid. You must specify a start and end location!", Toast.LENGTH_SHORT).show();
 
                         return;
                     }
                 }
+
 
                 // Calculate a price estimate for the ride depending on the start and end locations
                 String priceEstimate = calculatePrice(
@@ -178,6 +201,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                 // rider a price estimate and gives the rider the option to edit the price
                 showEditPriceLayout();
 
+
                 EditText editPrice = findViewById(R.id.editPrice);
                 editPrice.setText(priceEstimate);
 
@@ -187,31 +211,69 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                     @Override
                     public void onClick(View v) {
                         newCost = editPrice.getText().toString();
-                        riderRequest = new Request(
-                                UserRequestState.getCurrentUser().getUserId(),
-                                startLocationName,
-                                startLocationMarker.getPosition().longitude,
-                                startLocationMarker.getPosition().latitude,
-                                endLocationName,
-                                endLocationMarker.getPosition().longitude,
-                                endLocationMarker.getPosition().latitude,
-                                newCost
-                        );
-                      
-                        // TODO: REMOVE THIS. JUST FOR TESTING. THIS IS WHAT YOU DO WHEN A DRIVER ACCEPTS A REQUEST
-                        riderRequest.setDriverUserName(null);
 
-                        UserRequestState.setCurrentRequest(riderRequest);
-                        UserRequestState.updateCurrentRequest(); // Push updates to FireBase
-                        dbManager.pushRequestInfo(riderRequest);
+                        float newCostFloat = Float.parseFloat(newCost);
+                        float priceEstimateFloat = Float.parseFloat(priceEstimate);
+                        if (newCostFloat < priceEstimateFloat) {
+                            Toast.makeText(getApplicationContext(), "Please enter a value higher than your base price of $" + priceEstimate, Toast.LENGTH_LONG).show();
+                        } else {
+                            riderRequest = new Request(
+                                    UserRequestState.getCurrentUser().getUserId(),
+                                    null,
+                                    startLocationName,
+                                    startLocationMarker.getPosition().longitude,
+                                    startLocationMarker.getPosition().latitude,
+                                    endLocationName,
+                                    endLocationMarker.getPosition().longitude,
+                                    endLocationMarker.getPosition().latitude,
+                                    newCost,
+                                    "INCOMPLETE",
+                                    null,
+                                    null
+                            );
 
-                        Toast.makeText(getApplicationContext(), "Woo! Your ride is confirmed", Toast.LENGTH_SHORT).show();
+                            UserRequestState.setCurrentRequest(riderRequest);
+                            UserRequestState.updateCurrentRequest(); // Push updates to FireBase
+                            dbManager.pushRequestInfo(riderRequest);
 
-                        showCurrentRequestLayout();
+                            // get the request id of the current request
+                            requestID = UserRequestState.getCurrentRequest().getRequestId();
+
+                            Toast.makeText(getApplicationContext(), "Woo! Your ride is confirmed", Toast.LENGTH_SHORT).show();
+
+                            showCurrentRequestLayout();
+
+                            /// https://www.youtube.com/watch?v=LfkhFCDnkS0&list=PLrnPJCHvNZuDrSqu-dKdDi3Q6nM-VUyxD&index=4
+                            Toast.makeText(getApplicationContext(), riderRequest.getRequestId(), Toast.LENGTH_SHORT).show();
+                            driverListener = dbManager.getRequests().whereEqualTo("requestID", riderRequest.getRequestId()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                    if (e != null) {
+                                        Toast.makeText(getApplicationContext(), "Error with database update", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        List<DocumentSnapshot> documentList = queryDocumentSnapshots.getDocuments();
+                                        for (DocumentSnapshot documentSnapshot : documentList) {
+                                            if (documentSnapshot.getString("status").equals("COMPLETE")) {
+                                                showQRFragment = ShowQRFragment.newInstance(null);
+                                                showQRFragment.show(fm);
+                                                driverListener.remove();
+                                                driverUsername = null;
+                                                rateDriver();
+                                            } else if (documentSnapshot.getString("status").equals("ACTIVE")) {
+                                                Toast.makeText(getApplicationContext(), "The driver is on the way, click view requests to see their profile!", Toast.LENGTH_SHORT).show();
+                                                driverUsername = documentSnapshot.getString("driverId");
+                                            }
+                                        }
+                                    }
+
+                                }
+                            });
+                        }
                     }
                 });
             }
         });
+
 
         startSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -248,7 +310,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "Opening ShowRiderRequestFragment");
-
+                riderRequest.setDriverId(driverUsername, null);
                 showRiderRequestFragment = ShowRiderRequestFragment.newInstance(riderRequest);
                 showRiderRequestFragment.show(fm);
             }
@@ -257,17 +319,18 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
     /**
      * Finds the rider's current location, 'currentLocation'
-     * @author: Mahin, John
+     *
+     * @author: Mahin, John, Neel
      */
     private void fetchLastLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
         }
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
         task.addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
-                if (location != null){
+                if (location != null) {
                     currentLocation = location;
                     Toast.makeText(getApplicationContext(), currentLocation.getLatitude() + " " + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.riderMap);
@@ -278,32 +341,6 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         });
     }
 
-    public void executePayment(){
-        CollectionReference collectionReference = mDatabase.collection("riderRequests");
-        mDatabase.collection("riderRequests")
-        .whereEqualTo("riderRequests", UserRequestState.getCurrentRequest().getRequestId())
-        .addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.w(TAG, "Listen failed.", e);
-                    return;
-                }
-                else {
-                    if (UserRequestState.getCurrentRequest().getStatus() == "COMPLETE"){
-                        loadFragment();
-                    }
-                }
-            }
-        });
-    }
-
-    public void loadFragment(){
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        fragmentTransaction.replace(R.id.show_qr_buck, showQRFragment);
-        fragmentTransaction.commit();
-    }
-
     public void cancelRide() {
         mMap.clear();
         startLocationMarker = null;
@@ -312,20 +349,37 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         // TODO: UPDATE STATE HERE
         UserRequestState.cancelCurrentRequest();
         // TODO: PUSH CHANGES TO FIREBASE
-
+        dbManager.cancelRequest(requestID);
         Toast.makeText(getApplicationContext(), "Your request has been cancelled", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Request cancelled");
+        driverListener.remove();
+        driverUsername = null;
     }
 
 
     @Override
-    public void onCancelClick(){
+    public void onCancelClick() {
         Log.d(TAG, "Cancel event received from fragment");
 
         cancelRide();
         showSearchLocationLayout(); // Modify UI so user can start another ride
     }
 
+    public void rateDriver(){
+        showRatingLayout();
+        final Button thumbsUP = findViewById(R.id.thumbsUP);
+        thumbsUP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String requestDriverId = dbManager.getRequests().whereEqualTo("requestID", riderRequest.getRequestId()).whereArrayContains("driverId", riderRequest.getDriverId()).toString();
+                dbManager.updateRatingUP(requestDriverId);
+            }
+        });
+    }
+
+    private void showRatingLayout(){
+        ratingLayout.setVisibility(View.VISIBLE);
+    }
 
     private void showEditPriceLayout() {
         editPriceLayout.setVisibility(View.VISIBLE);
@@ -392,7 +446,6 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         return startLocationMarker != null;   // Return true if startLocationMarker exists now
     }
-
 
     // Get text from EditText and find the location on a map
     private boolean setEndPinPosition() {

@@ -37,12 +37,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <FrameLayout
-            android:id="@+id/show_qr_buck"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"/>
-
         <SearchView
             android:id="@+id/startLocationSearchBar"
             style="@android:style/Widget.Material.Light.SearchView"
@@ -51,6 +45,11 @@
             android:iconifiedByDefault="false"
             android:queryHint="Search start location"
             android:searchIcon="@drawable/location_start_label" />
+
+        <FrameLayout
+            android:id="@+id/paymentFrame"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <SearchView
             android:id="@+id/endLocationSearchBar"
@@ -143,4 +142,25 @@
             android:layout_gravity="center"
             android:text="@string/text_view_current_request" />
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ratingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:visibility="invisible"
+        android:gravity="center_horizontal"
+        app:layout_constraintBottom_toTopOf="@id/editPriceLayout">
+
+        <Button
+            android:id="@+id/thumbsUP"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
+
+        <Button
+            android:id="@+id/thumbsDOWN"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
