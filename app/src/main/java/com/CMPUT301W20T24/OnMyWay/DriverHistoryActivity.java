@@ -22,8 +22,10 @@ public class DriverHistoryActivity extends AppCompatActivity {
 
         ArrayList list = (ArrayList) getIntent().getParcelableArrayListExtra("TheData");
 
-        DriverHistoryAdapter adapter = new DriverHistoryAdapter(this, R.layout.driver_history_list_adapter, list);
-        my_Listview.setAdapter(adapter);
+        if(!list.isEmpty()) {
+            DriverHistoryAdapter adapter = new DriverHistoryAdapter(this, R.layout.driver_history_list_adapter, list);
+            my_Listview.setAdapter(adapter);
+        }
 
     }
 }

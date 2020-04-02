@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -61,6 +62,7 @@ import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
 
 
+import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -627,7 +629,6 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
                         }
                     }
                 });
-
                 viewing_ride = false;
                 removeDestinationMarkers();
                 loadMarkers();
