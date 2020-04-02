@@ -207,8 +207,8 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                             );
 
                             UserRequestState.setCurrentRequest(riderRequest);
-                            UserRequestState.updateCurrentRequest(); // Push updates to FireBase
-                            dbManager.pushRequestInfo(riderRequest);
+                            UserRequestState.updateCurrentRequest();
+                            // dbManager.pushRequestInfo(riderRequest); // Potentially causing duplicates?
 
                             Toast.makeText(getApplicationContext(), "Woo! Your ride is confirmed", Toast.LENGTH_SHORT).show();
 
@@ -275,7 +275,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
             public void onSuccess(Location location) {
                 if (location != null){
                     currentLocation = location;
-                    Toast.makeText(getApplicationContext(), currentLocation.getLatitude() + " " + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(getApplicationContext(), currentLocation.getLatitude() + " " + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.riderMap);
                     mapView = mapFragment.getView();
                     mapFragment.getMapAsync(RiderMapActivity.this);
