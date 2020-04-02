@@ -99,6 +99,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private View mapView;
 
     private String requestID;
+    private String driverUsername;
     private ListenerRegistration driverListener;
 
     // Disable back button for this activity
@@ -107,6 +108,14 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         // Literally nothing
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(driverListener!=null){
+            driverListener.remove();
+        }
+
+    }
 
     // LONGPRESS BACK BUTTON TO GO BACK TO THE MAIN ACTIVITY FOR TESTING. REMOVE THIS LATER
 
@@ -120,6 +129,10 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
             Intent intent = new Intent(RiderMapActivity.this, MainActivity.class);
             startActivity(intent);
             return true;
+        }
+
+        if(driverListener!=null){
+            driverListener.remove();
         }
         return super.onKeyLongPress(keyCode, event);
     }
@@ -228,7 +241,6 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                             showCurrentRequestLayout();
 
                             /// https://www.youtube.com/watch?v=LfkhFCDnkS0&list=PLrnPJCHvNZuDrSqu-dKdDi3Q6nM-VUyxD&index=4
-                            //TODO need to detach the listener when ride done or canceled figured out
                             Toast.makeText(getApplicationContext(),riderRequest.getRequestId(),Toast.LENGTH_SHORT).show();
                             driverListener = dbManager.getRequests().whereEqualTo("requestID", riderRequest.getRequestId()).addSnapshotListener(new EventListener<QuerySnapshot>() {
                                 @Override
@@ -243,9 +255,12 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                                             if(documentSnapshot.getString("status").equals("COMPLETE")){
                                                 showQRFragment = ShowQRFragment.newInstance(null);
                                                 showQRFragment.show(fm);
+                                                driverListener.remove();
+                                                driverUsername = null;
                                             }
                                             else if(documentSnapshot.getString("status").equals("ACTIVE")){
-                                                Toast.makeText(getApplicationContext(),"The driver is on the way, check status on the top right corner!",Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(getApplicationContext(),"The driver is on the way, click view requests to see their profile!",Toast.LENGTH_SHORT).show();
+                                                driverUsername = documentSnapshot.getString("driverId");
                                             }
                                         }
                                     }
@@ -293,7 +308,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "Opening ShowRiderRequestFragment");
-
+                riderRequest.setDriverId(driverUsername, null);
                 showRiderRequestFragment = ShowRiderRequestFragment.newInstance(riderRequest);
                 showRiderRequestFragment.show(fm);
             }
@@ -337,6 +352,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         Toast.makeText(getApplicationContext(), "Your request has been cancelled", Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Request cancelled");
         driverListener.remove();
+        driverUsername = null;
     }
 
 
