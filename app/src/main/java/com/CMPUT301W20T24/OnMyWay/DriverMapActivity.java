@@ -469,8 +469,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-               dbManager.getDatabase().collection("riderRequests").document(currentRide.getDocumentId()).update(
+               db.collection("riderRequests").document(currentRide.getDocumentId()).update(
                        "driverUserName", driverUsername,"status", "ACTIVE").addOnCompleteListener(new OnCompleteListener<Void>() {
                    @Override
                    public void onComplete(@NonNull Task<Void> task) {
@@ -557,7 +556,7 @@ public class DriverMapActivity extends AppCompatActivity implements OnMapReadyCa
             public void onClick(View v) {
                 popupWindow.dismiss();
 
-                dbManager.getDatabase().collection("riderRequests").document(currentRide.getDocumentId()).update(
+                db.collection("riderRequests").document(currentRide.getDocumentId()).update(
                         "driverUserName", driverUsername,
                         "status", "COMPLETE").addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

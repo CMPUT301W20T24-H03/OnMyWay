@@ -264,7 +264,6 @@ public class DBManager {
                         Log.w(TAG, "Error updating user profile", e);
                     }
                 });
-
     }
 
 
@@ -333,42 +332,46 @@ public class DBManager {
                 });
     }
 
-    /**
-     * push new request into the firestore databasse
-     * @author Payas
-     * @param riderRequest
-     */
-    public void pushRequestInfo(Request riderRequest){
-        // store all values in the database
-        HashMap<String, String> data = new HashMap<>();
-        data.put("riderUserName", String.valueOf(riderRequest.getRiderUserName()));
-        data.put("endLatitude", String.valueOf(riderRequest.getEndLatitude()));
-        data.put("endLongitude", String.valueOf(riderRequest.getEndLongitude()));
-        data.put("requestID", riderRequest.getRequestId());
-        data.put("startLatitude", String.valueOf(riderRequest.getStartLatitude()));
-        data.put("startLongitude", String.valueOf(riderRequest.getStartLongitude()));
-        data.put("driverUserName", String.valueOf(riderRequest.getDriverUserName()));
-        data.put("paymentAmount", riderRequest.getPaymentAmount());
-        data.put("status", riderRequest.getStatus());
-        data.put("startAddressName", riderRequest.getStartLocationName());
-        data.put("endAddressName", riderRequest.getEndLocationName());
+    public void pushRequestInfo(Request updatedRequest) {
+        // Store all values in the database
+        Map<String, Object> updatedRequestObj = new HashMap<>();
+
+        updatedRequestObj.put("requestID", updatedRequest.getRequestId());
+        updatedRequestObj.put("riderId", updatedRequest.getRiderId());
+        updatedRequestObj.put("driverId", updatedRequest.getDriverId());
+
+        updatedRequestObj.put("startLocationName", updatedRequest.getStartLocationName());
+        updatedRequestObj.put("startLatitude", updatedRequest.getStartLatitude());
+        updatedRequestObj.put("startLongitude", updatedRequest.getStartLongitude());
+
+        updatedRequestObj.put("endLocationName", updatedRequest.getEndLocationName());
+        updatedRequestObj.put("endLatitude", updatedRequest.getEndLatitude());
+        updatedRequestObj.put("endLongitude", updatedRequest.getEndLongitude());
+
+        updatedRequestObj.put("paymentAmount", updatedRequest.getPaymentAmount());
+        updatedRequestObj.put("status", updatedRequest.getStatus());
+
+        updatedRequestObj.put("timeCreated", updatedRequest.getTimeCreated().toLong());
+//        updatedRequestObj.put("timeAccepted", updatedRequest.getTimeAccepted().toLong());
+
 
         //Adds a new record the request to the 'riderRequests' collection.
         db.collection("riderRequests")
-                .add(data)
+                .add(updatedRequestObj)
                 .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "Data addition successful" + documentReference.getId());
+                        Log.d(TAG, "Request added to database successfully. ID: " + documentReference.getId());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "Data addition failed." + e.toString());
+                        Log.w(TAG, "Error adding request to database", e);
                     }
                 });
     }
+
 
     /**
      * if a rider cancels a ride, update the status to "CANCELLED" in the database
@@ -412,7 +415,5 @@ public class DBManager {
 
     }
 
-    public FirebaseFirestore getDatabase(){
-        return db;
-    }
+
 }
