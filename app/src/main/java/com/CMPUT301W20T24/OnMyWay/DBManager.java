@@ -421,5 +421,11 @@ public class DBManager {
     public CollectionReference getRequests(){
         return db.collection("riderRequests");
     }
-
+    public void updateRatingUP(String driverId){
+        DocumentReference documentReference = db.collection("users").document(driverId);
+        documentReference
+                .update("totalRatings", 1);
+        documentReference
+                .update("upRatings", 1);
+    }
 }

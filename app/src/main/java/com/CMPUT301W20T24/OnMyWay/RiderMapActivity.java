@@ -39,10 +39,13 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.maps.DirectionsApiRequest;
 import com.google.maps.GeoApiContext;
@@ -69,6 +72,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
     private LinearLayout searchLocationLayout;
     private LinearLayout editPriceLayout;
+    private LinearLayout ratingLayout;
     private LinearLayout viewCurrentRequestLayout;
 
     private SearchView startSearchView;
@@ -111,7 +115,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
     @Override
     protected void onStop() {
         super.onStop();
-        if(driverListener!=null){
+        if (driverListener != null) {
             driverListener.remove();
         }
 
@@ -131,7 +135,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
             return true;
         }
 
-        if(driverListener!=null){
+        if (driverListener != null) {
             driverListener.remove();
         }
         return super.onKeyLongPress(keyCode, event);
@@ -158,6 +162,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         searchLocationLayout = findViewById(R.id.searchLocationLayout);
         editPriceLayout = findViewById(R.id.editPriceLayout);
+        ratingLayout = findViewById(R.id.ratingLayout);
         viewCurrentRequestLayout = findViewById(R.id.viewCurrentRequestLayout);
 
         Button viewCurrentRequestButton = findViewById(R.id.viewCurrentRequestButton);
@@ -174,8 +179,8 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onClick(View view) {
                 if (startLocationMarker == null || endLocationMarker == null) {
-                    if (setStartPinPosition() && setEndPinPosition()) { }
-                    else {
+                    if (setStartPinPosition() && setEndPinPosition()) {
+                    } else {
                         Log.d(TAG, "Request invalid. START or END location not specified/stored.");
                         Toast.makeText(getApplicationContext(), "Request Invalid. You must specify a start and end location!", Toast.LENGTH_SHORT).show();
 
@@ -197,7 +202,6 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                 showEditPriceLayout();
 
 
-
                 EditText editPrice = findViewById(R.id.editPrice);
                 editPrice.setText(priceEstimate);
 
@@ -210,10 +214,9 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
                         float newCostFloat = Float.parseFloat(newCost);
                         float priceEstimateFloat = Float.parseFloat(priceEstimate);
-                        if(newCostFloat<priceEstimateFloat){
-                            Toast.makeText(getApplicationContext(), "Please enter a value higher than your base price of $"+ priceEstimate, Toast.LENGTH_LONG).show();
-                        }
-                        else {
+                        if (newCostFloat < priceEstimateFloat) {
+                            Toast.makeText(getApplicationContext(), "Please enter a value higher than your base price of $" + priceEstimate, Toast.LENGTH_LONG).show();
+                        } else {
                             riderRequest = new Request(
                                     UserRequestState.getCurrentUser().getUserId(),
                                     null,
@@ -241,25 +244,23 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                             showCurrentRequestLayout();
 
                             /// https://www.youtube.com/watch?v=LfkhFCDnkS0&list=PLrnPJCHvNZuDrSqu-dKdDi3Q6nM-VUyxD&index=4
-                            Toast.makeText(getApplicationContext(),riderRequest.getRequestId(),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), riderRequest.getRequestId(), Toast.LENGTH_SHORT).show();
                             driverListener = dbManager.getRequests().whereEqualTo("requestID", riderRequest.getRequestId()).addSnapshotListener(new EventListener<QuerySnapshot>() {
                                 @Override
                                 public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                                    if(e != null){
-                                        Toast.makeText(getApplicationContext(),"Error with database update", Toast.LENGTH_SHORT).show();
-                                    }
-
-                                    else{
+                                    if (e != null) {
+                                        Toast.makeText(getApplicationContext(), "Error with database update", Toast.LENGTH_SHORT).show();
+                                    } else {
                                         List<DocumentSnapshot> documentList = queryDocumentSnapshots.getDocuments();
-                                        for (DocumentSnapshot documentSnapshot : documentList){
-                                            if(documentSnapshot.getString("status").equals("COMPLETE")){
+                                        for (DocumentSnapshot documentSnapshot : documentList) {
+                                            if (documentSnapshot.getString("status").equals("COMPLETE")) {
                                                 showQRFragment = ShowQRFragment.newInstance(null);
                                                 showQRFragment.show(fm);
                                                 driverListener.remove();
                                                 driverUsername = null;
-                                            }
-                                            else if(documentSnapshot.getString("status").equals("ACTIVE")){
-                                                Toast.makeText(getApplicationContext(),"The driver is on the way, click view requests to see their profile!",Toast.LENGTH_SHORT).show();
+                                                rateDriver();
+                                            } else if (documentSnapshot.getString("status").equals("ACTIVE")) {
+                                                Toast.makeText(getApplicationContext(), "The driver is on the way, click view requests to see their profile!", Toast.LENGTH_SHORT).show();
                                                 driverUsername = documentSnapshot.getString("driverId");
                                             }
                                         }
@@ -272,6 +273,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                 });
             }
         });
+
 
         startSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -317,17 +319,18 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
     /**
      * Finds the rider's current location, 'currentLocation'
+     *
      * @author: Mahin, John, Neel
      */
     private void fetchLastLocation() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE);
         }
         Task<Location> task = fusedLocationProviderClient.getLastLocation();
         task.addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
-                if (location != null){
+                if (location != null) {
                     currentLocation = location;
                     Toast.makeText(getApplicationContext(), currentLocation.getLatitude() + " " + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.riderMap);
@@ -337,8 +340,6 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
             }
         });
     }
-
-
 
     public void cancelRide() {
         mMap.clear();
@@ -357,13 +358,28 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
 
     @Override
-    public void onCancelClick(){
+    public void onCancelClick() {
         Log.d(TAG, "Cancel event received from fragment");
 
         cancelRide();
         showSearchLocationLayout(); // Modify UI so user can start another ride
     }
 
+    public void rateDriver(){
+        showRatingLayout();
+        final Button thumbsUP = findViewById(R.id.thumbsUP);
+        thumbsUP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String requestDriverId = dbManager.getRequests().whereEqualTo("requestID", riderRequest.getRequestId()).whereArrayContains("driverId", riderRequest.getDriverId()).toString();
+                dbManager.updateRatingUP(requestDriverId);
+            }
+        });
+    }
+
+    private void showRatingLayout(){
+        ratingLayout.setVisibility(View.VISIBLE);
+    }
 
     private void showEditPriceLayout() {
         editPriceLayout.setVisibility(View.VISIBLE);
@@ -430,7 +446,6 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         return startLocationMarker != null;   // Return true if startLocationMarker exists now
     }
-
 
     // Get text from EditText and find the location on a map
     private boolean setEndPinPosition() {
