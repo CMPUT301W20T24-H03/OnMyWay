@@ -265,8 +265,6 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                                                 showRiderSeesDriverAccept = ShowRiderSeesDriverAccept.newInstance();
                                                 showRiderSeesDriverAccept.show(fm);
                                                 driverUsername = documentSnapshot.getString("driverId");
-                                                Log.d(TAG, "fuck");
-                                                Log.d(TAG, driverUsername);
                                             }
                                         }
                                     }
