@@ -51,7 +51,6 @@ public class Utilities {
      * @return The capitalized string
      * @author John
      */
-    // Capitalize the first letter of a string
     static public String capitalize(String string) {
         if (string == "" || string == null) {
             throw new IllegalArgumentException("The string passed to capitalize is empty");
@@ -68,7 +67,6 @@ public class Utilities {
      * @return The string that was originally passed to the method
      * @author John
      */
-    // Check if a string is null and throw an error if so
     static public String checkStringNotNull(String stringToCheck) {
         if (stringToCheck == null) {
             throw new NullPointerException("The string fetched from FireStore is null. Make sure data is added for this user");
@@ -86,7 +84,6 @@ public class Utilities {
      * @return The primitive boolean from the input object
      * @author John
      */
-    // Check if a Boolean object is null and return the value if not
     static public boolean checkBooleanNotNull(Boolean booleanToCheck) {
         if (booleanToCheck == null) {
             throw new NullPointerException("The boolean fetched from FireStore is null");
@@ -104,7 +101,6 @@ public class Utilities {
      * @return The primitive int extracted from the input object
      * @author John
      */
-    // Check if a Long object is null and return the value as an int if not
     static public int checkLongNotNull(Long longToCheck) {
         if (longToCheck == null) {
             throw new NullPointerException("The long fetched from FireStore is null");
@@ -116,13 +112,12 @@ public class Utilities {
 
 
     /**
-     * Check if a double object is null, returning it's primitive value if not.
+     * Check if a Double object is null, returning it's primitive value if not.
      * Otherwise a NullPointerException is thrown
      * @param doubleToCheck The Long object we want to check
      * @return The primitive double extracted from the input object
      * @author John
      */
-    // Check if a Long object is null and return the value as an int if not
     static public double checkDoubleNotNull(Double doubleToCheck) {
         if (doubleToCheck == null) {
             throw new NullPointerException("The double fetched from FireStore is null");

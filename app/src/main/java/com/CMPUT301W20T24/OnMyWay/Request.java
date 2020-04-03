@@ -2,11 +2,11 @@ package com.CMPUT301W20T24.OnMyWay;
 
 import java.util.UUID;
 
+
 /**
- * //Request model that holds the blueprint for this object type.
+ * Request model that holds the blueprint for this object type.
  * @author Manpreet Grewal, Bard Samimi
  */
-
 public class Request {
     private static final String TAG = "OMW/Request";  // Use this tag for calling Log.d()
 
@@ -31,18 +31,21 @@ public class Request {
 
     /**
      * Constructor method required to instantiate an instance of the Request class.
-     * @param riderId TODO
-     * @param driverId TODO
-     * @param startLocationName TODO
-     * @param startLongitude TODO
-     * @param startLatitude TODO
-     * @param endLocationName TODO
-     * @param endLongitude TODO
-     * @param endLatitude TODO
-     * @param paymentAmount TODO
-     * @param status TODO
-     * @param timeCreated TODO
-     * @param timeAccepted TODO
+     * @param riderId The id of the rider in a request
+     * @param driverId The id of the rider in a request. Can be null if the driver is not assigned yet
+     * @param startLocationName The human-friendly name of the start location for a request
+     * @param startLongitude The longitude of the start location, stored as a long
+     * @param startLatitude The latitude of the start location, stored as a long
+     * @param endLocationName The human-friendly name of the end location for a request
+     * @param endLongitude The longitude of the end location, stored as a long
+     * @param endLatitude The latitude of the end location, stored as a long
+     * @param paymentAmount The amount that will be charged for this request, stored as a string
+     * @param status The status of the current request. A string that is one of:
+     *               "INCOMPLETE, "ACTIVE", "COMPLETE", OR "CANCELLED"
+     * @param timeCreated The time a request was first created, given as a long representing
+     *                    seconds since epoch
+     * @param timeAccepted The time a request was first accepted by a driver,
+     *                     given as a long representing seconds since epoch
      * @author Bard Samimi, Manpreet Grewal, John
      */
     // The most complete constructor
@@ -79,8 +82,7 @@ public class Request {
     }
 
     /**
-     * Logic to generate a unique UUID string that will be used for the requestID value.
-     * @return String
+     * Logic to generate a unique UUID string that will be used for the requestID value
      * @author Manpreet Grewal
      */
     /// https://www.baeldung.com/java-uuid
@@ -114,6 +116,12 @@ public class Request {
         return driverId;
     }
 
+    /**
+     * Sets the driverId of the request and records the time that the request was accepted
+     * @param driverId The ID of the driver accepting a request
+     * @param timeAccepted The time the request was accepted. If this is null the current time is used
+     * @author John
+     */
     public void setDriverId(String driverId, Long timeAccepted) {
         // Record the time at which the request was accepted as well
         if (driverId != null) {
@@ -125,6 +133,9 @@ public class Request {
             }
 
             this.driverId = driverId;
+        }
+        else if (timeAccepted != null) {
+            throw new IllegalArgumentException("You can't have a timeAccepted value without a driver");
         }
     }
 
@@ -198,14 +209,25 @@ public class Request {
         return status;
     }
 
+    /**
+     * Set the status of a ride
+     * @param status The status of the current request. A string that is one of:
+     *               "INCOMPLETE, "ACTIVE", "COMPLETE", OR "CANCELLED".
+     *               Lowercase values are also accepted
+     */
     public void setStatus(String status) {
-        status = status.toUpperCase();
-
-        if (status.equals("INCOMPLETE") || status.equals("ACTIVE") || status.equals("COMPLETE") || status.equals("CANCELLED")) {
-            this.status = status;
+        if (status == null) {
+            throw new IllegalArgumentException("Request status can't be null");
         }
         else {
-            throw new IllegalArgumentException("An illegal value has been entered for request status");
+            status = status.toUpperCase();
+
+            if (status.equals("INCOMPLETE") || status.equals("ACTIVE") || status.equals("COMPLETE") || status.equals("CANCELLED")) {
+                this.status = status;
+            }
+            else {
+                throw new IllegalArgumentException("An illegal value has been entered for request status");
+            }
         }
     }
 
@@ -214,7 +236,13 @@ public class Request {
         this.timeCreated = new RequestTime();
     }
 
-    // Set creation time to a specific time
+    /**
+     * Sets the time a ride was created
+     * @param timeCreated The time a request was created, stored as a long representing
+     *                    seconds since epoch. If this value is null the current time will
+     *                    be used instead
+     * @author John
+     */
     private void setTimeCreated(Long timeCreated) {
         if (timeCreated == null) {
             setTimeCreated();
@@ -233,7 +261,13 @@ public class Request {
         this.timeAccepted = new RequestTime();
     }
 
-    // Set accepted time to a specific time
+    /**
+     * Sets the time a ride was accepted by a driver
+     * @param timeAccepted The time a request was accepted, stored as a long representing
+     *                    seconds since epoch. If this value is null the current time will
+     *                    be used instead
+     * @author John
+     */
     private void setTimeAccepted(Long timeAccepted) {
         if (timeAccepted == null) {
             setTimeAccepted();
@@ -247,6 +281,11 @@ public class Request {
         return this.timeAccepted;
     }
 
+    /**
+     * Gets the elapsed time since a ride was accepted by a driver
+     * @return A string representation of the time elapsed in the format, "mm:ss"
+     * @author John
+     */
     public String getElapsedTime() {
         if (timeAccepted == null) {
             throw new NullPointerException("The ride hasn't been accepted yet. You can't call getElapsedTime() on it");
