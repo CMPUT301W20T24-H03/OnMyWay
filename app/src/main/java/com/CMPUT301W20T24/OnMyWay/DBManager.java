@@ -22,7 +22,7 @@ import androidx.annotation.NonNull;
 
 
 /**
- * Manages communication with Firebase Auth and Firestore so other classes don't have to. This should probably be a singleton
+ * Manages communication with Firebase Auth and Firestore so other classes don't have to
  * @author John
  */
 public class DBManager {
@@ -332,6 +332,12 @@ public class DBManager {
                 });
     }
 
+
+    /**
+     * Takes a Request object and stores it in the Firestore database
+     * @param updatedRequest The Request we want to push to the database
+     * @author Payas, John
+     */
     public void pushRequestInfo(Request updatedRequest) {
         // Store all values in the database
         Map<String, Object> updatedRequestObj = new HashMap<>();
@@ -350,7 +356,6 @@ public class DBManager {
 
         updatedRequestObj.put("paymentAmount", updatedRequest.getPaymentAmount());
         updatedRequestObj.put("status", updatedRequest.getStatus());
-
 
         RequestTime timeCreated = updatedRequest.getTimeCreated();
         RequestTime timeAccepted = updatedRequest.getTimeAccepted();
@@ -377,8 +382,8 @@ public class DBManager {
 
 
     /**
-     * if a rider cancels a ride, update the status to "CANCELLED" in the database
-     * @param requestID
+     * If a rider cancels a ride, update the status to "CANCELLED" in the database
+     * @param requestID The ID of the the request we want to cancel
      */
     /// StackOverflow post by Alan Nelson
     /// Author: https://stackoverflow.com/users/5526322/alan-nelson
@@ -386,9 +391,7 @@ public class DBManager {
     public void cancelRequest(String requestID){
         CollectionReference collectionReference = db.collection("riderRequests");
         Query query = collectionReference.whereEqualTo("requestID", requestID);
-        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-
-        {
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()){
@@ -418,8 +421,11 @@ public class DBManager {
 
     }
 
+
+    /**
+     * Fetch all ride requests from the Firestore database
+     */
     public CollectionReference getRequests(){
         return db.collection("riderRequests");
     }
-
 }

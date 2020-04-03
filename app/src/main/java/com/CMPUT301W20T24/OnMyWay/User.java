@@ -2,6 +2,8 @@ package com.CMPUT301W20T24.OnMyWay;
 
 import android.util.Log;
 
+import java.util.Locale;
+
 
 /**
  * An class used to represent users of the app (either drivers or riders)
@@ -161,7 +163,7 @@ public class User {
             return "0.0";
         }
         else {
-            return String.format("%.1f", (float) (getUpRatings() * 5) / (float) getTotalRatings());
+            return String.format(Locale.US, "%.1f", (float) (getUpRatings() * 5) / (float) getTotalRatings());
         }
     }
 
