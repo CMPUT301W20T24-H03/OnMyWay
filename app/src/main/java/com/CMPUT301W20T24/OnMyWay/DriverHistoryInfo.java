@@ -75,8 +75,8 @@ public class DriverHistoryInfo implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.history_id);
-        dest.writeString(this.history_dest);
         dest.writeString(this.history_start);
+        dest.writeString(this.history_dest);
         dest.writeLong(this.history_time);
     }
 }
