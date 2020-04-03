@@ -259,6 +259,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                                                 showQRFragment.show(fm);
                                                 driverListener.remove();
                                                 driverUsername = null;
+                                                riderRequest = null;
                                             }
                                             else if(documentSnapshot.getString("status").equals("ACTIVE")){
                                                 showRiderSeesDriverAccept = ShowRiderSeesDriverAccept.newInstance();
