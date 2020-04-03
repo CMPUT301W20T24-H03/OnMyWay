@@ -266,7 +266,6 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                                                 driverUsername = documentSnapshot.getString("driverId");
                                             }
                                         }
-                                        riderRequest = null;
                                     }
 
                                 }
@@ -348,7 +347,6 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
         mMap.clear();
         startLocationMarker = null;
         endLocationMarker = null;
-        riderRequest = null;
         // TODO: UPDATE STATE HERE
         UserRequestState.cancelCurrentRequest();
         // TODO: PUSH CHANGES TO FIREBASE

@@ -87,9 +87,7 @@ public class UserRequestState {
     }
 
     static public void setCurrentRequest(Request newRequest) {
-        if (currentRequest == null) {
             currentRequest = newRequest;
-        }
     }
     static public void updateCurrentRequest() {
         dbManager.pushRequestInfo(getCurrentRequest());
