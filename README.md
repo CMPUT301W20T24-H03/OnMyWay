@@ -83,6 +83,8 @@ Answer: [Link](https://stackoverflow.com/questions/4846484/md5-hashing-in-androi
 
 - phone number validation from [Link](http://tutorialspots.com/android-how-to-check-a-valid-phone-number-2382.html)
 
-
 ## License
 This project is released under the Apache 2.0 license. See the [license file](LICENSE.md) for details
+
+![we_made_dis](https://user-images.githubusercontent.com/44443467/78410564-f3f4bb80-75c9-11ea-9af9-3c55e1cb4c39.png)
+
