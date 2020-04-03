@@ -258,6 +258,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                                                 showQRFragment = ShowQRFragment.newInstance(null);
                                                 showQRFragment.show(fm);
                                                 driverListener.remove();
+                                                UserRequestState.cancelCurrentRequest();
                                                 driverUsername = null;
                                             }
                                             else if(documentSnapshot.getString("status").equals("ACTIVE")){
