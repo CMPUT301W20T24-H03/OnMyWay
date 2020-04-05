@@ -260,6 +260,7 @@ public class RiderMapActivity extends AppCompatActivity implements OnMapReadyCal
                                                 driverListener.remove();
                                                 UserRequestState.cancelCurrentRequest();
                                                 driverUsername = null;
+                                                recreate();
                                             }
                                             else if(documentSnapshot.getString("status").equals("ACTIVE")){
                                                 showRiderSeesDriverAccept = ShowRiderSeesDriverAccept.newInstance();
