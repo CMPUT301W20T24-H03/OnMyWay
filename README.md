@@ -1,9 +1,10 @@
 # OnMyWay
 
-
-An innovative ride-hailing app featuring QR-bucks
+A ride sharing Android app featuring QR-bucks, a contactless payment system using QR codes. Created as part of a class project by Bardia, John, Mahin, Manpreet, Neel, and Payas.
 
 **Note:** Javadocs are located in `doc/javadoc`
+
+![we_made_dis](https://user-images.githubusercontent.com/44443467/78410564-f3f4bb80-75c9-11ea-9af9-3c55e1cb4c39.png)
 
 
 ## Components for Project Part 2
@@ -85,6 +86,4 @@ Answer: [Link](https://stackoverflow.com/questions/4846484/md5-hashing-in-androi
 
 ## License
 This project is released under the Apache 2.0 license. See the [license file](LICENSE.md) for details
-
-![we_made_dis](https://user-images.githubusercontent.com/44443467/78410564-f3f4bb80-75c9-11ea-9af9-3c55e1cb4c39.png)
 
