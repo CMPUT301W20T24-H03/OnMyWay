@@ -1,7 +1,25 @@
-# OnMyWay
+<!-- Project Header -->
+<div align="center"> 
+  <img class="projectLogo" src="app/src/main/ic_launcher-web.png" alt="Project logo" title="Project logo" width="256">
 
+  <h1 class="projectName">OnMyWay</h1>
 
-An innovative ride-hailing app featuring QR-bucks
+  <p class="projectBadges">
+    <img src="https://img.shields.io/badge/type-Android_App-cddc39.svg" alt="Project type" title="Project type">
+    <img src="https://img.shields.io/github/languages/top/jerboa88/OnMyWay.svg" alt="Language" title="Language">
+    <img src="https://img.shields.io/github/repo-size/jerboa88/OnMyWay.svg" alt="Repository size" title="Repository size">
+    <a href="LICENSE">
+      <img src="https://img.shields.io/github/license/jerboa88/OnMyWay.svg" alt="Project license" title="Project license"/>
+    </a>
+  </p>
+  
+  <p class="projectDesc">
+    An innovative ride-hailing app featuring QR-bucks. Created for a software engineering group project.
+  </p>
+  
+  <br/>
+</div>
+
 
 **Note:** Javadocs are located in `doc/javadoc`
 
